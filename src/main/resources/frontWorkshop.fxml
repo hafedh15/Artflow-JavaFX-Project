@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllors.FrontWorkshop"
+            prefHeight="600.0" prefWidth="800.0">
+
+    <children>
+
+        <!-- Grand titre de la page -->
+        <Label layoutX="150.0" layoutY="20.0" text="🌿 Nos produits faits à la main avec amour"
+               styleClass="section-title" />
+
+        <!-- ScrollPane pour la liste des produits -->
+        <ScrollPane fitToWidth="true"
+                    layoutX="10.0" layoutY="70.0"
+                    AnchorPane.bottomAnchor="10.0"
+                    AnchorPane.leftAnchor="10.0"
+                    AnchorPane.rightAnchor="10.0"
+                    AnchorPane.topAnchor="70.0">
+
+            <content>
+                <TilePane fx:id="cardsContainer"
+                          hgap="15.0" vgap="15.0"
+                          prefColumns="3"
+                          prefTileWidth="240.0"
+                          prefWidth="780.0"
+                          style="-fx-padding: 15;" />
+
+            </content>
+        </ScrollPane>
+
+    </children>
+</AnchorPane>

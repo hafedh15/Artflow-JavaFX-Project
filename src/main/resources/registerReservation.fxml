@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllors.RegisterReservation"
+            prefWidth="400" prefHeight="300">
+
+    <VBox spacing="15" alignment="CENTER" layoutX="50" layoutY="50">
+        <Label text="Seats Reserved:" />
+        <TextField fx:id="seatsField" promptText="e.g. 2" />
+
+        <Label text="Notes:" />
+        <TextArea fx:id="notesArea" promptText="Any comments..." prefRowCount="3"/>
+
+        <Button text="Submit Reservation" onAction="#handleSubmit" />
+    </VBox>
+
+</AnchorPane>
