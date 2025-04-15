@@ -33,8 +33,8 @@ public class WorkshopCard {
 
     @FXML
     private Label descriptionLabel;
-
     private FrontWorkshop parentController;
+
 
     // 🔴 AJOUT : Pour garder une référence à l’atelier courant
     private Workshop workshop;
@@ -61,7 +61,7 @@ public class WorkshopCard {
         imageView.setImage(image);
     }
 
-    public void setParentController(FrontWorkshop controller) {
+  public void setParentController(FrontWorkshop controller) {
         this.parentController = controller;
     }
 

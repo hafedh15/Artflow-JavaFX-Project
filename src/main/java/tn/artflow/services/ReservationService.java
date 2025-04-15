@@ -34,9 +34,15 @@ public class ReservationService implements IService<Reservation> {
     }
 
     @Override
-    public void modifier(Reservation r) throws SQLException {
-
-    }
+    public void modifier(Reservation reservation) throws SQLException {
+        String sql = "UPDATE reservation SET seats_reserved = ?, notes = ? WHERE id = ?";
+        PreparedStatement ste = cnx.prepareStatement(sql);
+            ste.setInt(1, reservation.getSeatsReserved());
+            ste.setString(2, reservation.getNotes());
+            ste.setInt(3, reservation.getId());
+            ste.executeUpdate();
+            System.out.println("Workshop modifié");
+        }
 
     @Override
     public void supprimer(int id) {
@@ -77,5 +83,55 @@ public class ReservationService implements IService<Reservation> {
         return reservations;
     }
 
+    public List<Reservation> getReservationsByUser(User user) throws SQLException {
+        System.out.println("getReservationsByUser called for user ID: " + user.getId());
+        System.out.println("Database connection status: " + (cnx != null ? "Connected" : "Not connected"));
+
+        if (cnx == null) {
+            throw new SQLException("Database connection is null. Verify your connection setup.");
+        }
+
+        List<Reservation> reservations = new ArrayList<>();
+        String query = "SELECT r.*, w.title FROM reservation r " +
+                "JOIN workshop w ON r.workshop_id = w.id WHERE r.user_id = ?";
+
+        System.out.println("Executing SQL: " + query + " with user_id = " + user.getId());
+
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setInt(1, user.getId());
+
+            System.out.println("SQL prepared, executing query...");
+            try (ResultSet rs = ps.executeQuery()) {
+                System.out.println("Query executed, processing results...");
+
+                while (rs.next()) {
+                    Reservation r = new Reservation();
+                    r.setId(rs.getInt("id"));
+                    r.setSeatsReserved(rs.getInt("seats_reserved"));
+                    r.setDateReservation(rs.getString("date_reservation"));
+                    r.setNotes(rs.getString("notes"));
+                    r.setUniqueCode(rs.getString("unique_code"));
+
+                    Workshop w = new Workshop();
+                    w.setId(rs.getInt("workshop_id"));  // Also get the workshop ID
+                    w.setTitle(rs.getString("title"));
+                    r.setWorkshop(w);
+
+                    System.out.println("Found reservation: ID=" + r.getId() +
+                            ", Workshop=" + w.getTitle() +
+                            ", Date=" + r.getDateReservation());
+
+                    reservations.add(r);
+                }
+
+                System.out.println("Result processing complete. Total reservations: " + reservations.size());
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL ERROR in getReservationsByUser: " + e.getMessage());
+            throw e; // Re-throw to be handled by caller
+        }
+
+        return reservations;
+    }
 
 }

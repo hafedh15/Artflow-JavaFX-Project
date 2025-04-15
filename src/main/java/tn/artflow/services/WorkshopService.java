@@ -1,6 +1,7 @@
 package tn.artflow.services;
 
 
+import tn.artflow.entities.User;
 import tn.artflow.entities.Workshop;
 import tn.artflow.tools.MyDataBase;
 import java.sql.*;
@@ -83,4 +84,11 @@ public class WorkshopService implements IService<Workshop> {
         }
         return workshops;
     }
+
+    @Override
+    public List<Workshop> getReservationsByUser(User user) {
+        return List.of();
+    }
+
+
 }

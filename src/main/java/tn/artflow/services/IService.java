@@ -1,5 +1,8 @@
 package tn.artflow.services;
 
+import tn.artflow.entities.Reservation;
+import tn.artflow.entities.User;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -9,6 +12,6 @@ public interface IService<T> {
     void modifier(T t) throws SQLException;
     void supprimer(int id) throws SQLException;  // ✅ Supprimer par ID
     List<T> recuperer() throws SQLException;
-
+    List<T> getReservationsByUser(User user) throws SQLException;
 
 }

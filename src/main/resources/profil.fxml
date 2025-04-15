@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllors.Profil"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #f8f8f8;">
+
+    <children>
+        <!-- Titre -->
+        <Label layoutX="150.0" layoutY="20.0" text="📋 Vos réservations"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+        <!-- Scroll des cartes -->
+        <ScrollPane fitToWidth="true"
+                    layoutX="10.0" layoutY="70.0"
+                    AnchorPane.bottomAnchor="10.0"
+                    AnchorPane.leftAnchor="10.0"
+                    AnchorPane.rightAnchor="10.0"
+                    AnchorPane.topAnchor="70.0"
+                    style="-fx-background-color: transparent; -fx-border-color: #e0e0e0;">
+            <content>
+                <TilePane fx:id="cardsContainer"
+                          hgap="15.0" vgap="15.0"
+                          prefColumns="3"
+                          prefTileWidth="260.0"
+                          prefWidth="780.0"
+                          style="-fx-padding: 15; -fx-background-color: #f8f8f8;" />
+            </content>
+        </ScrollPane>
+
+        <AnchorPane fx:id="editPane" visible="false" layoutX="150" layoutY="150"
+                    prefHeight="250" prefWidth="450"
+                    style="-fx-background-color: #f9f9f9; -fx-border-radius: 12; -fx-background-radius: 12;
+                   -fx-border-color: #dddddd; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.3, 0, 2);">
+
+            <children>
+                <Label text="✏ Update Reservation" layoutX="20" layoutY="20"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label text="Seats :" layoutX="20" layoutY="70" style="-fx-font-size: 14px;"/>
+                <TextField fx:id="seatsField" layoutX="100" layoutY="65" prefWidth="300"
+                           style="-fx-background-radius: 8; -fx-border-radius: 8;"/>
+
+                <Label text="Notes :" layoutX="20" layoutY="110" style="-fx-font-size: 14px;"/>
+                <TextArea fx:id="notesField" layoutX="100" layoutY="105" prefHeight="60" prefWidth="300"
+                          style="-fx-background-radius: 8; -fx-border-radius: 8;"/>
+
+                <Button text="✅ Save" layoutX="100" layoutY="180"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 20;"
+                        onAction="#saveEditedReservation"/>
+
+                <Button text="❌ Close" layoutX="240" layoutY="180"
+                        style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 20;"
+                        onAction="#closeEditPane"/>
+            </children>
+        </AnchorPane>
+
+
+    </children>
+</AnchorPane>

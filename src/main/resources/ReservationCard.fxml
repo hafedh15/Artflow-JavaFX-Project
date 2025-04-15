@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllors.ReservationCard"
+            prefHeight="160.0" prefWidth="300.0"
+            style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+
+    <VBox spacing="8" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+
+        <Label fx:id="workshopTitleLabel" style="-fx-font-weight: bold; -fx-font-size: 16px;" wrapText="true" />
+        <Label fx:id="dateLabel" style="-fx-font-size: 13px;" />
+        <Label fx:id="seatsLabel" style="-fx-font-size: 13px;" />
+        <Label fx:id="notesLabel" style="-fx-font-size: 13px;" />
+        <Label fx:id="codeLabel" style="-fx-font-size: 13px;" />
+
+
+
+    </VBox>
+</AnchorPane>

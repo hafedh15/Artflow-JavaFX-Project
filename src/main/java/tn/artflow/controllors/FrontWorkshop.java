@@ -4,22 +4,26 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
+import tn.artflow.entities.Reservation;
+import tn.artflow.entities.User;
 import tn.artflow.entities.Workshop;
+import tn.artflow.services.ReservationService;
 import tn.artflow.services.WorkshopService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public class FrontWorkshop {
 
     @FXML
     private TilePane cardsContainer;
-
 
 
     private WorkshopService workshopService;
@@ -86,6 +90,7 @@ public class FrontWorkshop {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 
 
 

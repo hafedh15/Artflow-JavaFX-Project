@@ -84,7 +84,10 @@ public class UserService implements IService<User> {
         return users;
     }
 
-
+    @Override
+    public List<User> getReservationsByUser(User user) throws SQLException {
+        return List.of();
+    }
 
 
 }
