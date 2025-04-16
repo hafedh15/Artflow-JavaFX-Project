@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="tn.artflow.controllers.LoginController"
+           prefWidth="600" prefHeight="400"
+           style="-fx-background-color: linear-gradient(to bottom, #1e1e2f, #2c3e50);">
+
+    <VBox alignment="CENTER" spacing="15"
+          maxWidth="470"
+          maxHeight="570"
+          style="-fx-padding: 30; -fx-background-color: #ffffff; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);">
+
+        <!-- Logo or image -->
+
+
+        <!-- Title -->
+        <Label text="Welcome Back"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+
+        <!-- Email -->
+        <TextField fx:id="emailField"
+                   promptText="Email"
+                   style="-fx-background-radius: 5; -fx-padding: 8;" />
+
+        <!-- Password -->
+        <PasswordField fx:id="passwordField"
+                       promptText="Password"
+                       style="-fx-background-radius: 5; -fx-padding: 8;" />
+
+        <!-- Forgot Password Link -->
+        <Hyperlink text="Forgot Password?"
+                   onAction="#handleForgotPassword"
+                   style="-fx-text-fill: #2196F3; -fx-font-size: 12px;" />
+
+        <!-- Login Button -->
+        <Button text="Login"
+                onAction="#handleLogin"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;" />
+
+        <!-- Error Label -->
+        <Label fx:id="errorLabel"
+               textFill="red"
+               style="-fx-font-size: 12px;" />
+    </VBox>
+</StackPane>

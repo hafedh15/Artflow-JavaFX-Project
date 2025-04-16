@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="tn.artflow.controllers.AddUserControllerDash"
+           style="-fx-background-color: #f4f6f9;">
+
+    <VBox alignment="CENTER" spacing="20"
+          maxWidth="400"
+          maxHeight="500"
+          style="-fx-background-color: white;
+                 -fx-padding: 30;
+                 -fx-background-radius: 12;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+
+        <!-- Title -->
+        <Label text="➕ Add New User"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+
+        <!-- Name -->
+        <TextField fx:id="nameField"
+                   promptText="First Name"
+                   style="-fx-background-radius: 6; -fx-padding: 8;" />
+
+        <!-- Lastname -->
+        <TextField fx:id="lastnameField"
+                   promptText="Last Name"
+                   style="-fx-background-radius: 6; -fx-padding: 8;" />
+
+        <!-- Email -->
+        <TextField fx:id="emailField"
+                   promptText="Email"
+                   style="-fx-background-radius: 6; -fx-padding: 8;" />
+
+        <!-- Password -->
+        <PasswordField fx:id="passwordField"
+                       promptText="Password"
+                       style="-fx-background-radius: 6; -fx-padding: 8;" />
+
+        <!-- Confirm Password -->
+        <PasswordField fx:id="confirmPasswordField"
+                       promptText="Confirm Password"
+                       style="-fx-background-radius: 6; -fx-padding: 8;" />
+
+        <!-- Role ComboBox -->
+        <ComboBox fx:id="roleComboBox"
+                  promptText="Select Role"
+                  style="-fx-background-radius: 6; -fx-padding: 6;" />
+
+        <!-- Photo Upload -->
+        <HBox spacing="8">
+            <TextField fx:id="photoField"
+                       promptText="Photo path"
+                       editable="false"
+                       HBox.hgrow="ALWAYS"
+                       style="-fx-background-radius: 6; -fx-padding: 6;" />
+            <Button text="Browse"
+                    onAction="#handleBrowse"
+                    style="-fx-background-color: #2196F3;
+                           -fx-text-fill: white;
+                           -fx-background-radius: 6;
+                           -fx-font-weight: bold;" />
+        </HBox>
+
+        <!-- Add Button -->
+        <Button text="Add User"
+                onAction="#handleAddUser"
+                style="-fx-background-color: #4CAF50;
+                       -fx-text-fill: white;
+                       -fx-font-weight: bold;
+                       -fx-background-radius: 6;
+                       -fx-padding: 10 20;" />
+
+    </VBox>
+</StackPane>
