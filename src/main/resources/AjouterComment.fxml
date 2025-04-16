@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx"
+            fx:controller="tn.artflow.controllers.AjouterComment"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color: #f5f7fa;">
+
+    <HBox spacing="20" layoutX="30" layoutY="30" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0">
+
+        <!-- 📰 Partie droite : Article -->
+        <VBox fx:id="articleBox"
+              spacing="10" prefWidth="420"
+              style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;">
+            <ImageView fx:id="articleImage" fitWidth="360" fitHeight="180"/>
+            <Label fx:id="titreLabel" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+            <Label fx:id="auteurLabel"/>
+            <Label fx:id="categorieTopLabel"/>
+            <Label fx:id="contenuLabel" wrapText="true"/>
+            <Label fx:id="dateLabel"/>
+            <Label fx:id="viewsLabel"/>
+        </VBox>
+
+        <!-- 💬 Partie gauche : Commentaire -->
+        <VBox spacing="15" prefWidth="420"
+              style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;">
+
+            <Label text="Ajouter un commentaire" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+            <TextArea fx:id="commentaireTF" prefHeight="100"/>
+            <Button text="Envoyer" onAction="#envoyerCommentaire"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+
+            <Separator/>
+
+            <Label text="Commentaires existants" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+            <!-- Liste des commentaires -->
+            <VBox fx:id="commentList" spacing="10" prefHeight="200"/>
+        </VBox>
+    </HBox>
+</AnchorPane>

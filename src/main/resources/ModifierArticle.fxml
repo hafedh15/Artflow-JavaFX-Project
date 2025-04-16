@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.artflow.controllers.ModifierArticle"
+            prefWidth="900.0" prefHeight="600.0"
+            style="-fx-background-color: #f0f5f8;">
+
+    <children>
+        <VBox alignment="CENTER" spacing="15" layoutX="200" layoutY="50"
+              style="-fx-background-color: white;
+                     -fx-padding: 30;
+                     -fx-border-radius: 15;
+                     -fx-background-radius: 15;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.3, 0, 4);">
+
+            <Label text="✏️ Modifier l'article"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+
+            <TextField fx:id="titreTF" promptText="Titre"
+                       style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+
+            <TextArea fx:id="contenuTF" promptText="Contenu"
+                      prefHeight="80"
+                      style="-fx-background-radius: 8;" />
+
+            <DatePicker fx:id="dateTF" promptText="Date de publication"
+                        style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+
+            <TextField fx:id="categorieTF" promptText="Catégorie"
+                       style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+
+            <TextField fx:id="nomauteurTF" promptText="Nom auteur"
+                       style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+
+            <HBox spacing="10">
+                <TextField fx:id="imageTF" promptText="Image" prefWidth="200"
+                           style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+                <Button text="Parcourir" onAction="#image"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white;
+                               -fx-background-radius: 8; -fx-pref-height: 40;" />
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="Annuler"
+                        onAction="#annuler"
+                        style="-fx-background-color: #e53935; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-pref-height: 45;
+                               -fx-background-radius: 8; -fx-pref-width: 120;" />
+
+                <Button text="Modifier"
+                        onAction="#modifier"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-pref-height: 45;
+                               -fx-background-radius: 8; -fx-pref-width: 120;" />
+            </HBox>
+
+        </VBox>
+    </children>
+</AnchorPane>

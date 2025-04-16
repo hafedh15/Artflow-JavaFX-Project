@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllers.AfficheComment"
+            prefHeight="500.0" prefWidth="900.0"
+            style="-fx-background-color: #f5f7fa;">
+
+    <children>
+
+        <!-- En-tête style dashboard -->
+        <HBox layoutX="20" layoutY="20" spacing="20"
+              alignment="CENTER_LEFT"
+              style="-fx-background-color: white;
+                     -fx-padding: 15;
+                     -fx-background-radius: 10;
+                     -fx-border-radius: 10;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.3, 0, 3);"
+              prefWidth="860">
+
+            <!-- Titre -->
+            <Label text="Comment Management "
+                   style="-fx-font-size: 18px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #2b2b2b;" />
+        </HBox>
+
+        <!-- Tableau des commentaires stylé -->
+        <GridPane fx:id="commentGrid"
+                  layoutX="20" layoutY="80"
+                  prefWidth="860" prefHeight="400"
+                  hgap="15" vgap="15"
+                  style="-fx-background-color: white;
+                         -fx-padding: 20;
+                         -fx-border-color: #ddd;
+                         -fx-border-radius: 10;
+                         -fx-background-radius: 10;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 4, 0.2, 0, 2);">
+
+            <columnConstraints>
+                <ColumnConstraints prefWidth="60.0"/>   <!-- ID -->
+                <ColumnConstraints prefWidth="300.0"/>  <!-- Contenu -->
+                <ColumnConstraints prefWidth="150.0"/>  <!-- Auteur -->
+                <ColumnConstraints prefWidth="150.0"/>  <!-- Date -->
+                <ColumnConstraints prefWidth="150.0"/>  <!-- Actions -->
+            </columnConstraints>
+        </GridPane>
+
+    </children>
+</AnchorPane>

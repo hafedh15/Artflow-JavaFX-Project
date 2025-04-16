@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllers.AfficherArticle"
+            prefWidth="900.0" prefHeight="600.0"
+            style="-fx-background-color: #f5f7fa;">
+
+    <children>
+
+        <!-- En-tête style dashboard -->
+        <HBox layoutX="20" layoutY="20" spacing="20"
+              alignment="CENTER_LEFT"
+              style="-fx-background-color: white;
+                     -fx-padding: 15;
+                     -fx-background-radius: 10;
+                     -fx-border-radius: 10;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.3, 0, 3);"
+              prefWidth="860">
+
+            <!-- Titre -->
+            <Label text="Article Management"
+                   style="-fx-font-size: 18px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #2b2b2b;" />
+
+            <!-- Espace flexible -->
+            <Pane HBox.hgrow="ALWAYS" />
+
+            <!-- Bouton Ajouter -->
+            <Button text="➕ Add new article"
+                    onAction="#afficherFormulaireAjout"
+                    style="-fx-background-color: #4CAF50;
+                           -fx-text-fill: white;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 6;" />
+        </HBox>
+
+        <!-- Tableau dans une autre box propre -->
+        <GridPane fx:id="articleGrid"
+                  layoutX="20" layoutY="80"
+                  prefWidth="860" prefHeight="480"
+                  hgap="10" vgap="15"
+                  style="-fx-background-color: white;
+                         -fx-padding: 20;
+                         -fx-border-color: #ddd;
+                         -fx-border-radius: 10;
+                         -fx-background-radius: 10;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 4, 0.2, 0, 2);">
+
+            <columnConstraints>
+                <ColumnConstraints prefWidth="50.0"/>
+                <ColumnConstraints prefWidth="150.0"/>
+                <ColumnConstraints prefWidth="150.0"/>
+                <ColumnConstraints prefWidth="150.0"/>
+                <ColumnConstraints prefWidth="120.0"/>
+                <ColumnConstraints prefWidth="170.0"/>
+            </columnConstraints>
+        </GridPane>
+
+    </children>
+</AnchorPane>
