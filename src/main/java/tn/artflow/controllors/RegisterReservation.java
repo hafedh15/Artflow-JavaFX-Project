@@ -1,16 +1,22 @@
 package tn.artflow.controllors;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import tn.artflow.entities.Article;
 import tn.artflow.entities.Reservation;
-import tn.artflow.entities.Workshop;
 import tn.artflow.entities.User;
+import tn.artflow.entities.Workshop;
 import tn.artflow.services.ReservationService;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class RegisterReservation {
@@ -19,23 +25,92 @@ public class RegisterReservation {
     private TextField seatsField;
 
     @FXML
+    private ImageView imageView;
+
+    @FXML
     private TextArea notesArea;
+    @FXML
+    private Label seatsErrorLabel;
+
+    @FXML
+    private Label notesErrorLabel;
+
+
+    @FXML
+    private Label workshopTitle;
+
+    @FXML
+    private Label workshopDate;
+
+    @FXML
+    private Label workshopLocation;
+
+    @FXML
+    private Label workshopType;
+    @FXML
+    private Label workshopDescription;
+
+    @FXML
+    private ImageView workshopImage;
 
     private Workshop workshop;
 
     public void setWorkshop(Workshop w) {
         this.workshop = w;
+
+        workshopTitle.setText("📚 " + w.getTitle());
+        workshopDescription.setText("📚 " + w.getDescription());
+        workshopDate.setText("📅 " + w.getDate());
+        workshopLocation.setText("📍 " + w.getLocation());
+        workshopType.setText("🧾 Type: " + w.getType());
+
+        String imageName = w.getImage(); // Ex: "/images/workshops/example.jpg"
+        String imageFullPath = "C:/xampp/htdocs" + imageName;
+
+        File imageFile = new File(imageFullPath);
+        Image image = imageFile.exists()
+                ? new Image(imageFile.toURI().toString())
+                : new Image(getClass().getResourceAsStream("/images/default-workshop.png"));
+
+        imageView.setImage(image);
+
     }
 
     @FXML
-    private void handleSubmit() throws SQLException {
-            // Récupérer les valeurs entrées
-            int seats = Integer.parseInt(seatsField.getText());
-            String notes = notesArea.getText();
+    private void handleSubmit() {
+        // Clear previous errors
+        seatsErrorLabel.setText("");
+        notesErrorLabel.setText("");
+
+        boolean isValid = true;
+
+        // Validate seats
+        String seatText = seatsField.getText().trim();
+        int seats = 0;
+        try {
+            seats = Integer.parseInt(seatText);
+            if (seats < 1 || seats > 4) {
+                seatsErrorLabel.setText("You can reserve 1 to 4 seats only.");
+                isValid = false;
+            }
+        } catch (NumberFormatException e) {
+            seatsErrorLabel.setText("Please enter a valid number.");
+            isValid = false;
+        }
+
+        // Validate notes
+        String notes = notesArea.getText().trim();
+        if (notes.length() > 20) {
+            notesErrorLabel.setText("Notes cannot exceed 20 characters.");
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        try {
             String date = LocalDate.now().toString();
             String code = "RES-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
-            // Créer un objet Reservation
             Reservation reservation = new Reservation();
             reservation.setSeatsReserved(seats);
             reservation.setNotes(notes);
@@ -43,20 +118,37 @@ public class RegisterReservation {
             reservation.setUniqueCode(code);
             reservation.setWorkshop(workshop);
 
-            // Remplace ça avec l'utilisateur connecté
             User currentUser = new User();
-            currentUser.setId(1); // Par exemple, l'ID utilisateur est 1
+            currentUser.setId(1); // mock user
             reservation.setUser(currentUser);
 
-            // Ajouter la réservation via le service
             new ReservationService().ajouter(reservation);
 
-            System.out.println("✅ Réservation enregistrée avec succès !");
+            System.out.println("✅ Reservation successful!");
+            Stage stage = (Stage) seatsField.getScene().getWindow();
+            stage.close();
 
-            // Fermer la fenêtre après soumission
-            Stage stage = (Stage) seatsField.getScene().getWindow(); // Obtenir le stage actuel
-            stage.close(); // Fermer la fenêtre
-
-
+        } catch (SQLException e) {
+            seatsErrorLabel.setText("Something went wrong. Try again.");
+        }
     }
+
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Validation Error");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+
+
+
+    @FXML
+    void cancelUpdate(ActionEvent event) {
+        // Close the window
+        Stage stage = (Stage) notesArea.getScene().getWindow();
+        stage.close();
+    }
+
+
 }

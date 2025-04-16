@@ -31,7 +31,7 @@ public class MainFx extends Application {
         }*/
         //FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashWorkshop.fxml"));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashReservation.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontWorkshop.fxml"));
 
         try {
             Parent root = loader.load();

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.text.CollationElementIterator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +26,7 @@ public class AddWorkshop {
     public Label titleErrorLabel;
     public Label imageErrorLabel;
     public Label locationErrorLabel;
+    public Label dateErrorLabel;
     @FXML
     private DatePicker date;
 
@@ -102,50 +104,73 @@ public class AddWorkshop {
 
     @FXML
     void addWorkshop(ActionEvent event) {
-
-
         titleErrorLabel.setText("");
         imageErrorLabel.setText("");
         locationErrorLabel.setText("");
+        dateErrorLabel.setText("");
 
-        String title = txttitle.getText();
-        String description = txtdescription.getText();
-        String image = txtimage.getText();
-        String type = comboType.getValue(); // Get selected type from dropdown
-        String location = txtlocation.getText();
-        LocalDate dateValue = date.getValue(); // Supposons que 'date' est un DatePicker ou une valeur de date sélectionnée
+        String title = txttitle.getText().trim();
+        String description = txtdescription.getText().trim();
+        String image = txtimage.getText().trim();
+        String type = comboType.getValue();
+        String location = txtlocation.getText().trim();
+        LocalDate dateValue = date.getValue();
 
-        // Ajouter une heure prédéfinie (par exemple, 14:30)
-        LocalDateTime dateTimeValue = dateValue.atTime(14, 30); // Ajoute l'heure 14:30 à la date
+        boolean valid = true;
 
-        // Convertir en String au format voulu (par exemple : "2025-04-12 14:30")
-        String dateString = dateTimeValue.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        // ✅ Only check if title is empty (not length-based)
+        if (title.isEmpty()) {
+            titleErrorLabel.setText("Title must not be empty.");
+            valid = false;
+        }
 
-
-        if (title.length() > 5) {
-            titleErrorLabel.setText("Title must not exceed 5 letters.");
-            return;
+        // ✅ Check description max 5 chars (if needed, or remove this)
+        if (description.length() > 5) {
+            titleErrorLabel.setText("Description must not exceed 5 letters.");
+            valid = false;
         }
 
         if (!(image.endsWith(".jpg") || image.endsWith(".jpeg") || image.endsWith(".png"))) {
             imageErrorLabel.setText("Image must be .jpg, .jpeg or .png format.");
-            return;
-        }
-        if (!location.matches("(?=.*[a-zA-Z])(?=.*[0-9]).+")) {
-            locationErrorLabel.setText("Location must contain letters and numbers.");
-            return;
+            valid = false;
         }
 
+        if (!location.matches("(?=.*[a-zA-Z])(?=.*[0-9]).+")) {
+            locationErrorLabel.setText("Location must contain letters and numbers.");
+            valid = false;
+        }
+
+        if (dateValue == null || dateValue.isBefore(LocalDate.now())) {
+            dateErrorLabel.setText("Date must not be in the past.");
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        LocalDateTime dateTimeValue = dateValue.atTime(14, 30);
+        String dateString = dateTimeValue.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         Workshop w = new Workshop(title, description, image, dateString, type, location);
 
-        WorkshopService ws = new WorkshopService();
         try {
-            ws.ajouter(w);
+            new WorkshopService().ajouter(w);
+
+            // ✅ Close the window
+            Stage stage = (Stage) txttitle.getScene().getWindow();
+            stage.close();
+
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
+
+    @FXML
+    void cancelUpdate(ActionEvent event) {
+        // Close the window
+        Stage stage = (Stage) txttitle.getScene().getWindow();
+        stage.close();
+    }
+
 
 
 }
