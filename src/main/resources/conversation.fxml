@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane prefWidth="1000.0" prefHeight="600.0" xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.Conversation">
+
+    <children>
+        <!-- LEFT SIDE -->
+        <VBox fx:id="leftPane" spacing="10" layoutX="10" layoutY="10" prefWidth="250.0" prefHeight="580.0">
+            <children>
+                <ComboBox fx:id="filterComboBox" prefWidth="230.0" promptText="Filtrer par statut" />
+                <ListView fx:id="reclamationListView" prefHeight="540.0" prefWidth="230.0" />
+            </children>
+        </VBox>
+
+        <!-- RIGHT SIDE -->
+        <VBox fx:id="rightPane" layoutX="270.0" layoutY="10.0" spacing="10" prefWidth="720.0" prefHeight="580.0">
+            <children>
+                <!-- Reclamation Details -->
+                <VBox spacing="5">
+                    <children>
+                        <Label fx:id="reclamationSubjectLabel" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                        <Label fx:id="reclamationStatusLabel" style="-fx-text-fill: gray;" />
+                        <Label fx:id="reclamationMessageLabel" wrapText="true" />
+                    </children>
+                </VBox>
+
+                <!-- Chat Area -->
+                <ListView fx:id="chatListView" VBox.vgrow="ALWAYS" prefHeight="400.0" />
+
+                <!-- Input Area -->
+                <HBox spacing="10">
+                    <children>
+                        <TextField fx:id="responseField" HBox.hgrow="ALWAYS" promptText="Votre message..." />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

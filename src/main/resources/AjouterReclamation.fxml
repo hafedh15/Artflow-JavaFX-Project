@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.AjouterReclamation">
+   <children>
+      <Label layoutX="60.0" layoutY="40.0" text="Objet">
+         <font><Font size="18.0" /></font>
+      </Label>
+      <TextField fx:id="tfObjet" layoutX="160.0" layoutY="40.0" prefWidth="360.0" />
+
+      <Label layoutX="60.0" layoutY="100.0" text="Message">
+         <font><Font size="18.0" /></font>
+      </Label>
+      <TextArea fx:id="taMessage" layoutX="160.0" layoutY="100.0" prefHeight="150.0" prefWidth="360.0" wrapText="true" />
+
+      <Button layoutX="410.0" layoutY="280.0" text="Envoyer"
+              onAction="#ajouter" fx:id="btnAjouter" prefWidth="110.0"/>
+
+      <Label fx:id="lblStatus" layoutX="60.0" layoutY="350.0" textFill="RED"/>
+   </children>
+</AnchorPane>
