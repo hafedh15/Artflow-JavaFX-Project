@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -44,6 +45,8 @@ public class EditProduct implements Initializable {
 
     private int productId; // Pour stocker l'ID du produit en cours d'édition
 
+    @FXML private Label errorNameE, errorDescriptionE, errorPriceE, errorCategoryE, errorImageE;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Appliquer le CSS au chargement de la page
@@ -67,61 +70,120 @@ public class EditProduct implements Initializable {
 
     @FXML
     void Edit(ActionEvent event) {
-        // Validation des champs
-        if (nameE.getText().isEmpty() || descriptionE.getText().isEmpty() ||
-                priceE.getText().isEmpty() || categoryE.getText().isEmpty()) {
-            showAlert(AlertType.ERROR, "Erreur de validation", "Tous les champs sont obligatoires.");
-            return;
+        boolean valid = true;
+
+        // Réinitialiser erreurs
+        errorNameE.setVisible(false);
+        errorDescriptionE.setVisible(false);
+        errorPriceE.setVisible(false);
+        errorCategoryE.setVisible(false);
+        errorImageE.setVisible(false);
+
+        nameE.setStyle("");
+        descriptionE.setStyle("");
+        priceE.setStyle("");
+        categoryE.setStyle("");
+        imageE.setStyle("");
+
+        // Nom
+        if (nameE.getText().trim().isEmpty()) {
+            errorNameE.setText("Le nom est obligatoire");
+            errorNameE.setVisible(true);
+            nameE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        } else if (!nameE.getText().trim().matches("^[a-zA-Z\\s]+$")) {
+            errorNameE.setText("Le nom ne doit contenir que des lettres et des espaces");
+            errorNameE.setVisible(true);
+            nameE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        } else if (nameE.getText().trim().length() < 3) {
+            errorNameE.setText("Le nom doit contenir au moins 3 caractères");
+            errorNameE.setVisible(true);
+            nameE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
         }
 
-        // Vérification que le prix est un nombre valide
-        double price;
-        try {
-            price = Double.parseDouble(priceE.getText());
-            if (price <= 0) {
-                showAlert(AlertType.ERROR, "Erreur de validation", "Le prix doit être supérieur à 0.");
-                return;
+
+        // Description
+        if (descriptionE.getText().trim().isEmpty()) {
+            errorDescriptionE.setText("La description est obligatoire");
+            errorDescriptionE.setVisible(true);
+            descriptionE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        } else if (descriptionE.getText().trim().length() > 500) {
+            errorDescriptionE.setText("Description trop longue (max 500 caractères)");
+            errorDescriptionE.setVisible(true);
+            descriptionE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        }
+
+        // Prix
+        double price = 0;
+        if (priceE.getText().trim().isEmpty()) {
+            errorPriceE.setText("Le prix est obligatoire");
+            errorPriceE.setVisible(true);
+            priceE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        } else {
+            try {
+                price = Double.parseDouble(priceE.getText().trim());
+                if (price <= 0) {
+                    errorPriceE.setText("Le prix doit être > 0");
+                    errorPriceE.setVisible(true);
+                    priceE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                    valid = false;
+                }
+            } catch (NumberFormatException e) {
+                errorPriceE.setText("Prix invalide");
+                errorPriceE.setVisible(true);
+                priceE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                valid = false;
             }
-        } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Erreur de validation", "Le prix doit être un nombre valide.");
-            return;
         }
 
-        // Récupérer les valeurs des champs
-        String name = nameE.getText();
-        String description = descriptionE.getText();
-        String category = categoryE.getText();
-        String image = imageE.getText();
+        // Catégorie
+        if (categoryE.getText().trim().isEmpty()) {
+            errorCategoryE.setText("La catégorie est obligatoire");
+            errorCategoryE.setVisible(true);
+            categoryE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        }
 
-        System.out.println("Mise à jour du produit avec ID: " + productId);
-        System.out.println("Nom: " + name);
-        System.out.println("Description: " + description);
-        System.out.println("Prix: " + price);
-        System.out.println("Catégorie: " + category);
-        System.out.println("Image: " + image);
+        // Image
+        if (imageE.getText().trim().isEmpty()) {
+            errorImageE.setText("Veuillez sélectionner une image");
+            errorImageE.setVisible(true);
+            imageE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        } else if (!imageE.getText().trim().matches(".*\\.(png|jpg|jpeg)$")) {
+            errorImageE.setText("Format non valide (png, jpg, jpeg)");
+            errorImageE.setVisible(true);
+            imageE.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            valid = false;
+        }
 
-        // Créer un objet produit avec les valeurs mises à jour
+        if (!valid) return;
+
+        // Création de l’objet produit
         Product p = new Product();
         p.setId(productId);
-        p.setName(name);
-        p.setDescription(description);
+        p.setName(nameE.getText());
+        p.setDescription(descriptionE.getText());
         p.setPrice(price);
-        p.setCategory(category);
-        p.setImage(image);
+        p.setCategory(categoryE.getText());
+        p.setImage(imageE.getText());
 
-        // Appel du service pour mettre à jour le produit
         ProductService ps = new ProductService();
         try {
             ps.modifierP(p);
             showAlert(AlertType.INFORMATION, "Succès", "Produit modifié avec succès");
 
-            // Navigation vers la liste des produits
-            goToProductList();
         } catch (SQLException e) {
-            showAlert(AlertType.ERROR, "Erreur de modification", "Impossible de modifier le produit: " + e.getMessage());
+            showAlert(AlertType.ERROR, "Erreur", "Erreur lors de la modification : " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     @FXML
     void choosefile(ActionEvent event) {
@@ -225,4 +287,6 @@ public class EditProduct implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
 }

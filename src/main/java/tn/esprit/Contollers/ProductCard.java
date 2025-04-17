@@ -83,6 +83,12 @@ public class ProductCard {
                 if (file.exists()) {
                     Image image = new Image(file.toURI().toString());
                     productImage.setImage(image);
+                    productImage.setFitWidth(260);   // largeur désirée
+                    productImage.setFitHeight(160);  // hauteur désirée
+                    productImage.setPreserveRatio(true);  // garder les proportions
+                    productImage.setSmooth(true);         // rendu lisse
+                    productImage.setCache(true);          // améliore les performances
+
                 } else {
                     System.out.println("Image introuvable : " + absolutePath);
                     Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-product.png"));

@@ -14,7 +14,8 @@
 
     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
 
-    <ImageView fx:id="productImage" fitWidth="250" fitHeight="180" preserveRatio="true"/>
+    <ImageView fx:id="productImage" fitWidth="260" fitHeight="160" preserveRatio="true" />
+
     <Label fx:id="productName" styleClass="product-name"/>
     <Label fx:id="productCategory" styleClass="product-category"/>
     <Label fx:id="productPrice" styleClass="product-price"/>

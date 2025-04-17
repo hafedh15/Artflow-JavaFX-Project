@@ -12,48 +12,6 @@
             prefHeight="700.0" prefWidth="800.0"
             stylesheets="@/styles.css">
 
-   <!-- Barre de navigation supérieure -->
-   <top>
-      <VBox>
-         <!-- Logo et barre de menu principale -->
-         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
-            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
-
-            <!-- Logo -->
-            <ImageView fitHeight="60" fitWidth="160" preserveRatio="true">
-               <Image url="@/images/logo.jpg"/>
-            </ImageView>
-
-            <Region HBox.hgrow="ALWAYS" />
-
-            <!-- Menu principal -->
-            <Button text="Accueil" styleClass="nav-button" onAction="#goToHome" />
-            <Button text="Produits" styleClass="nav-button-active" onAction="#goToProductList" />
-            <Button text="Ateliers" styleClass="nav-button" />
-            <Button text="Reclamations" styleClass="nav-button" />
-            <Button text="À propos" styleClass="nav-button" />
-
-            <Region HBox.hgrow="ALWAYS" />
-            <Button styleClass="cart-button">
-               <graphic>
-                  <ImageView fitHeight="25" fitWidth="25">
-                     <Image url="@/images/panier.jpg"/>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <!-- Icône utilisateur -->
-            <Button styleClass="user-icon" onAction="#goToProfil">
-               <graphic>
-                  <ImageView fitHeight="30" fitWidth="30">
-                     <Image url="@/images/user.jpg"/>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </HBox>
-
-
-      </VBox>
-   </top>
 
    <!-- Contenu principal - formulaire d'ajout de produit -->
    <center>

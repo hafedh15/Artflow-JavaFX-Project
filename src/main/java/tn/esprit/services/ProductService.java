@@ -235,6 +235,15 @@ public class ProductService implements IService<Product> {
         return products;
     }
 
-
+    public int getTotalProducts() throws SQLException {
+        String query = "SELECT COUNT(*) FROM product";
+        try (Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
     }
+}
 

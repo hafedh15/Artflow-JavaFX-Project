@@ -192,7 +192,7 @@ public class AjouterProduct implements Initializable {
             showAlert(AlertType.INFORMATION, "Succès", "Produit ajouté avec succès");
 
             // Navigation vers la liste des produits
-            goToProductList();
+
         } catch (SQLException e) {
             showAlert(AlertType.ERROR, "Erreur d'ajout", "Impossible d'ajouter le produit: " + e.getMessage());
             e.printStackTrace();
