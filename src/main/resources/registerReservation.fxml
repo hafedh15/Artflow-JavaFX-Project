@@ -9,48 +9,60 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.artflow.controllors.RegisterReservation"
             prefWidth="800" prefHeight="500"
-            style="-fx-background-color: #f28b82;">
+            style="-fx-background-color: #f8f4ea;"> <!-- beige clair -->
 
-    <HBox spacing="40" alignment="CENTER" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+    <HBox spacing="40" alignment="CENTER"
+          AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
           style="-fx-padding: 40;">
 
         <!-- Left Card: Workshop Info -->
         <VBox spacing="20" alignment="TOP_CENTER" prefWidth="300"
-              style="-fx-background-color: #fde9e4; -fx-padding: 25; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 2, 2);">
+              style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0, 2, 2);">
 
-            <ImageView fx:id="imageView" fitWidth="250" fitHeight="140" style="-fx-background-radius: 10;" />
+            <ImageView fx:id="imageView" fitWidth="250" fitHeight="140"
+                       style="-fx-background-radius: 10;" />
 
             <VBox spacing="10" alignment="CENTER_LEFT">
-                <Label fx:id="workshopTitle" style="-fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
-                <Label fx:id="workshopDescription" style="-fx-text-fill: #555;" wrapText="true"/>
-                <Label fx:id="workshopDate" style="-fx-text-fill: #777;" />
-                <Label fx:id="workshopLocation" style="-fx-text-fill: #777;" />
-                <Label fx:id="workshopType" style="-fx-text-fill: #777;" />
+                <Label fx:id="workshopTitle"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #3e2723;" wrapText="true"/>
+                <Label fx:id="workshopDescription" style="-fx-text-fill: #5d4037;" wrapText="true"/>
+                <Label fx:id="workshopDate" style="-fx-text-fill: #5d4037;" />
+                <Label fx:id="workshopLocation" style="-fx-text-fill: #5d4037;" />
+                <Label fx:id="workshopType" style="-fx-text-fill: #5d4037;" />
             </VBox>
         </VBox>
 
         <!-- Right Card: Reservation Form -->
         <VBox spacing="15" alignment="TOP_CENTER" prefWidth="380"
-              style="-fx-background-color: #fef3e3; -fx-padding: 30; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 2, 2);">
+              style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 15;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0, 2, 2);">
 
-            <Label text="Get In Touch" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-            <Label text="Reserve your spot by filling out the form below." wrapText="true" style="-fx-text-fill: #666;" />
+            <Label text="Get In Touch"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #3e2723;" />
+            <Label text="Reserve your spot by filling out the form below." wrapText="true"
+                   style="-fx-text-fill: #5d4037;" />
 
-            <TextField fx:id="seatsField" promptText="Seats (e.g. 2)" style="-fx-background-radius: 10;" />
+            <TextField fx:id="seatsField" promptText="Seats (e.g. 2)"
+                       style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 10;
+                              -fx-border-radius: 10; -fx-padding: 6;" />
             <Label fx:id="seatsErrorLabel" textFill="red" />
+
             <TextArea fx:id="notesArea" promptText="Message..." prefRowCount="4"
-                      style="-fx-background-radius: 10;" />
+                      style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 10;
+                             -fx-border-radius: 10; -fx-padding: 6;" />
             <Label fx:id="notesErrorLabel" textFill="red" />
 
             <HBox spacing="15" alignment="CENTER">
                 <Button text="Cancel" onAction="#cancelUpdate"
-                        style="-fx-background-color: #ffb6b6; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-weight: bold;"
+                        style="-fx-background-color: #d7ccc8; -fx-text-fill: #5d4037;
+                               -fx-background-radius: 20; -fx-font-weight: bold;"
                         prefWidth="100"/>
                 <Button text="Submit" onAction="#handleSubmit"
-                        style="-fx-background-color: #ff6f61; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-weight: bold;"
+                        style="-fx-background-color: #8d6e63; -fx-text-fill: white;
+                               -fx-background-radius: 20; -fx-font-weight: bold;"
                         prefWidth="120"/>
             </HBox>
         </VBox>
-
     </HBox>
 </AnchorPane>

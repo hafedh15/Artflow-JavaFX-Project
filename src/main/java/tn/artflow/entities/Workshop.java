@@ -99,7 +99,7 @@ public class Workshop {
         this.location = location;
     }
 
-    /*public float getLatitude() {
+    public float getLatitude() {
         return latitude;
     }
 
@@ -114,7 +114,7 @@ public class Workshop {
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
-*/
+
     @Override
 
     public String toString() {

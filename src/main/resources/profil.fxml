@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -11,35 +12,42 @@
 
     <children>
         <!-- Titre -->
-        <Label layoutX="150.0" layoutY="20.0" text="📋 Vos réservations"
-               style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+        <Label layoutX="20.0" layoutY="20.0" text="📋 Vos réservations"
+               style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-        <!-- Scroll des cartes -->
-        <ScrollPane fitToWidth="true"
-                    layoutX="10.0" layoutY="70.0"
-                    AnchorPane.bottomAnchor="10.0"
-                    AnchorPane.leftAnchor="10.0"
-                    AnchorPane.rightAnchor="10.0"
-                    AnchorPane.topAnchor="70.0"
-                    style="-fx-background-color: transparent; -fx-border-color: #e0e0e0;">
+        <!-- Section Bouton + Calendrier -->
+        <VBox layoutX="20.0" layoutY="60.0" spacing="15" prefWidth="760.0" alignment="TOP_CENTER">
+            <Button text="📅 Voir Mon Calendrier" onAction="#handleShowCalendar"
+                    style="-fx-background-color: #2e86de; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 8; -fx-padding: 8 20;"/>
+
+            <VBox fx:id="calendarContainer" spacing="10" alignment="TOP_CENTER"
+                  style="-fx-padding: 10; -fx-background-color: #ffffff; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+        </VBox>
+
+        <!-- ScrollPane pour cartes d'ateliers -->
+        <ScrollPane layoutX="20.0" layoutY="250.0"
+                    prefHeight="330.0" prefWidth="760.0"
+                    fitToWidth="true"
+                    style="-fx-background-color: transparent; -fx-border-color: #e0e0e0; -fx-border-radius: 8;">
             <content>
                 <TilePane fx:id="cardsContainer"
                           hgap="15.0" vgap="15.0"
                           prefColumns="3"
-                          prefTileWidth="260.0"
-                          prefWidth="780.0"
+                          prefTileWidth="230.0"
                           style="-fx-padding: 15; -fx-background-color: #f8f8f8;" />
             </content>
         </ScrollPane>
 
-        <AnchorPane fx:id="editPane" visible="false" layoutX="150" layoutY="150"
-                    prefHeight="250" prefWidth="450"
-                    style="-fx-background-color: #f9f9f9; -fx-border-radius: 12; -fx-background-radius: 12;
-                   -fx-border-color: #dddddd; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.3, 0, 2);">
+        <!-- Pane caché pour éditer une réservation -->
+        <AnchorPane fx:id="editPane" visible="false"
+                    layoutX="150" layoutY="150"
+                    prefHeight="250" prefWidth="500"
+                    style="-fx-background-color: #ffffff; -fx-border-radius: 12; -fx-background-radius: 12;
+                           -fx-border-color: #dddddd; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.3, 0, 2);">
 
             <children>
-                <Label text="✏ Update Reservation" layoutX="20" layoutY="20"
-                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label text="✏️ Modifier Réservation" layoutX="20" layoutY="20"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
                 <Label text="Seats :" layoutX="20" layoutY="70" style="-fx-font-size: 14px;"/>
                 <TextField fx:id="seatsField" layoutX="100" layoutY="65" prefWidth="300"
@@ -49,16 +57,15 @@
                 <TextArea fx:id="notesField" layoutX="100" layoutY="105" prefHeight="60" prefWidth="300"
                           style="-fx-background-radius: 8; -fx-border-radius: 8;"/>
 
-                <Button text="✅ Save" layoutX="100" layoutY="180"
+                <Button text="✅ Sauvegarder" layoutX="100" layoutY="180"
                         style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 20;"
                         onAction="#saveEditedReservation"/>
 
-                <Button text="❌ Close" layoutX="240" layoutY="180"
+                <Button text="❌ Annuler" layoutX="240" layoutY="180"
                         style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 20;"
                         onAction="#closeEditPane"/>
             </children>
         </AnchorPane>
-
 
     </children>
 </AnchorPane>

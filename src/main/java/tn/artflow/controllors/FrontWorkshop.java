@@ -35,7 +35,7 @@ public class FrontWorkshop {
 
         Platform.runLater(() -> {
             String cssFile = getClass().getResource("/styles.css").toExternalForm();
-            cardsContainer.getScene().getStylesheets().add(cssFile);
+            cardsContainer.getScene().getRoot().getStylesheets().add(cssFile);
         });
 
 
@@ -46,49 +46,27 @@ public class FrontWorkshop {
 
 
     private void loadWorkshop() {
-        try {
-            System.out.println("Chargement des ateliers...");
-            List<Workshop> workshops = workshopService.recuperer();
+        System.out.println("Chargement des ateliers...");
+        cardsContainer.getChildren().clear();
 
+        try {
+            List<Workshop> workshops = workshopService.recuperer();
             System.out.println("Ateliers récupérés : " + workshops.size());
-            cardsContainer.getChildren().clear();
 
             for (Workshop workshop : workshops) {
-                try {
-                    System.out.println("Atelier : " + workshop.getTitle());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/WorkshopCard.fxml"));
+                Parent card = loader.load();
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/WorkshopCard.fxml"));
-                    Parent productCard = loader.load();
+                WorkshopCard controller = loader.getController();
+                controller.setData(workshop);
+                controller.setParentController(this);
 
-                    WorkshopCard cardController = loader.getController();
-                    cardController.setData(workshop);
-                    cardController.setParentController(this);
-
-                    cardsContainer.getChildren().add(productCard);
-                } catch (IOException e) {
-                    System.out.println("Erreur chargement carte : " + e.getMessage());
-                    e.printStackTrace();
-                }
+                cardsContainer.getChildren().add(card);
             }
-
-        } catch (SQLException e) {
-            System.out.println("Erreur SQL : " + e.getMessage());
+        } catch (SQLException | IOException e) {
+            System.err.println("Erreur lors du chargement des ateliers : " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-
-    // Méthode pour rafraîchir la liste des produits (appelée après suppression)
-    public void refreshProducts() {
-        loadWorkshop();
-    }
-
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
 
