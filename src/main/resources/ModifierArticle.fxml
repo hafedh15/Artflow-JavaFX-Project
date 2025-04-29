@@ -1,64 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.artflow.controllers.ModifierArticle"
             prefWidth="900.0" prefHeight="600.0"
-            style="-fx-background-color: #f0f5f8;">
+            style="-fx-background-color: #f9f5f1;">
 
-    <children>
-        <VBox alignment="CENTER" spacing="15" layoutX="200" layoutY="50"
-              style="-fx-background-color: white;
-                     -fx-padding: 30;
-                     -fx-border-radius: 15;
-                     -fx-background-radius: 15;
-                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.3, 0, 4);">
+    <VBox alignment="TOP_CENTER" spacing="25" layoutX="50" layoutY="20"
+          style="-fx-padding: 30;">
 
-            <Label text="✏️ Modifier l'article"
-                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+        <Label text="✏️ Modifier un article"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
 
-            <TextField fx:id="titreTF" promptText="Titre"
-                       style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+        <VBox spacing="18" maxWidth="700">
 
-            <TextArea fx:id="contenuTF" promptText="Contenu"
-                      prefHeight="80"
-                      style="-fx-background-radius: 8;" />
+            <!-- Titre -->
+            <VBox spacing="5">
+                <Label text="Titre" style="-fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                <TextField fx:id="titreTF" promptText="Entrez le titre"
+                           style="-fx-background-color: white; -fx-border-color: #E8DECD;
+                                  -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 8;" />
+                <Label fx:id="titreStatus" style="-fx-font-size: 11px;" textFill="red" />
+            </VBox>
 
-            <DatePicker fx:id="dateTF" promptText="Date de publication"
-                        style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+            <!-- Contenu WebView + Toolbar -->
+            <VBox spacing="5">
+                <Label text="Contenu" style="-fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                <ToolBar fx:id="toolbar" style="-fx-background-color: #fef7ea; -fx-border-color: #E8DECD; -fx-background-radius: 5;">
+                    <Button fx:id="boldButton" text="B" style="-fx-font-weight: bold;" />
+                    <Button fx:id="italicButton" text="/" style="-fx-font-style: italic;" />
+                    <Button fx:id="underlineButton" text="U" style="-fx-underline: true;" />
+                    <ColorPicker fx:id="colorPicker" />
+                    <ComboBox fx:id="fontComboBox" prefWidth="150" promptText="Police" />
+                </ToolBar>
+                <WebView fx:id="contenuWebView" prefHeight="50"
+                         style="-fx-border-color: #E8DECD; -fx-background-radius: 8; -fx-border-radius: 8;" />
+                <Label fx:id="contenuStatus" style="-fx-font-size: 11px;" textFill="red" />
+            </VBox>
 
-            <TextField fx:id="categorieTF" promptText="Catégorie"
-                       style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+            <!-- Date -->
+            <VBox spacing="5">
+                <Label text="Date de publication" style="-fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                <DatePicker fx:id="dateTF"
+                            style="-fx-background-color: white; -fx-border-color: #E8DECD;
+                                   -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 8;" />
+                <Label fx:id="dateStatus" style="-fx-font-size: 11px;" textFill="red" />
+            </VBox>
 
-            <TextField fx:id="nomauteurTF" promptText="Nom auteur"
-                       style="-fx-pref-height: 40; -fx-background-radius: 8;" />
+            <!-- Catégorie -->
+            <VBox spacing="5">
+                <Label text="Catégorie" style="-fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                <TextField fx:id="categorieTF" promptText="Entrez la catégorie"
+                           style="-fx-background-color: white; -fx-border-color: #E8DECD;
+                                  -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 8;" />
+                <Label fx:id="categorieStatus" style="-fx-font-size: 11px;" textFill="red" />
+            </VBox>
 
-            <HBox spacing="10">
-                <TextField fx:id="imageTF" promptText="Image" prefWidth="200"
-                           style="-fx-pref-height: 40; -fx-background-radius: 8;" />
-                <Button text="Parcourir" onAction="#image"
-                        style="-fx-background-color: #2196F3; -fx-text-fill: white;
-                               -fx-background-radius: 8; -fx-pref-height: 40;" />
-            </HBox>
+            <!-- Nom Auteur -->
+            <VBox spacing="5">
+                <Label text="Nom de l'auteur" style="-fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                <TextField fx:id="nomauteurTF" promptText="Entrez le nom de l'auteur"
+                           style="-fx-background-color: white; -fx-border-color: #E8DECD;
+                                  -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 8;" />
+                <Label fx:id="nomauteurStatus" style="-fx-font-size: 11px;" textFill="red" />
+            </VBox>
 
-            <HBox spacing="15" alignment="CENTER">
-                <Button text="Annuler"
-                        onAction="#annuler"
-                        style="-fx-background-color: #e53935; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-pref-height: 45;
-                               -fx-background-radius: 8; -fx-pref-width: 120;" />
-
-                <Button text="Modifier"
-                        onAction="#modifier"
-                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-pref-height: 45;
-                               -fx-background-radius: 8; -fx-pref-width: 120;" />
-            </HBox>
-
+            <!-- Image -->
+            <VBox spacing="5">
+                <Label text="Image" style="-fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                <HBox spacing="10">
+                    <TextField fx:id="imageTF" promptText="Chemin de l'image" prefWidth="400"
+                               style="-fx-background-color: white; -fx-border-color: #E8DECD;
+                                      -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 8;" />
+                    <Button text="Parcourir" onAction="#image"
+                            style="-fx-background-color: #A18E78; -fx-text-fill: white;
+                                   -fx-background-radius: 8; -fx-font-weight: bold;" />
+                </HBox>
+            </VBox>
         </VBox>
-    </children>
+
+        <!-- Boutons -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Modifier" onAction="#modifier"
+                    style="-fx-background-color: #5C4F3D; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 20;" />
+            <Button text="Annuler" onAction="#annuler"
+                    style="-fx-background-color: #E8DECD; -fx-text-fill: #5C4F3D;
+                           -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 20;" />
+        </HBox>
+
+    </VBox>
 </AnchorPane>

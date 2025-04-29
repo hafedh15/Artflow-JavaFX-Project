@@ -19,7 +19,9 @@ public class MainFX extends Application {
             Parent root = FXMLLoader.load(getClass().getResource("/AfficherArticle.fxml"));
 
             Scene scene = new Scene(root);
+
             primaryStage.setTitle("ajouter un Article");
+
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (Exception e) {

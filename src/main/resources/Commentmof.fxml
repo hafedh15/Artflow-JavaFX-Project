@@ -1,29 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.artflow.controllers.Commentmof"
-            prefHeight="100.0" prefWidth="600.0"
+            prefHeight="140.0" prefWidth="600.0"
             style="-fx-background-color: #f8f8f8; -fx-padding: 10; -fx-border-color: #dddddd; -fx-border-radius: 8; -fx-background-radius: 8;">
 
     <VBox spacing="8">
-        <!-- Affichage du commentaire -->
-        <Label fx:id="contenuLabel" wrapText="true" onMouseClicked="#activerModification"
-               style="-fx-font-size: 14px; -fx-text-fill: #333333;" />
 
-        <!-- Zone d'édition -->
+        <!-- 🧑 Partie utilisateur -->
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              prefHeight="70"
+              style="-fx-padding: 10 20 10 20;">
+            <ImageView fx:id="userImage"
+                       fitWidth="50" fitHeight="50"
+                       preserveRatio="true"
+                       style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0.3, 0, 2);" />
+            <VBox spacing="2">
+                <HBox fx:id="starsContainer" spacing="3"/>
+                <Label fx:id="usernameLabel" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                <Label fx:id="dateLabel" style="-fx-font-size: 11px; -fx-text-fill: #777777;"/>
+            </VBox>
+        </HBox>
+
+        <!-- 💬 Contenu du commentaire -->
+        <Label fx:id="contenuLabel" wrapText="true"
+               onMouseClicked="#activerModification"
+               style="-fx-font-size: 14px; -fx-text-fill: #333333; -fx-padding: 0 20 0 20;" />
+
+        <!-- ✏️ Zone édition cachée par défaut -->
         <TextArea fx:id="editTextArea" visible="false" managed="false"
-                  style="-fx-border-radius: 6; -fx-background-radius: 6;" />
+                  prefHeight="80"
+                  promptText="Modifier votre commentaire..."
+                  style="-fx-border-radius: 8; -fx-background-radius: 8; -fx-border-color: #E8DECD; -fx-background-color: #FFFFFF; -fx-padding: 10 20 10 20;" />
+        <HBox fx:id="starsContainer" spacing="3" alignment="CENTER_LEFT" />
 
-        <!-- Boutons d'action (modifier / annuler / supprimer) -->
+        <!-- ⚠️ Message erreur validation -->
+        <Label fx:id="errorLabel" text="Le commentaire ne peut pas être vide."
+               visible="false" managed="false"
+               style="-fx-text-fill: red; -fx-font-size: 12px; -fx-padding: 0 20 0 20;" />
+
+        <!-- 🎯 Boutons d'action cachés par défaut -->
         <HBox fx:id="buttonsBox" spacing="10" alignment="CENTER_LEFT"
-              visible="false" managed="false">
+              visible="false" managed="false"
+              style="-fx-padding: 10 20 10 20;">
             <Button text="✅" onAction="#confirmerModification"
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
             <Button text="❌" onAction="#annulerModification"
@@ -32,6 +56,6 @@
             <Button text="🗑 Supprimer" onAction="#supprimerCommentaire"
                     style="-fx-background-color: #ff6b4a; -fx-text-fill: white;"/>
         </HBox>
-    </VBox>
 
+    </VBox>
 </AnchorPane>

@@ -19,9 +19,9 @@ public class ArticleService implements IService<Article>{
         sql="insert into article(titre,contenu,datepub,image,categorie,nom_auteur,views)" +
                 "values(?,?,?,?,?,?,?)";
         PreparedStatement ste = cnx.prepareStatement(sql);
-        ste.setString(1, article.getTitre()); // ✅ Correction : setString pour contenu
-        ste.setString(2, article.getContenu()); // ✅ Correction : setString pour contenu
-        ste.setString(3, article.getDatepub()); // ✅ Correction : setString pour contenu
+        ste.setString(1, article.getTitre());
+        ste.setString(2, article.getContenu());
+        ste.setString(3, article.getDatepub());
 
         ste.setString(4, article.getImage());
         ste.setString(5,article.getCategorie());
@@ -86,6 +86,24 @@ public class ArticleService implements IService<Article>{
         return articles;
     }
 
+    public List<Article> getTop3MostViewed() {
+        List<Article> articles = new ArrayList<>();
+        String sql = "SELECT * FROM article ORDER BY views DESC LIMIT 3";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Article article = new Article();
+                article.setId(rs.getInt("id"));
+                article.setTitre(rs.getString("titre"));
+                article.setViews(rs.getInt("views"));
+                article.setImage(rs.getString("image"));
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return articles;
+    }
 
 
 }

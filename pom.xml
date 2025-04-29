@@ -32,6 +32,20 @@
             <version>21.0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>21.0.2</version> <!-- adapte à ta version -->
+        </dependency>
+
+
+
 
     </dependencies>
     <build>

@@ -2,6 +2,7 @@ package tn.artflow.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -17,15 +18,21 @@ public class AfficheComment implements Initializable {
 
     @FXML
     private GridPane commentGrid;
+    @FXML
+    private Button notifButton;
 
     private final CommentService commentService = new CommentService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            commentGrid.getChildren().clear(); // Important pour éviter doublons
+        chargerCommentaires();
+    }
 
-            // En-tête
+    private void chargerCommentaires() {
+        try {
+            commentGrid.getChildren().clear();
+
+            // Entêtes de colonnes
             commentGrid.add(new Label("ID"), 0, 0);
             commentGrid.add(new Label("Contenu"), 1, 0);
             commentGrid.add(new Label("Auteur"), 2, 0);
@@ -41,17 +48,9 @@ public class AfficheComment implements Initializable {
                 commentGrid.add(new Label(comment.getUser().getName()), 2, rowIndex);
                 commentGrid.add(new Label(comment.getDatecom()), 3, rowIndex);
 
-                // ❌ Supprimer uniquement
-                Button btnSupprimer = new Button("Delete");
+                Button btnSupprimer = new Button("Supprimer");
                 btnSupprimer.setStyle("-fx-background-color: #e53935; -fx-text-fill: white;");
-                btnSupprimer.setOnAction(e -> {
-                    try {
-                        commentService.supprimer(comment.getId());
-                        initialize(null, null); // Recharge la grille
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
+                btnSupprimer.setOnAction(e -> supprimerCommentaire(comment.getId()));
 
                 HBox actionBox = new HBox(10, btnSupprimer);
                 commentGrid.add(actionBox, 4, rowIndex);
@@ -61,5 +60,35 @@ public class AfficheComment implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void supprimerCommentaire(int commentId) {
+        try {
+            commentService.supprimer(commentId);
+            chargerCommentaires(); // 🔄 Recharge les commentaires après suppression
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void afficherNotifications() {
+        List<String> notifications = NotificationCenter.getNotifications();
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Notifications des Commentaires");
+        alert.setHeaderText("🔔 Notifications des mots censurés");
+
+        StringBuilder content = new StringBuilder();
+        if (notifications.isEmpty()) {
+            content.append("Aucune mauvaise parole détectée ✅");
+        } else {
+            for (String notif : notifications) {
+                content.append("- ").append(notif).append("\n");
+            }
+        }
+
+        alert.setContentText(content.toString());
+        alert.showAndWait();
     }
 }

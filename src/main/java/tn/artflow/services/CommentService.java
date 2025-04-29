@@ -7,7 +7,9 @@ import tn.artflow.tools.MyDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommentService implements IService<Comment>
 {
@@ -93,38 +95,68 @@ public class CommentService implements IService<Comment>
         return comments;
     }
 
-    // Méthode pour récupérer les commentaires d'un article spécifique
-    public List<Comment> recupererParArticle(int articleId) throws SQLException {
+
+    public List<Comment> recupererParArticle(int articleId) {
         List<Comment> comments = new ArrayList<>();
-        sql = "SELECT c.*, u.name, u.lastname FROM comment c " +
-                "JOIN user u ON c.user_id = u.id " +
-                "WHERE c.article_id = ?";
-        PreparedStatement ste = cnx.prepareStatement(sql);
-        ste.setInt(1, articleId);
-        ResultSet rs = ste.executeQuery();
 
-        while (rs.next()) {
-            Comment comment = new Comment();
-            comment.setId(rs.getInt("id"));
-            comment.setContenu_Comment(rs.getString("contenu_Comment"));
-            comment.setDatecom(rs.getString("datecom"));
-            comment.setRating(rs.getInt("rating"));
+        try {
+            String sql = "SELECT c.*, u.name, u.photo FROM comment c JOIN user u ON c.user_id = u.id WHERE c.article_id = ?";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setInt(1, articleId);
 
-            User user = new User();
-            user.setId(rs.getInt("user_id"));
-            user.setName(rs.getString("name"));
-            user.setLastname(rs.getString("lastname"));
-            comment.setUser(user);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setName(rs.getString("name"));
+                user.setPhoto(rs.getString("photo")); // <-- photo récupérée
 
-            // On ne charge pas tout l'article, juste l'ID
-         //   Article article = new Article(articleId);
-               Article article = new Article();
+                Comment comment = new Comment();
+                comment.setId(rs.getInt("id"));
+                comment.setContenu_Comment(rs.getString("contenu_comment"));
+                comment.setDatecom(rs.getString("datecom"));
+                comment.setRating(rs.getInt("rating"));
+                comment.setUser(user);
 
-            comment.setArticle(article);
-
-            comments.add(comment);
+                comments.add(comment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return comments;
     }
-
+    public void incrementerViews(int articleId) {
+        String sql = "UPDATE article SET views = views + 1 WHERE id = ?";
+        try (PreparedStatement statement = cnx.prepareStatement(sql)) {
+            statement.setInt(1, articleId);
+            statement.executeUpdate();
+            System.out.println("✅ Vue incrémentée pour l'article ID: " + articleId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+   /* public Map<Integer, Integer> getSimpleRatingStatsByArticle(int articleId) {
+        Map<Integer, Integer> stats = new HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            stats.put(i, 0);
+        }
+
+        try {
+            String sql = "SELECT rating, COUNT(*) AS total FROM comment WHERE article_id = ? GROUP BY rating";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setInt(1, articleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int rating = rs.getInt("rating");
+                int count = rs.getInt("total");
+                stats.put(rating, count);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stats;
+    }
+*/
+
+}

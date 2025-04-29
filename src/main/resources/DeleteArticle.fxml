@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.artflow.controllers.DeleteArticle"
-            prefHeight="400.0" prefWidth="600.0">
-    <VBox alignment="CENTER" spacing="20.0" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0"
-          AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
-        <Label fx:id="messageLabel" text="Êtes-vous sûr de vouloir supprimer cet article ?" wrapText="true" />
+            stylesheets="styles.css"
+            prefWidth="600.0" prefHeight="300.0"
+            styleClass="background">
 
-        <HBox alignment="CENTER" spacing="30">
-            <Button text="Annuler" onAction="#annulerSuppression" />
-            <Button text="OK" onAction="#confirmerSuppression" />
-        </HBox>
-    </VBox>
+    <children>
+        <VBox alignment="CENTER" spacing="20" layoutX="50" layoutY="30"
+              styleClass="content-container">
+
+            <Label fx:id="messageLabel"
+                   wrapText="true"
+                   styleClass="page-title"
+                   text="Êtes-vous sûr de vouloir supprimer cet article ?" />
+
+            <HBox alignment="CENTER" spacing="20">
+                <Button text="Annuler"
+                        onAction="#annulerSuppression"
+                        styleClass="cancel-button"
+                        prefWidth="120" prefHeight="45"/>
+
+                <Button text="Supprimer"
+                        onAction="#confirmerSuppression"
+                        styleClass="primary-button"
+                        prefWidth="120" prefHeight="45"/>
+            </HBox>
+
+        </VBox>
+    </children>
 </AnchorPane>

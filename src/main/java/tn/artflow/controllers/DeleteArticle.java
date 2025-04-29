@@ -22,15 +22,15 @@ public class DeleteArticle {
 
     @FXML
     void confirmerSuppression(ActionEvent event) {
-        try {
-            if (articleASupprimer != null) {
+        if (articleASupprimer != null) {
+            try {
                 articleService.supprimer(articleASupprimer.getId());
-                System.out.println("✅ Article supprimé : " + articleASupprimer.getTitre());
+                System.out.println("Article supprimé : " + articleASupprimer.getTitre());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            fermerFenetre(event);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        fermerFenetre(event);
     }
 
     @FXML

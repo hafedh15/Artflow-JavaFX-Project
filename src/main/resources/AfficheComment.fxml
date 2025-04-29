@@ -2,52 +2,99 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane prefHeight="700.0" prefWidth="1100.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.artflow.controllers.AfficheComment"
-            prefHeight="500.0" prefWidth="900.0"
-            style="-fx-background-color: #f5f7fa;">
+            style="-fx-background-color: #F9F5F1;">
 
-    <children>
+    <!-- Sidebar -->
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #E5DDD1; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 3);">
 
-        <!-- En-tête style dashboard -->
-        <HBox layoutX="20" layoutY="20" spacing="20"
-              alignment="CENTER_LEFT"
-              style="-fx-background-color: white;
-                     -fx-padding: 15;
-                     -fx-background-radius: 10;
-                     -fx-border-radius: 10;
-                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.3, 0, 3);"
-              prefWidth="860">
+            <HBox alignment="CENTER" style="-fx-padding: 0 0 30 0;">
+                <ImageView fitHeight="60" fitWidth="120" preserveRatio="true">
+                    <Image url="@/images/logo.jpg" />
+                </ImageView>
+            </HBox>
 
-            <!-- Titre -->
-            <Label text="Comment Management "
-                   style="-fx-font-size: 18px;
-                          -fx-font-weight: bold;
-                          -fx-text-fill: #2b2b2b;" />
-        </HBox>
+            <HBox alignment="CENTER" style="-fx-padding: 0 0 20 0;">
+                <VBox alignment="CENTER">
+                    <ImageView fitHeight="50" fitWidth="50" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                        <Image url="@/images/user.jpg" />
+                    </ImageView>
+                    <Label text="Artisan Admin" style="-fx-font-size: 14px; -fx-text-fill: #7D6E5B; -fx-font-weight: bold; -fx-padding: 5 0 0 0;" />
+                </VBox>
+            </HBox>
 
-        <!-- Tableau des commentaires stylé -->
-        <GridPane fx:id="commentGrid"
-                  layoutX="20" layoutY="80"
-                  prefWidth="860" prefHeight="400"
-                  hgap="15" vgap="15"
-                  style="-fx-background-color: white;
-                         -fx-padding: 20;
-                         -fx-border-color: #ddd;
-                         -fx-border-radius: 10;
-                         -fx-background-radius: 10;
-                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 4, 0.2, 0, 2);">
+            <Separator style="-fx-background-color: #D4C8B9;" />
 
-            <columnConstraints>
-                <ColumnConstraints prefWidth="60.0"/>   <!-- ID -->
-                <ColumnConstraints prefWidth="300.0"/>  <!-- Contenu -->
-                <ColumnConstraints prefWidth="150.0"/>  <!-- Auteur -->
-                <ColumnConstraints prefWidth="150.0"/>  <!-- Date -->
-                <ColumnConstraints prefWidth="150.0"/>  <!-- Actions -->
-            </columnConstraints>
-        </GridPane>
+            <Button text="Dashboard" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" />
+            <Button text="Commentaires" maxWidth="Infinity"
+                    style="-fx-background-color: #C8B6A6; -fx-text-fill: #5C4F3D; -fx-font-size: 14px; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" />
+            <Button text="Article" maxWidth="Infinity"
+                    style="-fx-background-color: #C8B6A6; -fx-text-fill: #5C4F3D; -fx-font-size: 14px; -fx-background-radius: 5; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" />
 
-    </children>
-</AnchorPane>
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="Paramètres" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" />
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30;">
+
+            <!-- Header -->
+            <HBox spacing="15" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
+
+                <Label text="Gestion des Commentaires"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="notifButton" text="🔔 Notifications"
+                        onAction="#afficherNotifications"
+                        style="-fx-background-color: #A18E78;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14px;
+                               -fx-font-weight: bold;
+                               -fx-background-radius: 8;
+                               -fx-padding: 8 20;" />
+            </HBox>
+
+            <!-- Comment Grid -->
+            <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                <content>
+                    <VBox spacing="15" style="-fx-padding: 20;">
+                        <VBox spacing="10"
+                              style="-fx-background-color: white;
+                                     -fx-background-radius: 10;
+                                     -fx-border-radius: 10;
+                                     -fx-padding: 20;
+                                     -fx-border-color: #E8DECD;
+                                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                            <GridPane fx:id="commentGrid" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints prefWidth="60"/>
+                                    <ColumnConstraints prefWidth="300"/>
+                                    <ColumnConstraints prefWidth="200"/>
+                                    <ColumnConstraints prefWidth="200"/>
+                                    <ColumnConstraints prefWidth="140"/>
+                                </columnConstraints>
+                            </GridPane>
+                        </VBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+
+</BorderPane>
