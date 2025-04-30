@@ -4,8 +4,10 @@ import java.util.Date;
 
 public class Comment {
     private int id;
-    private String contenuComment;
-    private Date datecom;
+    private String contenu_Comment;
+    private String datecom;
+    private User user;
+    private Article article;
     private int rating; // Ajout de l'attribut rating
 
     // Constructeur par défaut
@@ -13,10 +15,12 @@ public class Comment {
     }
 
     // Constructeur avec paramètres
-    public Comment(int id, String contenuComment, Date datecom, int rating) {
+    public Comment(int id, String contenu_Comment, String datecom, User user, Article article, int rating) {
         this.id = id;
-        this.contenuComment = contenuComment;
+        this.contenu_Comment = contenu_Comment;
         this.datecom = datecom;
+        this.user = user;
+        this.article = article;
         this.rating = rating;
     }
 
@@ -29,21 +33,27 @@ public class Comment {
         this.id = id;
     }
 
-    public String getContenuComment() {
-        return contenuComment;
+    public String getContenu_Comment() {
+        return contenu_Comment;
     }
 
-    public void setContenuComment(String contenuComment) {
-        this.contenuComment = contenuComment;
+    public void setContenu_Comment(String contenu_Comment) {
+        this.contenu_Comment = contenu_Comment;
     }
 
-    public Date getDatecom() {
+    public String getDatecom() {
         return datecom;
     }
 
-    public void setDatecom(Date datecom) {
+    public void setDatecom(String datecom) {
         this.datecom = datecom;
     }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public Article getArticle() { return article; }
+    public void setArticle(Article article) { this.article = article; }
 
     public int getRating() {
         return rating;
@@ -57,8 +67,10 @@ public class Comment {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", contenuComment='" + contenuComment + '\'' +
+                ", contenuComment='" + contenu_Comment + '\'' +
                 ", datecom=" + datecom +
+                ", user=" + user.getName() + " " + user.getLastname() +
+                // ", articleId=" + article.getId()= +
                 ", rating=" + rating +
                 '}';
     }

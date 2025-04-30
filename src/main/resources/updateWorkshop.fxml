@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.artflow.controllers.UpdateWorkshop"
+            style="-fx-background-color: #f8f4ea;"> <!-- beige clair -->
+
+    <!-- Top Bar -->
+    <top>
+        <HBox prefHeight="50.0"
+              style="-fx-background-color: #e8d6c3; -fx-padding: 10; -fx-border-color: #d4c498; -fx-border-width: 0 0 1 0;">
+            <Label text="ARTFLOW"
+                   style="-fx-text-fill: #3e2723; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="+" style="-fx-background-color: transparent; -fx-text-fill: #5d4037; -fx-font-size: 18px;" />
+        </HBox>
+    </top>
+
+    <!-- Center Content -->
+    <center>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+            <!-- Fake URL -->
+            <TextField text="update workshop" editable="false"
+                       style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 5; -fx-font-family: 'Courier New';" />
+
+            <!-- Form Container -->
+            <GridPane hgap="10" vgap="15"
+                      style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" />
+                    <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
+
+                <!-- Title -->
+                <Label text="Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                       style="-fx-text-fill: #5d4037;" />
+                <VBox GridPane.rowIndex="0" GridPane.columnIndex="1">
+                    <TextField fx:id="txttitle"
+                               style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 8; -fx-border-radius: 8;" />
+                    <Label fx:id="errTitle" textFill="red"/>
+                </VBox>
+
+                <!-- Description -->
+                <Label text="Description:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                       style="-fx-text-fill: #5d4037;" />
+                <VBox GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <TextField fx:id="txtdescription"
+                               style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 8; -fx-border-radius: 8;" />
+                    <Label fx:id="errDescription" textFill="red"/>
+                </VBox>
+
+                <!-- Type -->
+                <Label text="Type:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                       style="-fx-text-fill: #5d4037;" />
+                <ComboBox fx:id="comboType" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                          style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 8; -fx-border-radius: 8;" />
+
+                <!-- Image -->
+                <Label text="Image:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                       style="-fx-text-fill: #5d4037;" />
+                <HBox spacing="10" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                    <TextField fx:id="txtimage"
+                               style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 8; -fx-border-radius: 8;" />
+                    <Button text="Choose File" onAction="#choosefile"
+                            style="-fx-background-color: #a1887f; -fx-text-fill: white; -fx-background-radius: 8;" />
+                </HBox>
+                <Label fx:id="errImage" textFill="red" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <!-- Location -->
+                <Label text="Location:" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                       style="-fx-text-fill: #5d4037;" />
+                <TextField fx:id="txtlocation" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                           style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 8; -fx-border-radius: 8;" />
+
+                <!-- Date -->
+                <Label text="Date:" GridPane.rowIndex="6" GridPane.columnIndex="0"
+                       style="-fx-text-fill: #5d4037;" />
+                <VBox GridPane.rowIndex="6" GridPane.columnIndex="1">
+                    <DatePicker fx:id="date"
+                                style="-fx-background-color: white; -fx-border-color: #d7ccc8; -fx-background-radius: 8; -fx-border-radius: 8;" />
+                    <Label fx:id="errDate" textFill="red"/>
+                </VBox>
+
+                <!-- Buttons -->
+                <HBox spacing="20" GridPane.rowIndex="7" GridPane.columnIndex="1" alignment="CENTER_RIGHT">
+                    <Button text="Cancel" onAction="#cancelUpdate"
+                            style="-fx-background-color: #d7ccc8; -fx-text-fill: #5d4037; -fx-background-radius: 20;" />
+                    <Button text="Update Workshop" onAction="#updadeWorkshop"
+                            style="-fx-background-color: #8d6e63; -fx-text-fill: white; -fx-background-radius: 20;" />
+                </HBox>
+            </GridPane>
+        </VBox>
+    </center>
+</BorderPane>

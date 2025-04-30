@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane prefWidth="1100.0" prefHeight="700.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.artflow.controllers.ConversationController"
+            style="-fx-background-color: #F9F5F1;">
+
+    <!-- Sidebar (Menu gauche) -->
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #E5DDD1; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 3);">
+
+            <HBox alignment="CENTER" style="-fx-padding: 0 0 30 0;">
+                <ImageView fitHeight="60" fitWidth="120" preserveRatio="true">
+                    <Image url="@/images/logo.jpg" />
+                </ImageView>
+            </HBox>
+
+            <HBox alignment="CENTER" style="-fx-padding: 0 0 20 0;">
+                <VBox alignment="CENTER">
+                    <ImageView fitHeight="50" fitWidth="50" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                        <Image url="@/images/user.jpg" />
+                    </ImageView>
+                    <Label text="Utilisateur" style="-fx-font-size: 14px; -fx-text-fill: #7D6E5B; -fx-font-weight: bold; -fx-padding: 5 0 0 0;" />
+                </VBox>
+            </HBox>
+
+            <Separator style="-fx-background-color: #D4C8B9;" />
+
+            <!-- Boutons de navigation stylisés -->
+            <Button fx:id="GoToUser" maxWidth="Infinity" style="-fx-background-color: #C8B6A6; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="List Utilisateurs" onAction="#goToUser">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="orderButton" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Orders" onAction="#handleOrderButtonAction">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/user.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToProduit" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15; -fx-background-radius: 5;" text="Produits" onAction="#goToProduit">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="GoToAtelier" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Ateliers" onAction="#goToAtelier">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToReservation" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Reservation" onAction="#goToReservation">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="GoToArticle" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Articles" onAction="#goToArticle">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToComment" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Comment" onAction="#goToComment">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="GoToReclamation" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Réclamations" onAction="#goToReclamation">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToReponse" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Reponse" onAction="#goToReponse">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Region VBox.vgrow="ALWAYS" />
+        </VBox>
+    </left>
+
+    <!-- Contenu principal -->
+    <center>
+        <AnchorPane style="-fx-padding: 30;">
+            <children>
+
+                <!-- LEFT PANEL -->
+                <VBox fx:id="leftPane"
+                      spacing="20"
+                      layoutX="20" layoutY="20"
+                      prefWidth="260.0" prefHeight="560.0"
+                      style="-fx-background-color: white;
+                             -fx-border-color: #E8DECD;
+                             -fx-border-width: 1.5;
+                             -fx-border-radius: 12;
+                             -fx-background-radius: 12;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);
+                             -fx-padding: 20;">
+
+                    <children>
+                        <Label text="📋 Réclamations"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+
+                        <ComboBox fx:id="filterComboBox"
+                                  prefWidth="220.0"
+                                  promptText="Filtrer par statut"
+                                  style="-fx-background-color: #F7F7F7;
+                                         -fx-border-color: #E8DECD;
+                                         -fx-border-radius: 8;
+                                         -fx-background-radius: 8;
+                                         -fx-padding: 6;"/>
+
+                        <ListView fx:id="reclamationListView"
+                                  prefHeight="480.0"
+                                  style="-fx-background-color: white;
+                                         -fx-border-color: #E8DECD;
+                                         -fx-border-radius: 8;
+                                         -fx-background-radius: 8;
+                                         -fx-padding: 4;"/>
+                    </children>
+                </VBox>
+
+                <!-- RIGHT PANEL -->
+                <VBox fx:id="rightPane"
+                      layoutX="320.0" layoutY="20.0"
+                      spacing="20"
+                      prefWidth="720.0" prefHeight="560.0"
+                      style="-fx-background-color: white;
+                             -fx-border-color: #E8DECD;
+                             -fx-border-width: 1.5;
+                             -fx-border-radius: 12;
+                             -fx-background-radius: 12;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);
+                             -fx-padding: 20;">
+
+                    <children>
+
+                        <!-- Details -->
+                        <VBox spacing="10">
+                            <children>
+                                <Label fx:id="reclamationSubjectLabel"
+                                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                                <Label fx:id="reclamationStatusLabel"
+                                       style="-fx-font-size: 13px; -fx-text-fill: #8D7B6A;" />
+                                <Label fx:id="reclamationMessageLabel"
+                                       wrapText="true"
+                                       style="-fx-font-size: 14px; -fx-text-fill: #5C4F3D;" />
+                            </children>
+                        </VBox>
+
+                        <!-- Chat Area -->
+                        <ListView fx:id="chatListView"
+                                  VBox.vgrow="ALWAYS"
+                                  prefHeight="300.0"
+                                  style="-fx-background-color: #F9F5F1;
+                                         -fx-border-color: #E8DECD;
+                                         -fx-border-radius: 10;
+                                         -fx-background-radius: 10;
+                                         -fx-padding: 8;"/>
+
+                        <!-- Input Area -->
+                        <VBox spacing="10">
+                            <children>
+                                <HBox spacing="10">
+                                    <children>
+                                        <TextField fx:id="responseField"
+                                                   HBox.hgrow="ALWAYS"
+                                                   promptText="Votre message..."
+                                                   style="-fx-background-color: #F7F7F7;
+                                                          -fx-border-color: #E8DECD;
+                                                          -fx-border-radius: 8;
+                                                          -fx-background-radius: 8;
+                                                          -fx-padding: 8;"/>
+
+                                        <Button fx:id="sendButton"
+                                                text="Envoyer"
+                                                onAction="#sendResponse"
+                                                style="-fx-background-color: #A18E78;
+                                                       -fx-text-fill: white;
+                                                       -fx-border-radius: 8;
+                                                       -fx-font-weight: bold;
+                                                       -fx-padding: 8 16;
+                                                       -fx-cursor: hand;"/>
+                                    </children>
+                                </HBox>
+
+                                <Label fx:id="labelResponseError"
+                                       textFill="red"
+                                       visible="false"
+                                       style="-fx-font-size: 12px;"/>
+                            </children>
+                        </VBox>
+
+                    </children>
+                </VBox>
+
+            </children>
+        </AnchorPane>
+    </center>
+</BorderPane>

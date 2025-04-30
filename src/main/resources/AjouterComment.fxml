@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx"
+            fx:controller="tn.artflow.controllers.AjouterComment"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color: #F9F5F1;">
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                style="-fx-background-color: transparent;">
+        <content>
+            <HBox spacing="20" style="-fx-padding: 30;">
+                <!-- Partie Article -->
+                <VBox fx:id="articleBox"
+                      spacing="10" prefWidth="420"
+                      style="-fx-background-color: #FFFFFF; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #D4C8B9; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                    <ImageView fx:id="articleImage" fitWidth="360" fitHeight="180"/>
+                    <Label fx:id="titreLabel" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #5C4F3D;"/>
+                    <Label fx:id="auteurLabel" style="-fx-text-fill: #8D7B6A;"/>
+                    <Label fx:id="categorieTopLabel" style="-fx-text-fill: #8D7B6A;"/>
+                    <Label fx:id="contenuLabel" wrapText="true" style="-fx-text-fill: #5C4F3D;"/>
+                    <Label fx:id="dateLabel" style="-fx-text-fill: #A1887F;"/>
+                    <Label fx:id="viewsLabel" style="-fx-text-fill: #A1887F;"/>
+                </VBox>
+
+                <!-- Partie Commentaire -->
+                <VBox spacing="15" prefWidth="420"
+                      style="-fx-background-color: #FFFFFF; -fx-padding: 30; -fx-border-radius: 15; -fx-background-radius: 15; -fx-border-color: #D4C8B9; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                    <Label text="➕ Ajouter un commentaire"
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+
+                    <TextArea fx:id="commentaireTF"
+                              promptText="Votre commentaire..."
+                              prefHeight="100"
+                              style="-fx-background-radius: 8; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-color: #FFFFFF;"/>
+
+                    <Label fx:id="commentaireStatus" text=""
+                           style="-fx-font-size: 14px; -fx-text-fill: #D32F2F;" />
+
+                    <Button text="Envoyer"
+                            onAction="#envoyerCommentaire"
+                            style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-height: 40; -fx-background-radius: 8;"/>
+
+                    <Separator style="-fx-background-color: #D4C8B9;"/>
+
+                    <Label text="Commentaires existants"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+
+                    <VBox fx:id="commentList"
+                          spacing="10"
+                          style="-fx-padding: 10;">
+                    </VBox>
+                </VBox>
+
+            </HBox>
+        </content>
+    </ScrollPane>
+</AnchorPane>

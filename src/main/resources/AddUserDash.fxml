@@ -1,80 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
+<StackPane style="-fx-background-color: #F9F5F1;" xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="tn.artflow.controllers.AddUserControllerDash"
-           style="-fx-background-color: #f4f6f9;">
+           stylesheets="@/styles.css">
 
-    <VBox alignment="CENTER" spacing="20"
-          maxWidth="400"
-          maxHeight="500"
+    <VBox alignment="CENTER" maxHeight="639.0" maxWidth="500.0" prefHeight="639.0" prefWidth="500.0" spacing="15"
           style="-fx-background-color: white;
                  -fx-padding: 30;
                  -fx-background-radius: 12;
-                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 5);">
 
         <!-- Title -->
-        <Label text="➕ Add New User"
-               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+        <Label text="➕ Ajouter un utilisateur"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
 
         <!-- Name -->
-        <TextField fx:id="nameField"
-                   promptText="First Name"
-                   style="-fx-background-radius: 6; -fx-padding: 8;" />
+        <TextField fx:id="nameField" promptText="Prénom" style="-fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;" />
+        <Label fx:id="nameError" style="-fx-font-size: 11px;" textFill="red" />
 
         <!-- Lastname -->
-        <TextField fx:id="lastnameField"
-                   promptText="Last Name"
-                   style="-fx-background-radius: 6; -fx-padding: 8;" />
+        <TextField fx:id="lastnameField" promptText="Nom" style="-fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;" />
+        <Label fx:id="lastnameError" style="-fx-font-size: 11px;" textFill="red" />
 
         <!-- Email -->
-        <TextField fx:id="emailField"
-                   promptText="Email"
-                   style="-fx-background-radius: 6; -fx-padding: 8;" />
+        <TextField fx:id="emailField" promptText="Email" style="-fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;" />
+        <Label fx:id="emailError" style="-fx-font-size: 11px;" textFill="red" />
 
         <!-- Password -->
-        <PasswordField fx:id="passwordField"
-                       promptText="Password"
-                       style="-fx-background-radius: 6; -fx-padding: 8;" />
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" style="-fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;" />
+        <Label fx:id="passwordError" style="-fx-font-size: 11px;" textFill="red" />
 
         <!-- Confirm Password -->
-        <PasswordField fx:id="confirmPasswordField"
-                       promptText="Confirm Password"
-                       style="-fx-background-radius: 6; -fx-padding: 8;" />
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirmer le mot de passe" style="-fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;" />
+        <Label fx:id="confirmPasswordError" style="-fx-font-size: 11px;" textFill="red" />
 
-        <!-- Role ComboBox -->
-        <ComboBox fx:id="roleComboBox"
-                  promptText="Select Role"
-                  style="-fx-background-radius: 6; -fx-padding: 6;" />
+        <!-- Role -->
+        <ComboBox fx:id="roleComboBox" promptText="Sélectionner un rôle" style="-fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;" />
+        <Label fx:id="roleError" style="-fx-font-size: 11px;" textFill="red" />
 
         <!-- Photo Upload -->
-        <HBox spacing="8">
-            <TextField fx:id="photoField"
-                       promptText="Photo path"
-                       editable="false"
-                       HBox.hgrow="ALWAYS"
-                       style="-fx-background-radius: 6; -fx-padding: 6;" />
-            <Button text="Browse"
-                    onAction="#handleBrowse"
-                    style="-fx-background-color: #2196F3;
-                           -fx-text-fill: white;
-                           -fx-background-radius: 6;
-                           -fx-font-weight: bold;" />
+        <HBox spacing="10">
+            <TextField fx:id="photoField" editable="false" promptText="Chemin photo"
+                       style="-fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;" HBox.hgrow="ALWAYS"/>
+            <Button text="Parcourir" onAction="#handleBrowse"
+                    style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-weight: bold;" />
         </HBox>
+        <Label fx:id="photoError" style="-fx-font-size: 11px;" textFill="red" />
 
-        <!-- Add Button -->
-        <Button text="Add User"
-                onAction="#handleAddUser"
-                style="-fx-background-color: #4CAF50;
-                       -fx-text-fill: white;
-                       -fx-font-weight: bold;
-                       -fx-background-radius: 6;
-                       -fx-padding: 10 20;" />
+        <!-- Bouton Ajouter -->
+        <Button text="Ajouter l'utilisateur" onAction="#handleAddUser"
+                style="-fx-background-color: #5C4F3D; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-weight: bold; -fx-padding: 10 20;" />
 
     </VBox>
 </StackPane>

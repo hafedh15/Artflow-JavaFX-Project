@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+
+<VBox fx:id="cartItemCard" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.artflow.controllers.CartItemController"
+      spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-background-radius: 8;">
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <CheckBox fx:id="selectCheckbox" selected="true"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="removeButton" styleClass="remove-button" onAction="#removeItem">
+            <graphic>
+                <ImageView fitHeight="16" fitWidth="16">
+                    <Image url="@/images/delete.jpg"/>
+                </ImageView>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <ImageView fx:id="productImage" fitWidth="200" fitHeight="150" preserveRatio="true"/>
+
+    <Label fx:id="productName" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+
+    <Label fx:id="productCategory" style="-fx-text-fill: #666;"/>
+
+    <TextArea fx:id="productDescription"
+              styleClass="description-label"
+              editable="false" wrapText="true"
+              maxHeight="60" prefHeight="60"
+              style="-fx-background-color: transparent; -fx-padding: 0;"/>
+
+    <HBox alignment="CENTER">
+        <Label fx:id="productPrice" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+    </HBox>
+</VBox>

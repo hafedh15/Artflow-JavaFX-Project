@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox fx:id="productCard" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.artflow.controllers.ProductCard"
+      spacing="10"
+      styleClass="product-card"
+      prefHeight="350.0" prefWidth="280.0">
+
+    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+    <ImageView fx:id="productImage" fitWidth="260" fitHeight="160" preserveRatio="true" />
+
+    <Label fx:id="productName" styleClass="product-name"/>
+    <Label fx:id="productCategory" styleClass="product-category"/>
+    <Label fx:id="productPrice" styleClass="product-price"/>
+    <TextArea fx:id="productDescription"
+              styleClass="description-label"
+              editable="false"
+              wrapText="true"
+              prefHeight="60"
+              maxHeight="60"/>
+    <Label fx:id="productStock" styleClass="product-stock"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="editButton" text="Ajouter au Panier"
+                styleClass="add-cart-button"
+                onAction="#onEditButtonClick"/>
+        <Button fx:id="deleteButton" text="Détails"
+                styleClass="details-button"
+                onAction="#onDeleteButtonClick"/>
+    </HBox>
+
+</VBox>

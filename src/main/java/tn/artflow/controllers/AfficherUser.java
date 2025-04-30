@@ -5,29 +5,50 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import tn.artflow.entities.User;
 import tn.artflow.services.UserService;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
-
+import java.util.stream.Collectors;
 
 
 public class AfficherUser {
 
     @FXML
     private GridPane userGrid;
+    @FXML private TextField searchField;
+
+    @FXML
+    private Button GoToArticle;
+    @FXML
+    private Button GoToUser;
+    @FXML
+    private Button GoToAtelier;
+
+    @FXML
+    private Button GoToReservation;
+
+    @FXML
+    private Button GoToComment;
+
+    @FXML
+    private Button GoToReclamation;
+
+    @FXML
+    private Button GoToReponse;
+    @FXML
+    private Button orderButton;
+
+
 
     private User loggedInUser;
 
@@ -48,6 +69,25 @@ public class AfficherUser {
         }
     }
 
+
+
+
+    public void handleOrderButtonAction(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/OrdersDashboard.fxml"));
+            Parent root = loader.load();
+
+            // Obtenir la scène actuelle et la remplacer par la scène d'ajout
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter un produit");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void populateGrid(List<User> users) {
         userGrid.getChildren().clear(); // Clear previous content
 
@@ -56,8 +96,8 @@ public class AfficherUser {
         userGrid.add(createHeader("Lastname"), 1, 0);
         userGrid.add(createHeader("Role"), 2, 0);
         userGrid.add(createHeader("Email"), 3, 0);
-        userGrid.add(createHeader("Photo"), 4, 0);
-        userGrid.add(createHeader("Date Created"), 5, 0);
+        //userGrid.add(createHeader("Photo"), 4, 0);
+        userGrid.add(createHeader("Date Creation"), 5, 0);
         userGrid.add(createHeader("Verified"), 6, 0);
         userGrid.add(createHeader("Banned"), 7, 0);
         userGrid.add(createHeader("Actions"), 8, 0);
@@ -69,7 +109,7 @@ public class AfficherUser {
             Label lastnameLabel = new Label(user.getLastname());
             Label rolesLabel = new Label(user.getRoles());
             Label emailLabel = new Label(user.getEmail());
-            Label photoLabel = new Label(user.getPhoto());
+           // Label photoLabel = new Label(user.getPhoto());
             Label dateLabel = new Label(user.getDateCreation().toString());
             Label verifiedLabel = new Label(user.getIsVerified() ? "Yes" : "No");
             Label bannedLabel = new Label(user.getIsBanned() ? "Yes" : "No");
@@ -87,32 +127,54 @@ public class AfficherUser {
             // Action buttons
             Button updateBtn = new Button("Update");
             Button deleteBtn = new Button("Delete");
-            Button profileBtn = new Button("View");
+           // Button profileBtn = new Button("View");
 
-            updateBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 11px;");
+            updateBtn.setStyle("-fx-background-color: #fa814a; -fx-text-fill: white; -fx-font-size: 11px;");
             deleteBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 11px;");
-            profileBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 11px;");
+         //   profileBtn.setStyle("-fx-background-color: #55b3ff; -fx-text-fill: white; -fx-font-size: 11px;");
 
             updateBtn.setOnAction(e -> handleUpdateDash(user));
             deleteBtn.setOnAction(e -> handleDelete(user));
-            profileBtn.setOnAction(e -> handleViewProfile(user));
+           // profileBtn.setOnAction(e -> handleViewProfile(user));
+
+            Button banToggleBtn = new Button(user.getIsBanned() ? "Unban" : "Ban");
+            banToggleBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+
+            banToggleBtn.setOnAction(e -> {
+                user.setIs_Banned(!user.getIsBanned()); // Toggle status
+                try {
+                    userService.update(user); // Save to DB
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                // Optionally update UI text immediately
+                banToggleBtn.setText(user.getIsBanned() ? "Unban" : "Ban");
+
+                // Optional: reload the user list completely
+                // reloadUserList();
+            });
+
 
 
             GridPane actionPane = new GridPane();
             actionPane.setHgap(5);
             actionPane.add(updateBtn, 0, 0);
             actionPane.add(deleteBtn, 1, 0);
-            actionPane.add(profileBtn, 2, 0);
+           // actionPane.add(profileBtn, 2, 0);
+          //  userGrid.add(banToggleBtn, 7, row); // Add the Ban/Unban button to the same row
+
 
             // Add row to grid
             userGrid.add(nameLabel, 0, row);
             userGrid.add(lastnameLabel, 1, row);
             userGrid.add(rolesLabel, 2, row);
             userGrid.add(emailLabel, 3, row);
-            userGrid.add(photoLabel, 4, row);
+           // userGrid.add(photoLabel, 4, row);
             userGrid.add(dateLabel, 5, row);
             userGrid.add(verifiedLabel, 6, row);
-            userGrid.add(bannedLabel, 7, row);
+            userGrid.add(banToggleBtn, 7, row);
+           // userGrid.add(bannedLabel, 7, row);
             userGrid.add(actionPane, 8, row);
 
             row++;
@@ -148,6 +210,22 @@ public class AfficherUser {
             stage.show();
 
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void rechercherUtilisateurs() {
+        String keyword = searchField.getText().trim().toLowerCase();
+        try {
+            List<User> allUsers = userService.recupererr();
+            List<User> filtered = allUsers.stream()
+                    .filter(user -> user.getName().toLowerCase().contains(keyword) ||
+                            user.getLastname().toLowerCase().contains(keyword) ||
+                            user.getEmail().toLowerCase().contains(keyword))
+                    .collect(Collectors.toList());
+            populateGrid(filtered);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -258,40 +336,101 @@ public class AfficherUser {
         }
     }
 
+    @FXML
+    void goToArticle(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherArticle.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void goToReservation(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashReservation.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void goToAtelier(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashWorkshop.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void goToComment(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficheComment.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void goToReclamation(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherReclamation.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void goToReponse(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/conversation.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void goToProduit(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void goToUser(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
+            Parent root = loader.load();
+            GoToArticle.getScene().setRoot(root);  // Même principe ici
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
 }
 
 
 
 
-//public class AfficherUser {
-//
-//    @FXML
-//    private TableView<User> userTable;
-//    @FXML
-//    private TableColumn<User, String> colName;
-//    @FXML
-//    private TableColumn<User, String> colLastName;
-//    @FXML
-//    private TableColumn<User, String> colEmail;
-//    @FXML
-//    private TableColumn<User, Boolean> colVerified;
-//    @FXML
-//    private TableColumn<User, java.util.Date> colDateCreation;
-//
-//    public void initialize() {
-//        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//        colLastName.setCellValueFactory(new PropertyValueFactory<>("lastname"));
-//        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-//        colVerified.setCellValueFactory(new PropertyValueFactory<>("isVerified"));
-//        colDateCreation.setCellValueFactory(new PropertyValueFactory<>("dateCreation"));
-//
-//        UserService ps = new UserService();
-//        try {
-//            List<User> list = ps.recuperer(); // You must implement this in your service
-//            ObservableList<User> observableList = FXCollections.observableArrayList(list);
-//            userTable.setItems(observableList);
-//        } catch (SQLException e) {
-//            System.out.println("Error loading users: " + e.getMessage());
-//        }
-//    }
-//}

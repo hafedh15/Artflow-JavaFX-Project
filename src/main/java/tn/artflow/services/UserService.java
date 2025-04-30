@@ -158,6 +158,16 @@ public class UserService implements IService<User>{
         return users;
     }
 
+    @Override
+    public void supprimer(int id) throws SQLException {
+
+    }
+
+    @Override
+    public List<User> getReservationsByUser(User user) throws SQLException {
+        return List.of();
+    }
+
 
     public List<User> recupererr() throws SQLException {
         sql = "SELECT * FROM user";
@@ -208,12 +218,26 @@ public class UserService implements IService<User>{
                 boolean isVerified = rs.getBoolean("is_Verified");
 
                 User user = new User(id,name, lastname, roles, password, email, photo, dateCreation, isBanned, isVerified);
-               // user.setId(id);
+
                 return user;
             }
         }
 
         return null; // login failed
+    }
+
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+        try {
+            String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            String sql = "UPDATE user SET password = ? WHERE email = ?";
+            PreparedStatement stmt = cnx.prepareStatement(sql);
+            stmt.setString(1, hashed);
+            stmt.setString(2, email);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 

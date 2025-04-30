@@ -5,29 +5,29 @@ import java.util.Date;
 
 public class Reservation {
     private int id;
-    private int userId;
-    private int workshopId;
+    private User user;
+    private Workshop workshop;
     private int seatsReserved;
     private String notes;
-    private Date dateReservation;
+    private String dateReservation;
     private String uniqueCode;
 
     public Reservation() {
     }
 
-    public Reservation(int userId, int workshopId, int seatsReserved, String notes, Date dateReservation, String uniqueCode) {
-        this.userId = userId;
-        this.workshopId = workshopId;
+    public Reservation(User user, Workshop workshop, int seatsReserved, String notes, String dateReservation, String uniqueCode) {
+        this.user = user;
+        this.workshop = workshop;
         this.seatsReserved = seatsReserved;
         this.notes = notes;
         this.dateReservation = dateReservation;
         this.uniqueCode = uniqueCode;
     }
 
-    public Reservation(int id, int userId, int workshopId, int seatsReserved, String notes, Date dateReservation, String uniqueCode) {
+    public Reservation(int id, User user, Workshop workshop, int seatsReserved, String notes, String dateReservation, String uniqueCode) {
         this.id = id;
-        this.userId = userId;
-        this.workshopId = workshopId;
+        this.user = user;
+        this.workshop = workshop;
         this.seatsReserved = seatsReserved;
         this.notes = notes;
         this.dateReservation = dateReservation;
@@ -42,20 +42,20 @@ public class Reservation {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public int getWorkshopId() {
-        return workshopId;
+    public Workshop getWorkshop() {
+        return workshop;
     }
 
-    public void setWorkshopId(int workshopId) {
-        this.workshopId = workshopId;
+    public void setWorkshop(Workshop workshop) {
+        this.workshop = workshop;
     }
 
     public int getSeatsReserved() {
@@ -74,11 +74,11 @@ public class Reservation {
         this.notes = notes;
     }
 
-    public Date getDateReservation() {
+    public String getDateReservation() {
         return dateReservation;
     }
 
-    public void setDateReservation(Date dateReservation) {
+    public void setDateReservation(String dateReservation) {
         this.dateReservation = dateReservation;
     }
 
@@ -94,8 +94,6 @@ public class Reservation {
     public String toString() {
         return "Reservation {\n" +
                 "  id=" + id + ",\n" +
-                "  userId=" + userId + ",\n" +
-                "  workshopId=" + workshopId + ",\n" +
                 "  seatsReserved=" + seatsReserved + ",\n" +
                 "  notes='" + notes + "',\n" +
                 "  dateReservation=" + dateReservation + ",\n" +

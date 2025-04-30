@@ -5,13 +5,13 @@ import java.util.Date;
 public class Workshop {
     private int id;
     private String title,description,image,type,location;
-    private Date date;
+    private String date;
     private float latitude,longitude;
 
     public Workshop() {
     }
 
-    public Workshop(String title, String description, String image, Date date, String type, String location, float latitude, float longitude) {
+   /* public Workshop(String title, String description, String image, String date, String type, String location, float latitude, float longitude) {
         this.title = title;
         this.description = description;
         this.image = image;
@@ -21,8 +21,10 @@ public class Workshop {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+*/
 
-    public Workshop(int id, String title, String description, String image, Date date, String type, String location, float latitude, float longitude) {
+
+    public Workshop(String title, String description, String image, String date, String type, String location) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -30,9 +32,17 @@ public class Workshop {
         this.date = date;
         this.type = type;
         this.location = location;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
+    public Workshop(int id, String title, String description, String image, String date, String type, String location) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.image = image;
+        this.date = date;
+        this.type = type;
+        this.location = location;
+    }
+
 
     public int getId() {
         return id;
@@ -66,18 +76,17 @@ public class Workshop {
         this.image = image;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
@@ -90,7 +99,7 @@ public class Workshop {
         this.location = location;
     }
 
-    public float getLatitude() {
+    /*public float getLatitude() {
         return latitude;
     }
 
@@ -105,7 +114,7 @@ public class Workshop {
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
-
+*/
     @Override
 
     public String toString() {
@@ -117,8 +126,6 @@ public class Workshop {
                 "  date=" + date + ",\n" +
                 "  type='" + type + "',\n" +
                 "  location='" + location + "',\n" +
-                "  latitude=" + latitude + ",\n" +
-                "  longitude=" + longitude + "\n" +
                 '}';
     }
 

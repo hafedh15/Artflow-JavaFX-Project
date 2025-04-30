@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: #F9F5F1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.artflow.controllers.AdminDashboardController">
+
+    <!-- Panneau de navigation latéral - style artisanal avec tons marron doux -->
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #E5DDD1; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 3);">
+            <!-- Logo -->
+            <HBox alignment="CENTER" style="-fx-padding: 0 0 30 0;">
+                <ImageView fitHeight="60" fitWidth="120" preserveRatio="true">
+                    <Image url="@/images/logo.jpg" />
+                </ImageView>
+            </HBox>
+
+            <!-- Utilisateur connecté -->
+            <HBox alignment="CENTER" style="-fx-padding: 0 0 20 0;">
+                <VBox alignment="CENTER">
+                    <ImageView fitHeight="50" fitWidth="50" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                        <Image url="@/images/user.jpg" />
+                    </ImageView>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #7D6E5B; -fx-padding: 5 0 0 0; -fx-font-weight: bold;" text="Artisan Admin" />
+                </VBox>
+            </HBox>
+
+            <!-- Séparateur -->
+            <Separator style="-fx-background-color: #D4C8B9; -fx-padding: 0 0 10 0;" />
+
+            <!-- Navigation buttons -->
+            <Button fx:id="GoToUser" maxWidth="Infinity" style="-fx-background-color: #C8B6A6; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="List Utilisateurs" onAction="#goToUser">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="orderButton" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Orders" onAction="#handleOrderButtonAction">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/user.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToProduit" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15; -fx-background-radius: 5;" text="Produits" onAction="#goToProduit">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="GoToAtelier" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Ateliers" onAction="#goToAtelier">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToReservation" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Reservation" onAction="#goToReservation">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="GoToArticle" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Articles" onAction="#goToArticle">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToComment" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Comment" onAction="#goToComment">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="GoToReclamation" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Réclamations" onAction="#goToReclamation">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="GoToReponse" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Reponse" onAction="#goToReponse">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Region VBox.vgrow="ALWAYS" />
+
+            <Button maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Rapports">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Paramètres">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/product.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+        </VBox>
+    </left>
+
+    <!-- Zone principale -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30;">
+            <!-- En-tête avec titre de page et recherche -->
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <VBox>
+                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="Gestion des Produits" />
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #8D7B6A;" text="Gérez votre catalogue d'artisanat" />
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <TextField prefWidth="250" promptText="Rechercher..." style="-fx-background-radius: 20; -fx-padding: 8 15; -fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 20;" />
+
+                <Button style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 15;">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <Image url="@/images/product.jpg" />
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <!-- Statistiques en cartes - Uniquement Total Produits -->
+            <HBox spacing="20">
+                <StackPane prefHeight="120" prefWidth="250" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
+                    <VBox alignment="CENTER_LEFT" style="-fx-padding: 20;">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <StackPane prefHeight="50" prefWidth="50" style="-fx-background-color: #F2EDE7; -fx-background-radius: 10;">
+                                <ImageView fitHeight="24" fitWidth="24">
+                                    <Image url="@/images/product.jpg" />
+                                </ImageView>
+                            </StackPane>
+                            <VBox>
+                                <Label style="-fx-font-size: 14px; -fx-text-fill: #8D7B6A;" text="Total Produits" />
+                                <Label fx:id="totalProductsLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="45" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+            </HBox>
+
+            <!-- Actions avec les boutons -->
+            <HBox spacing="15" style="-fx-padding: 20 0;">
+
+
+                <Button fx:id="addProductButton" onAction="#handleAddProduct"
+                        style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 10 15;"
+                        text="Ajouter Produit">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <Image url="@/images/product.jpg" />
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+
+
+            </HBox>
+
+            <!-- Zone de contenu scrollable corrigée -->
+            <ScrollPane fitToWidth="true" prefHeight="368.0" prefWidth="866.0"
+                        style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+                <content>
+                    <FlowPane fx:id="productsContainer" hgap="20" vgap="20" style="-fx-padding: 20; -fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                        <!-- Les cartes produits seront ajoutées ici par le contrôleur -->
+                    </FlowPane>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

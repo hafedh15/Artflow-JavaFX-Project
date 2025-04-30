@@ -1,6 +1,5 @@
 package tn.artflow.entities;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,13 +60,15 @@ public class Cart {
         }
     }
 
+
     @Override
     public String toString() {
         return "Cart{" +
                 "id=" + id +
                 ", totalPrice=" + totalPrice +
-                ", user=" + user +
+                ", user=" + (user != null ? user.toString() : "null") +
                 ", products=" + products +
                 '}';
     }
+
 }

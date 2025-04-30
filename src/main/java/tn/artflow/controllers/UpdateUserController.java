@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -31,6 +32,12 @@ public class UpdateUserController {
     @FXML
     private ImageView imgProfile;
 
+    @FXML private Label nameError;
+    @FXML private Label lastnameError;
+    @FXML private Label emailError;
+    @FXML private Label photoError;
+
+
     private User user;
 
     private AfficherUser afficherUserController;
@@ -56,33 +63,72 @@ public class UpdateUserController {
     // Update the user info when the "Update" button is clicked
     @FXML
     private void updateUserInfo() throws SQLException {
-        System.out.println("Update button clicked!");  // Debugging output
+        clearValidation(); // Clear previous styles/errors
 
-        if (user != null) {
-            // Update the user object with new values from text fields
-            user.setName(txtName.getText());
-            user.setLastname(txtLastname.getText());
-            user.setEmail(txtEmail.getText());
-            user.setPhoto(txtPhoto.getText());
+        boolean isValid = true;
 
-            // Update the user in the database
-            UserService userService = new UserService();
-            userService.modifier(user);  // Ensure this method actually updates the database
-
-
-            // Optionally show a confirmation message
-            System.out.println("User info updated successfully!");
-            //openAfficherUserScreen();
-            if (afficherUserController != null) {
-                afficherUserController.refreshGrid();
-            }
-            // Close the update window after update
-            ((Stage) txtName.getScene().getWindow()).close();
-
+        if (txtName.getText().isEmpty()) {
+            nameError.setText("Name is required.");
+            txtName.setStyle("-fx-border-color: red; -fx-border-radius: 6;");
+            isValid = false;
         } else {
-            System.out.println("User is null, cannot update.");
+            txtName.setStyle("-fx-border-color: green; -fx-border-radius: 6;");
         }
+
+        if (txtLastname.getText().isEmpty()) {
+            lastnameError.setText("Lastname is required.");
+            txtLastname.setStyle("-fx-border-color: red; -fx-border-radius: 6;");
+            isValid = false;
+        } else {
+            txtLastname.setStyle("-fx-border-color: green; -fx-border-radius: 6;");
+        }
+
+        if (txtEmail.getText().isEmpty() || !txtEmail.getText().contains("@")) {
+            emailError.setText("Valid email is required.");
+            txtEmail.setStyle("-fx-border-color: red; -fx-border-radius: 6;");
+            isValid = false;
+        } else {
+            txtEmail.setStyle("-fx-border-color: green; -fx-border-radius: 6;");
+        }
+
+        if (txtPhoto == null || txtPhoto.getText() == null || txtPhoto.getText().isEmpty()) {
+            photoError.setText("Photo is required.");
+            if (txtPhoto != null) txtPhoto.setStyle("-fx-border-color: red; -fx-border-radius: 6;");
+            isValid = false;
+    } else {
+            txtPhoto.setStyle("-fx-border-color: green; -fx-border-radius: 6;");
+        }
+
+        if (!isValid) return;
+
+        // Update logic
+        user.setName(txtName.getText());
+        user.setLastname(txtLastname.getText());
+        user.setEmail(txtEmail.getText());
+        user.setPhoto(txtPhoto.getText());
+
+        UserService userService = new UserService();
+        userService.modifier(user);
+
+        if (afficherUserController != null) {
+            afficherUserController.refreshGrid();
+        }
+
+        ((Stage) txtName.getScene().getWindow()).close();
     }
+
+    private void clearValidation() {
+        nameError.setText("");
+        lastnameError.setText("");
+        emailError.setText("");
+        photoError.setText("");
+
+        txtName.setStyle(null);
+        txtLastname.setStyle(null);
+        txtEmail.setStyle(null);
+        txtPhoto.setStyle(null);
+    }
+
 
     @FXML
     private void browsePhoto(ActionEvent event) {

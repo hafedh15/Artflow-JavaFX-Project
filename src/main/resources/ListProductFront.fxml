@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllers.ListProductFront"
+            prefHeight="600.0" prefWidth="800.0"
+            stylesheets="@/styles.css">
+
+   <!-- Barre de navigation supérieure -->
+   <top>
+      <VBox>
+         <!-- Logo et barre de menu principale -->
+         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
+            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+
+            <!-- Logo -->
+            <ImageView fitHeight="60" fitWidth="160" preserveRatio="true">
+               <Image url="@/images/logo.jpg"/>
+            </ImageView>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Menu principal -->
+            <Button text="Article" styleClass="nav-button" onAction="#openArticle" />
+            <Button text="Produits" styleClass="nav-button-active" />
+            <Button text="Ateliers" styleClass="nav-button" onAction="#openAtelier" />
+            <Button text="Reclamations" styleClass="nav-button" onAction="#openRec" />
+            <Button text="À propos" styleClass="nav-button" />
+
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="cartButton" styleClass="cart-button" onAction="#openCart">
+               <graphic>
+                  <ImageView fitHeight="25" fitWidth="25">
+                     <Image url="@/images/panier.jpg"/>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <!-- Icône utilisateur -->
+            <Button styleClass="user-icon" onAction="#profil">
+               <graphic>
+                  <ImageView fitHeight="30" fitWidth="30">
+                     <Image url="@/images/user.jpg"/>
+                  </ImageView>
+               </graphic>
+            </Button>
+
+         </HBox>
+
+         <!-- Sous-menu de catégories -->
+         <HBox alignment="CENTER" spacing="20" styleClass="category-bar">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+
+            <Button text="Art Décoratif" styleClass="category-button" />
+            <Button text="Bijoux" styleClass="category-button" />
+            <Button text="Textile" styleClass="category-button" />
+            <Button text="Cuisine" styleClass="category-button" />
+         </HBox>
+
+
+
+         <!-- Barre de recherche -->
+         <HBox alignment="CENTER" spacing="10">
+            <padding><Insets top="10" right="20" bottom="20" left="20"/></padding>
+            <TextField promptText="Rechercher un produit..." prefWidth="500" styleClass="search-field" />
+            <Button text="Rechercher" styleClass="search-button" />
+         </HBox>
+      </VBox>
+   </top>
+
+   <!-- Contenu principal - liste des produits -->
+   <center>
+      <ScrollPane fitToWidth="true" fitToHeight="true">
+         <content>
+            <TilePane fx:id="productContainer"
+                      hgap="20.0" vgap="20.0"
+                      prefColumns="3"
+                      prefTileWidth="280.0"
+                      prefTileHeight="350.0"
+                      alignment="CENTER">
+
+               <padding>
+                  <Insets top="20" right="20" bottom="20" left="20"/>
+               </padding>
+
+            </TilePane>
+
+
+         </content>
+      </ScrollPane>
+   </center>
+
+   <!-- Pied de page -->
+   <bottom>
+      <HBox alignment="CENTER" spacing="10" styleClass="footer">
+         <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+         <Label text="© 2025 - Artisanat fait main avec passion" />
+      </HBox>
+   </bottom>
+
+</BorderPane>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.artflow.controllers.Profilp">
+    <!-- Barre de navigation supérieure -->
+    <top>
+        <!-- Logo et barre de menu principale -->
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
+            <padding><Insets bottom="10" left="20" right="20" top="10" /></padding>
+
+            <!-- Logo -->
+            <ImageView fitHeight="60" fitWidth="160" preserveRatio="true">
+                <Image url="@/images/logo.jpg" />
+            </ImageView>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Menu principal -->
+            <Button fx:id="homeButton" onAction="#navigateToHome" styleClass="nav-button" text="Accueil" />
+            <Button fx:id="productsButton" onAction="#navigateToProducts" styleClass="nav-button" text="Produits" />
+            <Button fx:id="workshopsButton" onAction="#navigateToWorkshops" styleClass="nav-button" text="Ateliers" />
+            <Button fx:id="complaintsButton" onAction="#navigateToComplaints" styleClass="nav-button" text="Reclamations" />
+            <Button fx:id="aboutButton" onAction="#navigateToAbout" styleClass="nav-button" text="À propos" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="cartButton" onAction="#navigateToCart" styleClass="cart-button">
+                <graphic>
+                    <ImageView fitHeight="25" fitWidth="25">
+                        <Image url="@/images/panier.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <!-- Icône utilisateur avec gestionnaire d'événement -->
+            <Button fx:id="userIconButton" onAction="#profil" styleClass="user-icon user-icon-active">
+                <graphic>
+                    <ImageView fitHeight="30" fitWidth="30">
+                        <Image url="@/images/user.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+    </top>
+
+    <!-- Contenu principal - TabPane pour organiser les différentes sections -->
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <Tab text="Vos Produits">
+                <VBox alignment="TOP_CENTER" spacing="15">
+                    <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+
+                    <!-- Titre de la page -->
+                    <Label styleClass="page-title" text="Bienvenue sur votre profil" />
+
+                    <!-- En-tête avec le sous-titre et le bouton d'ajout -->
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label styleClass="section-title" text="Vos produits :" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="addProductButton" onAction="#addNewProduct" styleClass="add-button" text="+ Nouveau produit" />
+                    </HBox>
+
+                    <!-- Liste des produits -->
+                    <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                        <content>
+                            <ListView fx:id="productListView" styleClass="product-list-view" />
+                        </content>
+                    </ScrollPane>
+                </VBox>
+            </Tab>
+            <Tab text="Historique des Commandes">
+                <VBox alignment="TOP_CENTER" spacing="15">
+                    <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+
+                    <!-- Titre de la section historique -->
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label styleClass="section-title" text="Votre Historique de Commandes" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="printOrderHistoryButton" onAction="#printOrderHistory" styleClass="secondary-button" text="Imprimer" />
+                        <Button fx:id="editDeliveryButton" onAction="#editDeliveryInfo" styleClass="secondary-button" text="Modifier les données de livraison" />
+                    </HBox>
+
+                    <!-- Liste des commandes -->
+                    <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                        <content>
+                            <ListView fx:id="orderHistoryListView" styleClass="order-history-list" />
+                        </content>
+                    </ScrollPane>
+
+                    <!-- Message si aucune commande -->
+                    <Label fx:id="noOrdersLabel" styleClass="info-text" text="Vous n'avez pas encore passé de commande." visible="false" />
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+
+    <!-- Pied de page -->
+    <bottom>
+        <HBox alignment="CENTER" styleClass="footer">
+            <padding><Insets bottom="15" left="20" right="20" top="15" /></padding>
+            <Label text="© 2025 - Artisan" />
+        </HBox>
+    </bottom>
+</BorderPane>

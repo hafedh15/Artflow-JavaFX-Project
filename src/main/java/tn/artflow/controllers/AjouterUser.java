@@ -2,103 +2,188 @@ package tn.artflow.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import tn.artflow.entities.User;
-import tn.artflow.services.UserService;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import tn.artflow.entities.User;
+import tn.artflow.services.UserService;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class AjouterUser {
 
-    @FXML
-    private TextField txtLastname;
+    @FXML private TextField txtLastname;
+    @FXML private TextField txtName;
+    @FXML private TextField txtemail;
+    @FXML private PasswordField txtpassword;
+    @FXML private PasswordField txtConfirmPassword;
+
+    @FXML private javafx.scene.control.Label nameError;
+    @FXML private javafx.scene.control.Label lastnameError;
+    @FXML private javafx.scene.control.Label emailError;
+    @FXML private javafx.scene.control.Label passwordError;
+    @FXML private javafx.scene.control.Label confirmPasswordError;
 
     @FXML
-    private TextField txtName;
+    private Button btnSignUp, btnGoogleSignUp, btnGoLogin;
+
+    @FXML private ImageView googleIcon; // ImageView to hold the Google icon
 
     @FXML
-    private TextField txtemail;
+    public void initialize() {
+        // Load the image
+        googleIcon.setImage(new Image(getClass().getResourceAsStream("/ImageUser/google.png")));
+    }
 
     @FXML
-    private PasswordField txtpassword;
+    private void hoverSignUp() {
+        btnSignUp.setStyle("-fx-background-color: #45A049; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 0; -fx-pref-width: 100%;");
+    }
 
     @FXML
-    private PasswordField txtConfirmPassword;
+    private void unhoverSignUp() {
+        btnSignUp.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 0; -fx-pref-width: 100%;");
+    }
 
+    @FXML
+    private void hoverGoogle() {
+        btnGoogleSignUp.setStyle("-fx-background-color: #ccc2c0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 0; -fx-pref-width: 100%;");
+    }
+
+    @FXML
+    private void unhoverGoogle() {
+        btnGoogleSignUp.setStyle("-fx-background-color: #ccc2c0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 0; -fx-pref-width: 100%;");
+    }
+
+
+    private final String errorStyle = "-fx-border-color: red; -fx-border-width: 1px; -fx-border-radius: 6; -fx-background-radius: 6;";
+    private final String successStyle = "-fx-border-color: green; -fx-border-width: 1px; -fx-border-radius: 6; -fx-background-radius: 6;";
 
     @FXML
     void AjouterUser(ActionEvent event) {
+        clearErrors();
 
-        String Name = txtName.getText();
-        String LastName = txtLastname.getText();
-        String Password = txtpassword.getText();
-        String ConfirmPassword = txtConfirmPassword.getText();
-        String Email = txtemail.getText();
-        String roles = "[\"ROLE_CLIENT\"]";   // Or however you store roles
-        String photo = null;                  // No photo provided
-        java.util.Date dateCreation = new java.util.Date(); // Now
-        boolean isBanned = false;             // Default not banned
-        boolean isVerified = true;
+        String Name = txtName.getText().trim();
+        String LastName = txtLastname.getText().trim();
+        String Password = txtpassword.getText().trim();
+        String ConfirmPassword = txtConfirmPassword.getText().trim();
+        String Email = txtemail.getText().trim();
+
+        boolean isValid = true;
+
+        if (Name.isEmpty()) {
+            nameError.setText("Name is required.");
+            txtName.setStyle(errorStyle);
+            isValid = false;
+        } else {
+            txtName.setStyle(successStyle);
+        }
+
+        if (LastName.isEmpty()) {
+            lastnameError.setText("Last name is required.");
+            txtLastname.setStyle(errorStyle);
+            isValid = false;
+        } else {
+            txtLastname.setStyle(successStyle);
+        }
+
+        if (Email.isEmpty() || !Email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+            emailError.setText("Enter a valid email.");
+            txtemail.setStyle(errorStyle);
+            isValid = false;
+        } else {
+            txtemail.setStyle(successStyle);
+        }
+
+        if (Password.isEmpty()) {
+            passwordError.setText("Password is required.");
+            txtpassword.setStyle(errorStyle);
+            isValid = false;
+        } else {
+            txtpassword.setStyle(successStyle);
+        }
 
         if (!Password.equals(ConfirmPassword)) {
-            System.out.println("Passwords do not match!");
-            // Optional: Show alert to user
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Password Mismatch");
-            alert.setContentText("Password and Confirm Password do not match.");
-            alert.showAndWait();
-            return;
+            confirmPasswordError.setText("Passwords do not match.");
+            txtConfirmPassword.setStyle(errorStyle);
+            isValid = false;
+        } else {
+            txtConfirmPassword.setStyle(successStyle);
         }
-        User usr = new User(Name,LastName,roles,Password,Email,photo,dateCreation,isBanned,isVerified);
+
+        if (!isValid) return;
+
+        String roles = "[\"ROLE_CLIENT\"]";
+        String photo = null;
+        java.util.Date dateCreation = new java.util.Date();
+        boolean isBanned = false;
+        boolean isVerified = true;
+
+        User usr = new User(Name, LastName, roles, Password, Email, photo, dateCreation, isBanned, isVerified);
         UserService ps = new UserService();
+
         try {
             ps.ajouter(usr);
 
-            // ➕ Load and show AfficherUser window
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
-//            Parent root = loader.load();
-//
-//            // Optional: You can also pass the user to the controller here if needed
-//
-//            javafx.stage.Stage stage = new javafx.stage.Stage();
-//            stage.setTitle("Liste des Utilisateurs");
-//            stage.setScene(new javafx.scene.Scene(root));
-//            stage.show();
-//
-//            // Close the current window (AjouterUser)
-//            ((javafx.scene.Node)(event.getSource())).getScene().getWindow().hide();
-
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProfilUser.fxml"));
+            // After successful sign up, redirect to Login.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
             Parent root = loader.load();
 
-// Pass the user to the profile controller
-            ProfilUserController controller = loader.getController();
-           // controller.setUser(tn.artflow.utils.UserSession.getInstance().getUser());
-            controller.setUser(usr);
+            Stage stage = new Stage();
+            stage.setTitle("Login");
+            stage.setScene(new Scene(root));
+            stage.show();
 
-            Stage profileStage = new Stage();
-            profileStage.setTitle("Profil Utilisateur");
-            profileStage.setScene(new javafx.scene.Scene(root));
-            profileStage.show();
-
+            // Close the current Sign Up window
             ((javafx.scene.Node)(event.getSource())).getScene().getWindow().hide();
 
         } catch (SQLException | IOException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
-
     }
 
+    @FXML
+    void goToLogin(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            Parent root = loader.load();
 
+            Stage stage = new Stage();
+            stage.setTitle("Login");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            ((javafx.scene.Node)(event.getSource())).getScene().getWindow().hide();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void signUpWithGoogle(ActionEvent event) {
+        System.out.println("Sign Up with Google Clicked (to be implemented)");
+        // You can later implement OAuth login here if you want!
+    }
+
+    private void clearErrors() {
+        nameError.setText("");
+        lastnameError.setText("");
+        emailError.setText("");
+        passwordError.setText("");
+        confirmPasswordError.setText("");
+
+        txtName.setStyle(null);
+        txtLastname.setStyle(null);
+        txtemail.setStyle(null);
+        txtpassword.setStyle(null);
+        txtConfirmPassword.setStyle(null);
+    }
 }

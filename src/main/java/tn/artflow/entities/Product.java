@@ -98,12 +98,22 @@ public class Product {
         this.status = status;
     }
 
+
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", user=" + (user != null ? user.getId() : "null") +
-                ", name='" + name + '\'' +
+                ", user={" +
+                "id=" + user.getId() +
+                ", name='" + user.getName()  + '\'' +
+                ", lastname='" + user.getLastname() + '\'' +
+
+                ", password='" + user.getPassword() + '\'' +
+              //  ", email='" + (user != null ? user.getEmail() : "null") + '\'' +
+             //   ", photo='" + (user != null ? user.getPhoto() : "null") + '\'' +
+             //   ", dateCreation=" + (user != null ? user.getDateCreation() : "null") +
+                "}, " +
+                "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", stock=" + stock +
@@ -112,4 +122,6 @@ public class Product {
                 ", status='" + status + '\'' +
                 '}';
     }
+
+
 }

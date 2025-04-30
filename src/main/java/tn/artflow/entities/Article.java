@@ -1,23 +1,25 @@
 package tn.artflow.entities;
 import java.util.Date;
+import java.util.List;
 
 public class Article {
     private int id;
     private String titre;
     private String contenu;
-    private Date datepub;
+    private String datepub;
     private String image;
     private String categorie;
     private String nomAuteur;
     private int views;
+    private List<Comment> comments; // Relation One-to-Many avec Comment
 
     // Constructeur par défaut
     public Article() {
     }
 
     // Constructeur avec paramètres
-    public Article(int id, String titre, String contenu, Date datepub, String image, String categorie, String nomAuteur, int views) {
-        this.id = id;
+    public Article(String titre, String contenu, String datepub, String image, String categorie, String nomAuteur, int views) {
+        //  this.id = id;
         this.titre = titre;
         this.contenu = contenu;
         this.datepub = datepub;
@@ -25,9 +27,19 @@ public class Article {
         this.categorie = categorie;
         this.nomAuteur = nomAuteur;
         this.views = views;
+
+    }
+    // public Article(int id) {
+    //   this.id = id;
+    // }
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
-    // Getters et Setters
+    //Getters et Setters
     public int getId() {
         return id;
     }
@@ -52,11 +64,11 @@ public class Article {
         this.contenu = contenu;
     }
 
-    public Date getDatepub() {
+    public String getDatepub() {
         return datepub;
     }
 
-    public void setDatepub(Date datepub) {
+    public void setDatepub(String datepub) {
         this.datepub = datepub;
     }
 

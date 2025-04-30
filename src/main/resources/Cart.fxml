@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" styleClass="background" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.artflow.controllers.CartController">
+
+    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- Navigation Bar -->
+        <top>
+            <VBox>
+                <!-- Navigation Bar -->
+                <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #f4f4f4; -fx-padding: 10px 20px; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+                    <!-- Logo -->
+                    <ImageView fitHeight="50" fitWidth="50" preserveRatio="true">
+                        <Image url="@/images/logo.jpg" />
+                    </ImageView>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Menu Items -->
+                    <Button onAction="#goToHome" styleClass="nav-button" text="Accueil" />
+                    <Button onAction="#goToProductList" style="-fx-background-color: #e5e5e5;" styleClass="nav-button" text="Produits" />
+                    <Button onAction="#navigateToWorkshops" styleClass="nav-button" text="Ateliers" />
+                    <Button onAction="#navigateToComplaints" styleClass="nav-button" text="Reclamations" />
+                    <Button onAction="#navigateToAbout" styleClass="nav-button" text="À propos" />
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Icons on the right -->
+                    <Button fx:id="cartButton" styleClass="icon-button">
+                        <graphic>
+                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                                <Image url="@/images/panier.jpg" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
+
+                    <Button fx:id="profileButton" onAction="#goToProfil" styleClass="icon-button">
+                        <graphic>
+                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                                <Image url="@/images/user.jpg" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- Simple cart header -->
+                <HBox style="-fx-background-color: #f9f9f9; -fx-padding: 15px 30px;">
+                    <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Mon Panier" />
+                </HBox>
+            </VBox>
+        </top>
+
+        <center>
+            <HBox spacing="20" style="-fx-padding: 20px;">
+                <!-- Left side - Cart items -->
+                <VBox prefHeight="532.0" prefWidth="191.0" spacing="15" style="-fx-background-color: white; -fx-padding: 15px; -fx-background-radius: 4px; -fx-border-color: #e0e0e0; -fx-border-radius: 4px;" HBox.hgrow="ALWAYS">
+               <children>
+                          <!-- Select all header -->
+                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0 0 10px 0; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+                              <CheckBox fx:id="selectAllCheckbox" onAction="#toggleSelectAll" text="Sélectionner tout" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Button fx:id="deleteSelectedButton" onAction="#deleteSelectedProducts" style="-fx-background-color: transparent; -fx-text-fill: #666;" text="Supprimer les produits sélectionnés">
+                                  <graphic>
+                                      <ImageView fitHeight="16" fitWidth="16">
+                                          <Image url="@/images/delete.jpg" />
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                          </HBox>
+      
+                      <!-- Replace the current ScrollPane and VBox in your Cart.fxml with this -->
+                      <ScrollPane fitToHeight="true" fitToWidth="true">
+                          <content>
+                              <TilePane fx:id="cartItemsContainer" alignment="CENTER" hgap="20.0" prefColumns="2" prefTileHeight="350.0" prefTileWidth="280.0" style="-fx-padding: 20;" vgap="20.0" />
+                          </content>
+                      </ScrollPane>
+               </children></VBox>
+                <!-- Right side - Cart summary -->
+                <VBox maxWidth="250" minWidth="250" spacing="15">
+                    <VBox style="-fx-background-color: white; -fx-padding: 20px; -fx-background-radius: 4px; -fx-border-color: #e0e0e0; -fx-border-radius: 4px;">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 0 10px 0;" text="Résumé de la commande:" />
+
+                        <!-- Summary details -->
+                        <GridPane hgap="10" style="-fx-padding: 10px 0;" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" />
+                                <ColumnConstraints halignment="RIGHT" />
+                            </columnConstraints>
+
+                            <Label text="Total des articles:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label fx:id="totalItemsLabel" style="-fx-font-weight: bold;" text="0 produit" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                            <Label text="Sous-total:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label fx:id="subtotalLabel" style="-fx-font-weight: bold;" text="0.00 TND" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                            <Label text="Remise:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <Label fx:id="discountLabel" style="-fx-text-fill: #e74c3c; -fx-font-weight: bold;" text="-0.00 TND" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                        </GridPane>
+
+                        <!-- Promo code -->
+                        <HBox spacing="5" style="-fx-padding: 15px 0;">
+                            <TextField fx:id="promoCodeField" promptText="Code promo" style="-fx-background-radius: 4px;" HBox.hgrow="ALWAYS" />
+                            <Button onAction="#applyPromoCode" style="-fx-background-color: #e0e0e0; -fx-text-fill: #333; -fx-background-radius: 4px;" text="Appliquer" />
+                        </HBox>
+
+                        <!-- Total -->
+                        <HBox alignment="CENTER" style="-fx-padding: 10px 0; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
+                            <Label style="-fx-font-size: 16px;" text="Total" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="totalLabel" style="-fx-font-weight: bold; -fx-font-size: 20px;" text="0.00 TND" />
+                        </HBox>
+
+                        <!-- Checkout button -->
+                        <Button fx:id="checkoutButton" maxWidth="Infinity" onAction="#checkout" style="-fx-background-color: #00c853; -fx-text-fill: white; -fx-padding: 15px; -fx-background-radius: 4px; -fx-font-weight: bold; -fx-font-size: 14px;" text="PASSER LA COMMANDE" />
+                    </VBox>
+                </VBox>
+            </HBox>
+        </center>
+    </BorderPane>
+
+    <stylesheets>
+        <URL value="@/styles.css" />
+    </stylesheets>
+</AnchorPane>

@@ -1,30 +1,121 @@
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="tn.artflow.controllers.UpdateUserControllerDash">
-    <children>
-        <Label text="Name" layoutX="20" layoutY="20"/>
-        <TextField fx:id="nameField" layoutX="100" layoutY="20"/>
+<?xml version="1.0" encoding="UTF-8"?>
 
-        <Label text="Lastname" layoutX="20" layoutY="60"/>
-        <TextField fx:id="lastnameField" layoutX="100" layoutY="60"/>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-        <Label text="Email" layoutX="20" layoutY="100"/>
-        <TextField fx:id="emailField" layoutX="100" layoutY="100"/>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="tn.artflow.controllers.UpdateUserControllerDash"
+           style="-fx-background-color: #f9f5f1;"
+           prefWidth="800" prefHeight="600">
 
-        <Label text="Roles" layoutX="20" layoutY="140"/>
-        <ComboBox fx:id="rolesComboBox" layoutX="100" layoutY="140"/>
+    <VBox spacing="20" alignment="CENTER"
+          maxWidth="600"
+          style="-fx-background-color: #ffffff;
+                 -fx-background-radius: 12;
+                 -fx-padding: 30;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 5);">
 
-        <Label text="Banned" layoutX="20" layoutY="180"/>
-        <ComboBox fx:id="bannedComboBox" layoutX="100" layoutY="180"/>
+        <!-- Title -->
+        <Label text="✏️ Mettre à jour l'utilisateur"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
 
-        <Label text="Photo" layoutX="20" layoutY="220"/>
-        <Button text="Choose Photo" layoutX="100" layoutY="220" onAction="#handleChoosePhoto"/>
+        <GridPane hgap="10" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" minWidth="100"/>
+                <ColumnConstraints minWidth="300"/>
+            </columnConstraints>
 
-        <Button text="Update" layoutX="100" layoutY="270" onAction="#handleUpdateDash"/>
-    </children>
-</AnchorPane>
+            <!-- Name -->
+            <Label text="Nom:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-text-fill: #5C4F3D; -fx-font-weight: bold;" />
+            <TextField fx:id="nameField" promptText="Entrez le nom"
+                       style="-fx-background-color: white;
+                              -fx-border-color: #E8DECD;
+                              -fx-background-radius: 8;
+                              -fx-border-radius: 8;
+                              -fx-padding: 8;"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label fx:id="nameError" textFill="red" style="-fx-font-size: 11px;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <!-- Lastname -->
+            <Label text="Prénom:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                   style="-fx-text-fill: #5C4F3D; -fx-font-weight: bold;" />
+            <TextField fx:id="lastnameField" promptText="Entrez le prénom"
+                       style="-fx-background-color: white;
+                              -fx-border-color: #E8DECD;
+                              -fx-background-radius: 8;
+                              -fx-border-radius: 8;
+                              -fx-padding: 8;"
+                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label fx:id="lastnameError" textFill="red" style="-fx-font-size: 11px;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <!-- Email -->
+            <Label text="Email:" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                   style="-fx-text-fill: #5C4F3D; -fx-font-weight: bold;" />
+            <TextField fx:id="emailField" promptText="Entrez l'email"
+                       style="-fx-background-color: white;
+                              -fx-border-color: #E8DECD;
+                              -fx-background-radius: 8;
+                              -fx-border-radius: 8;
+                              -fx-padding: 8;"
+                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            <Label fx:id="emailError" textFill="red" style="-fx-font-size: 11px;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <!-- Role -->
+            <Label text="Rôle:" GridPane.rowIndex="6" GridPane.columnIndex="0"
+                   style="-fx-text-fill: #5C4F3D; -fx-font-weight: bold;" />
+            <ComboBox fx:id="rolesComboBox" promptText="Sélectionnez le rôle"
+                      style="-fx-background-color: white;
+                             -fx-border-color: #E8DECD;
+                             -fx-background-radius: 8;
+                             -fx-border-radius: 8;
+                             -fx-padding: 6;"
+                      GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+            <Label fx:id="roleError" textFill="red" style="-fx-font-size: 11px;" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+            <!-- Banned -->
+            <Label text="Banni:" GridPane.rowIndex="8" GridPane.columnIndex="0"
+                   style="-fx-text-fill: #5C4F3D; -fx-font-weight: bold;" />
+            <ComboBox fx:id="bannedComboBox" promptText="Oui / Non"
+                      style="-fx-background-color: white;
+                             -fx-border-color: #E8DECD;
+                             -fx-background-radius: 8;
+                             -fx-border-radius: 8;
+                             -fx-padding: 6;"
+                      GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+            <Label fx:id="bannedError" textFill="red" style="-fx-font-size: 11px;" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+            <!-- Photo -->
+            <Label text="Photo:" GridPane.rowIndex="10" GridPane.columnIndex="0"
+                   style="-fx-text-fill: #5C4F3D; -fx-font-weight: bold;" />
+            <HBox spacing="8" GridPane.rowIndex="10" GridPane.columnIndex="1">
+                <TextField fx:id="photoPathField" promptText="Chemin de la photo"
+                           editable="false"
+                           style="-fx-background-color: white;
+                                  -fx-border-color: #E8DECD;
+                                  -fx-background-radius: 8;
+                                  -fx-border-radius: 8;
+                                  -fx-padding: 6;"
+                           HBox.hgrow="ALWAYS"/>
+                <Button text="Parcourir" onAction="#handleChoosePhoto"
+                        style="-fx-background-color: #A18E78;
+                               -fx-text-fill: white;
+                               -fx-background-radius: 8;
+                               -fx-font-weight: bold;"/>
+            </HBox>
+
+        </GridPane>
+
+        <!-- Submit Button -->
+        <Button text="Mettre à jour"
+                onAction="#handleUpdateDash"
+                style="-fx-background-color: #5C4F3D;
+                       -fx-text-fill: white;
+                       -fx-font-weight: bold;
+                       -fx-background-radius: 8;
+                       -fx-padding: 10 20;"
+                maxWidth="200"/>
+
+    </VBox>
+</StackPane>

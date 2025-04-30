@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.artflow.controllers.WorkshopCard"
+            prefHeight="350.0" prefWidth="250.0"
+            style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 3);">
+
+    <VBox spacing="8" fillWidth="true" style="-fx-padding: 10;"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+
+        <ImageView fx:id="imageView" fitHeight="120" fitWidth="230" style="-fx-background-radius: 8;" />
+
+        <Label fx:id="titleLabel" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+
+        <Label fx:id="dateLabel" style="-fx-font-size: 12px; -fx-text-fill: #555;" />
+
+        <HBox spacing="8">
+            <Label fx:id="typeLabel" text="Type" style="-fx-font-size: 12px;" />
+            <Label fx:id="locationLabel" text="Lieu" style="-fx-font-size: 12px;" />
+        </HBox>
+
+        <Label fx:id="descriptionLabel" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
+
+
+        <HBox spacing="6">
+            <Button text="Register now" onAction="#registerReservation"
+                    style="-fx-background-color: #be9b7b; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 5;" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>
