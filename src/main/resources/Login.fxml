@@ -42,7 +42,7 @@
                 style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;" />
 
         <!-- Google Login Button -->
-        <Button text="Continue with Google" maxWidth="Infinity"
+        <Button fx:id="googleLoginButton" text="Continue with Google" maxWidth="Infinity"
                 onAction="#handleGoogleLogin"
                 style="-fx-background-color: #DB4437; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;" />
 

@@ -1,0 +1,28 @@
+mai 01, 2025 4:58:06 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à ll@ll.ll
+mai 01, 2025 4:58:12 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à ll@ll.ll
+mai 01, 2025 4:59:48 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à daaskhould1@gmail.com
+mai 01, 2025 4:59:54 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à daaskhould1@gmail.com
+mai 01, 2025 5:00:33 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à daaskhouloud1@gmail.com
+mai 01, 2025 5:00:40 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à daaskhouloud1@gmail.com
+mai 01, 2025 5:02:49 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à skander.selmi@esprit.tn
+mai 01, 2025 5:02:56 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 5:18:17 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à skander.selmi@esprit.tn
+mai 01, 2025 5:18:24 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 5:19:20 PM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Préparation de l'envoi d'un email de bienvenue à skander.selmi@esprit.tn
+mai 01, 2025 5:19:26 PM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Email de bienvenue envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 5:19:58 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à skander.selmi@esprit.tn
+mai 01, 2025 5:20:04 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à skander.selmi@esprit.tn

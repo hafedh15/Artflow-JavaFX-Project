@@ -14,7 +14,8 @@ public class User {
     private Date dateCreation;
     private boolean isBanned;
     private boolean isVerified;
-
+    private String verificationCode;
+    private boolean googleAccount;
 
     public User() {
     }
@@ -155,6 +156,23 @@ public class User {
     }
     public void setIsVerified(boolean isVerified) {
         this.isVerified = isVerified;
+    }
+
+
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+    public boolean isGoogleAccount() {
+        return googleAccount;
+    }
+
+    public void setGoogleAccount(boolean googleAccount) {
+        this.googleAccount = googleAccount;
     }
 
     @Override

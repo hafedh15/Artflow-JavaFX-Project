@@ -12,6 +12,9 @@ import java.util.List;
 public class UserService implements IService<User>{
     Connection cnx;
     String sql;
+
+
+
     public UserService(){
         cnx= MyDataBase.getInstance().getCnx();
     }
@@ -239,7 +242,91 @@ public class UserService implements IService<User>{
             return false;
         }
     }
+    private User extractUserFromResultSet(ResultSet rs) throws SQLException {
+        User user = new User();
+        user.setId(rs.getInt("id"));
+        user.setName(rs.getString("name"));
+        user.setLastname(rs.getString("lastname"));
+        user.setRoles(rs.getString("roles"));
+        user.setPassword(rs.getString("password"));
+        user.setEmail(rs.getString("email"));
+        user.setPhoto(rs.getString("photo"));
+        user.setDateCreation(rs.getTimestamp("date_creation"));
+        user.setIs_Banned(rs.getBoolean("is_banned"));
+        user.setIsVerified(rs.getBoolean("is_verified"));
+        return user;
+    }
 
+    public User findByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return extractUserFromResultSet(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Updates the profile photo path for a user
+     *
+     * @param userId The ID of the user to update
+     * @param photoPath The new photo path
+     * @return true if the update was successful, false otherwise
+     * @throws SQLException if a database error occurs
+     */
+    public boolean updatePhoto(int userId, String photoPath) throws SQLException {
+        String query = "UPDATE user SET photo = ? WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(query)) {
+            preparedStatement.setString(1, photoPath);
+            preparedStatement.setInt(2, userId);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
+
+
+    // Add this helper method to get the current photo path
+    public String getUserPhotoPath(int userId) throws SQLException {
+        String query = "SELECT photo FROM user WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(query)) {
+            preparedStatement.setInt(1, userId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("photo");
+                }
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Updates a user's verification status
+     *
+     * @param userId The ID of the user to update
+     * @param isVerified The verification status to set
+     * @return true if update was successful, false otherwise
+     * @throws SQLException if a database error occurs
+     */
+    public boolean updateVerificationStatus(int userId, boolean isVerified) throws SQLException {
+        String query = "UPDATE user SET is_verified = ? WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(query)) {
+            preparedStatement.setBoolean(1, isVerified);
+            preparedStatement.setInt(2, userId);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
 
 
 }

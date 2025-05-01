@@ -1,5 +1,6 @@
 package tn.artflow.controllers;
 
+import com.google.api.client.auth.oauth2.Credential;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,8 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import tn.artflow.entities.GoogleSignIn;
 import tn.artflow.entities.User;
 import tn.artflow.services.UserService;
+import tn.artflow.tools.EmailSender;
+import tn.artflow.tools.EmailVerificationUtil;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -30,10 +34,9 @@ public class AjouterUser {
     @FXML private javafx.scene.control.Label emailError;
     @FXML private javafx.scene.control.Label passwordError;
     @FXML private javafx.scene.control.Label confirmPasswordError;
+    @FXML private javafx.scene.control.Label generalError;
 
-    @FXML
-    private Button btnSignUp, btnGoogleSignUp, btnGoLogin;
-
+    @FXML private Button btnSignUp, btnGoogleSignUp, btnGoLogin;
     @FXML private ImageView googleIcon; // ImageView to hold the Google icon
 
     @FXML
@@ -124,29 +127,70 @@ public class AjouterUser {
         String photo = null;
         java.util.Date dateCreation = new java.util.Date();
         boolean isBanned = false;
-        boolean isVerified = true;
+        boolean isVerified = false; // Set to false until email is verified
 
         User usr = new User(Name, LastName, roles, Password, Email, photo, dateCreation, isBanned, isVerified);
         UserService ps = new UserService();
 
         try {
+            // Check if email already exists
+            User existingUser = ps.findByEmail(Email);
+            if (existingUser != null) {
+                emailError.setText("Email already exists.");
+                txtemail.setStyle(errorStyle);
+                return;
+            }
+
+            // Add user to database with isVerified=false
             ps.ajouter(usr);
 
-            // After successful sign up, redirect to Login.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
-            Parent root = loader.load();
+            // Generate verification code
+            String verificationCode = EmailVerificationUtil.generateVerificationCode(Email);
 
-            Stage stage = new Stage();
-            stage.setTitle("Login");
-            stage.setScene(new Scene(root));
-            stage.show();
+            // Send verification email
+            try {
+                EmailSender.sendVerificationEmail(Email, verificationCode);
 
-            // Close the current Sign Up window
-            ((javafx.scene.Node)(event.getSource())).getScene().getWindow().hide();
+                // Open verification dialog
+                showVerificationDialog(Email, Name, event);
 
-        } catch (SQLException | IOException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
+                generalError.setText("Registration successful but failed to send verification email: " + e.getMessage());
+            }
+
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
+            generalError.setText("An error occurred while registering: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Show email verification dialog
+     */
+    private void showVerificationDialog(String email, String firstName, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/VerifyEmail.fxml"));
+            Parent root = loader.load();
+
+            // Pass data to the controller
+            VerifyEmailController controller = loader.getController();
+            controller.setEmailInfo(email, firstName);
+
+            // Show dialog
+            Stage stage = new Stage();
+            stage.setTitle("Verify Email");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+
+            // Close registration window
+            ((javafx.scene.Node)(event.getSource())).getScene().getWindow().hide();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            generalError.setText("Error showing verification dialog: " + e.getMessage());
         }
     }
 
@@ -169,8 +213,82 @@ public class AjouterUser {
 
     @FXML
     void signUpWithGoogle(ActionEvent event) {
-        System.out.println("Sign Up with Google Clicked (to be implemented)");
-        // You can later implement OAuth login here if you want!
+        try {
+            // Authenticate with Google
+            Credential credential = GoogleSignIn.authorize();
+            if (credential != null) {
+                // Get user info from Google
+                GoogleSignIn.GoogleUserInfo userInfo = GoogleSignIn.getUserInfo(credential);
+
+                // Check if user already exists
+                UserService userService = new UserService();
+                User existingUser = userService.findByEmail(userInfo.getEmail());
+
+                if (existingUser != null) {
+                    // User already exists with this email
+                    // Log them in directly
+                    tn.artflow.utils.UserSession.getInstance(existingUser);
+
+                    // Open dashboard
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = new Stage();
+                    stage.setTitle("Dashboard - Users");
+                    stage.setScene(new Scene(root));
+                    stage.show();
+
+                    // Close current window
+                    ((javafx.scene.Node)(event.getSource())).getScene().getWindow().hide();
+                } else {
+                    // Create new user with Google data
+                    String name = userInfo.getGivenName();
+                    String lastName = userInfo.getFamilyName();
+                    String email = userInfo.getEmail();
+                    String roles = "[\"ROLE_CLIENT\"]";
+                    // Generate a random password since they'll login with Google anyway
+                    String password = generateRandomPassword();
+                    String photo = userInfo.getPictureUrl();
+                    java.util.Date dateCreation = new java.util.Date();
+                    boolean isBanned = false;
+                    boolean isVerified = true;  // Google accounts are pre-verified
+
+                    User newUser = new User(name, lastName, roles, password, email, photo, dateCreation, isBanned, isVerified);
+                    userService.ajouter(newUser);
+
+                    // Log them in
+                    tn.artflow.utils.UserSession.getInstance(newUser);
+
+                    // Open dashboard
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = new Stage();
+                    stage.setTitle("Dashboard - Users");
+                    stage.setScene(new Scene(root));
+                    stage.show();
+
+                    // Close current window
+                    ((javafx.scene.Node)(event.getSource())).getScene().getWindow().hide();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+//            generalError.setText("Google Sign-Up failed: " + e.getMessage());
+        }
+    }
+
+    private String generateRandomPassword() {
+        // Generate a secure random password
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        StringBuilder sb = new StringBuilder();
+        java.util.Random random = new java.util.Random();
+
+        for (int i = 0; i < 12; i++) {
+            int index = random.nextInt(chars.length());
+            sb.append(chars.charAt(index));
+        }
+
+        return sb.toString();
     }
 
     private void clearErrors() {
@@ -179,6 +297,9 @@ public class AjouterUser {
         emailError.setText("");
         passwordError.setText("");
         confirmPasswordError.setText("");
+        if (generalError != null) {
+            generalError.setText("");
+        }
 
         txtName.setStyle(null);
         txtLastname.setStyle(null);
