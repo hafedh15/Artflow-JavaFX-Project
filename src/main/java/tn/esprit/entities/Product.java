@@ -122,6 +122,15 @@ public class Product {
                 ", status='" + status + '\'' +
                 '}';
     }
-
+    // Constructeur de copie pour la traduction
+    public Product(Product original) {
+        this.id = original.id;
+        this.name = original.name;
+        this.description = original.description;
+        this.price = original.price;
+        this.category = original.category;
+        this.image = original.image;
+        // Copier d'autres attributs si nécessaire
+    }
 
 }

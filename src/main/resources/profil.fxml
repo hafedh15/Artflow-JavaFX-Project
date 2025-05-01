@@ -70,7 +70,7 @@
                     <HBox alignment="CENTER_LEFT" spacing="20">
                         <Label styleClass="section-title" text="Vos produits :" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button fx:id="addProductButton" onAction="#addNewProduct" styleClass="add-button" text="+ Nouveau produit" />
+
                     </HBox>
 
                     <!-- Liste des produits -->
@@ -81,6 +81,31 @@
                     </ScrollPane>
                 </VBox>
             </Tab>
+
+            <!-- Nouvel onglet pour les demandes de produits -->
+            <Tab text="Vos demandes de postuler un produit">
+                <VBox alignment="TOP_CENTER" spacing="15">
+                    <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+
+                    <!-- Titre de la section demandes -->
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label styleClass="section-title" text="Vos demandes de produits" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="addProductRequestButton" onAction="#addNewProductRequest" styleClass="add-button" text="+ Nouvelle demande" />
+                    </HBox>
+
+                    <!-- Liste des demandes de produits -->
+                    <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                        <content>
+                            <ListView fx:id="productRequestListView" styleClass="product-request-list" />
+                        </content>
+                    </ScrollPane>
+
+                    <!-- Message si aucune demande -->
+                    <Label fx:id="noRequestsLabel" styleClass="info-text" text="Vous n'avez pas encore fait de demande de produit." visible="false" />
+                </VBox>
+            </Tab>
+
             <Tab text="Historique des Commandes">
                 <VBox alignment="TOP_CENTER" spacing="15">
                     <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>

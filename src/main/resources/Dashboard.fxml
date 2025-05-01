@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.shape.Circle?>
 <BorderPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: #F9F5F1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Contollers.AdminDashboardController">
 
     <!-- Panneau de navigation latéral - style artisanal avec tons marron doux -->
@@ -119,13 +120,18 @@
 
                 <Region HBox.hgrow="ALWAYS" />
 
-                <TextField prefWidth="250" promptText="Rechercher..." style="-fx-background-radius: 20; -fx-padding: 8 15; -fx-background-color: #FFFFFF; -fx-border-color: #E8DECD; -fx-border-radius: 20;" />
-
-                <Button style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 15;">
+                <Button maxWidth="Infinity" style="-fx-background-color: #C8B6A6; -fx-text-fill: #5C4F3D; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15; -fx-background-radius: 5;" text="Produits" fx:id="productsButton" onAction="#handleProductsButtonClick">
                     <graphic>
-                        <ImageView fitHeight="16" fitWidth="16">
-                            <Image url="@/images/product.jpg" />
-                        </ImageView>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <ImageView fitHeight="16" fitWidth="16">
+                                <Image url="@/images/belll.jpeg" />
+                            </ImageView>
+                            <!-- Indicateur de notification -->
+                            <StackPane fx:id="productNotificationBadge" visible="true" managed="true">
+                                <Circle radius="8" fill="#FF5252" />
+                                <Label fx:id="productNotificationCount" style="-fx-font-size: 10px; -fx-text-fill: white; -fx-font-weight: bold;" text="0" />
+                            </StackPane>
+                        </HBox>
                     </graphic>
                 </Button>
             </HBox>
@@ -147,6 +153,22 @@
                         </HBox>
                     </VBox>
                 </StackPane>
+                <StackPane prefHeight="120" prefWidth="250" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
+                    <VBox alignment="CENTER_LEFT" style="-fx-padding: 20;">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <StackPane prefHeight="50" prefWidth="50" style="-fx-background-color: #F2EDE7; -fx-background-radius: 10;">
+                                <ImageView fitHeight="24" fitWidth="24">
+                                    <Image url="@/images/attente.png" />
+                                </ImageView>
+                            </StackPane>
+                            <VBox>
+                                <Label style="-fx-font-size: 14px; -fx-text-fill: #8D7B6A;" text="Produits en Attente" />
+                                <Label fx:id="pendingProductsLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="45" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+
             </HBox>
 
             <!-- Actions avec les boutons -->

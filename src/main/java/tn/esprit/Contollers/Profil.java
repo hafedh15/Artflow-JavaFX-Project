@@ -45,15 +45,233 @@ public class Profil implements Initializable {
     private Label noOrdersLabel;
 
     @FXML
+    private Label noRequestsLabel;
+    @FXML
     private Button addProductButton;
-
+    @FXML
+    private ListView<Product> productRequestListView;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Chargement des produits
         loadUserProducts();
-
+        // Chargement des demandes de produits en attente
+        loadPendingProductRequests();
         // Chargement des commandes
         loadUserOrders();
+    }
+
+    // Nouvelle méthode pour charger les demandes de produits en attente
+    private void loadPendingProductRequests() {
+        ProductService ps = new ProductService();
+        try {
+            // Utilisation de la méthode getPendingProductsByUser
+            List<Product> pendingProducts = ps.getPendingProductsByUser(1); // ID utilisateur fixé à 1
+
+            if (pendingProducts.isEmpty()) {
+                noRequestsLabel.setVisible(true);
+                productRequestListView.setVisible(false);
+            } else {
+                noRequestsLabel.setVisible(false);
+                productRequestListView.setVisible(true);
+                productRequestListView.getItems().addAll(pendingProducts);
+
+                // Configuration de l'affichage des demandes de produits en attente
+                productRequestListView.setCellFactory(new Callback<ListView<Product>, ListCell<Product>>() {
+                    @Override
+                    public ListCell<Product> call(ListView<Product> listView) {
+                        return new ListCell<Product>() {
+                            private ImageView imageView = new ImageView();
+                            private Label nameLabel = new Label();
+                            private Label priceLabel = new Label();
+                            private Label stockLabel = new Label();
+                            private Label categoryLabel = new Label();
+                            private Label descriptionLabel = new Label();
+                            private Label statusLabel = new Label();
+                            private Button detailsButton = new Button("Détails");
+                            private Button cancelButton = new Button("Annuler");
+                            private HBox buttonBox = new HBox(10, detailsButton, cancelButton);
+                            private VBox infoBox = new VBox(5, nameLabel, priceLabel, stockLabel, categoryLabel, descriptionLabel, statusLabel, buttonBox);
+                            private HBox hBox = new HBox(imageView, infoBox);
+
+                            {
+                                imageView.setFitWidth(100);
+                                imageView.setFitHeight(100);
+                                imageView.setPreserveRatio(true);
+                                imageView.setSmooth(true);
+                                hBox.setSpacing(10);
+
+                                // Style des boutons
+                                detailsButton.getStyleClass().add("details-button");
+                                cancelButton.getStyleClass().add("delete-button");
+                                buttonBox.setAlignment(Pos.CENTER_LEFT);
+                                buttonBox.setPadding(new javafx.geometry.Insets(5, 0, 0, 0));
+
+                                // Action des boutons
+                                detailsButton.setOnAction(e -> showProductRequestDetails(getItem()));
+                                cancelButton.setOnAction(e -> cancelProductRequest(getItem()));
+
+                                // Appliquer des styles
+                                nameLabel.getStyleClass().add("product-name");
+                                priceLabel.getStyleClass().add("product-price");
+                                stockLabel.getStyleClass().add("product-detail");
+                                categoryLabel.getStyleClass().add("product-detail");
+                                descriptionLabel.getStyleClass().add("product-detail");
+                                statusLabel.getStyleClass().add("product-status");
+
+                                hBox.getStyleClass().add("product-request-cell");
+                                HBox.setHgrow(infoBox, Priority.ALWAYS);
+                            }
+
+                            @Override
+                            protected void updateItem(Product p, boolean empty) {
+                                super.updateItem(p, empty);
+                                if (empty || p == null) {
+                                    setText(null);
+                                    setGraphic(null);
+                                } else {
+                                    // Correction pour charger l'image depuis le système de fichier
+                                    File imageFile = new File("C:/xampp/htdocs" + p.getImage());
+                                    try {
+                                        String fileUri = imageFile.toURI().toString();
+                                        Image image = new Image(fileUri, true);
+                                        imageView.setImage(image);
+                                    } catch (Exception e) {
+                                        // Fallback à une image par défaut
+                                        try {
+                                            Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-product.jpg"));
+                                            imageView.setImage(defaultImage);
+                                        } catch (Exception ex) {
+                                            System.err.println("Impossible de charger l'image par défaut");
+                                        }
+                                        System.err.println("Impossible de charger l'image: " + imageFile.getAbsolutePath());
+                                    }
+
+                                    nameLabel.setText("🛒 Produit: " + p.getName());
+                                    priceLabel.setText("💶 Prix: " + p.getPrice() + " €");
+                                    stockLabel.setText("📦 Stock: " + p.getStock());
+                                    categoryLabel.setText("📁 Catégorie: " + p.getCategory());
+                                    descriptionLabel.setText("📝 Description: " + p.getDescription());
+
+                                    // Mettre en évidence le statut "en attente"
+                                    statusLabel.setText("⏳ Statut: " + p.getStatus());
+                                    statusLabel.getStyleClass().add("pending-status");
+
+                                    setGraphic(hBox);
+                                }
+                            }
+                        };
+                    }
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de charger les demandes de produits: " + e.getMessage());
+        }
+    }
+
+    // Nouvelle méthode pour afficher les détails d'une demande de produit
+    private void showProductRequestDetails(Product product) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Détails de la demande de produit");
+        dialog.setHeaderText("Informations complètes de la demande");
+
+        // Contenu du dialogue
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(20));
+
+        // Information du produit
+        Label productName = new Label("Nom du produit: " + product.getName());
+        Label productDescription = new Label("Description: " + product.getDescription());
+        Label productPrice = new Label("Prix: " + product.getPrice() + " €");
+        Label productStock = new Label("Stock: " + product.getStock());
+        Label productCategory = new Label("Catégorie: " + product.getCategory());
+        Label productStatus = new Label("Statut: " + product.getStatus());
+        Label submissionDate = new Label("Date de soumission: À définir"); // À remplacer par la date réelle
+
+        // Ajouter une image du produit
+        ImageView productImage = new ImageView();
+        productImage.setFitWidth(200);
+        productImage.setFitHeight(200);
+        productImage.setPreserveRatio(true);
+
+        // Charger l'image du produit
+        File imageFile = new File("C:/xampp/htdocs" + product.getImage());
+        try {
+            String fileUri = imageFile.toURI().toString();
+            Image image = new Image(fileUri, true);
+            productImage.setImage(image);
+        } catch (Exception e) {
+            // Fallback à une image par défaut
+            try {
+                Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-product.jpg"));
+                productImage.setImage(defaultImage);
+            } catch (Exception ex) {
+                System.err.println("Impossible de charger l'image par défaut");
+            }
+        }
+
+        // Assembler tous les éléments
+        content.getChildren().addAll(
+                productImage,
+                new Separator(),
+                productName,
+                productDescription,
+                productPrice,
+                productStock,
+                productCategory,
+                productStatus,
+                submissionDate
+        );
+
+        dialog.getDialogPane().setContent(content);
+
+        // Bouton de fermeture
+        ButtonType closeButton = new ButtonType("Fermer", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(closeButton);
+
+        dialog.showAndWait();
+    }
+
+    // Nouvelle méthode pour annuler une demande de produit
+    private void cancelProductRequest(Product product) {
+        if (showConfirmationDialog("Confirmation d'annulation",
+                "Êtes-vous sûr de vouloir annuler la demande pour le produit " + product.getName() + "?")) {
+            try {
+                ProductService ps = new ProductService();
+                ps.supprimerParId(product.getId());
+                refreshProductRequestList();
+                showAlert(Alert.AlertType.INFORMATION, "Annulation réussie",
+                        "La demande de produit a été annulée avec succès.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur d'annulation",
+                        "Impossible d'annuler la demande de produit: " + e.getMessage());
+            }
+        }
+    }
+
+    // Méthode pour rafraîchir la liste des demandes de produits
+    private void refreshProductRequestList() {
+        try {
+            ProductService ps = new ProductService();
+
+            productRequestListView.getItems().clear();
+            List<Product> pendingProducts = ps.getPendingProductsByUser(1); // ID utilisateur fixé à 1
+
+            if (pendingProducts.isEmpty()) {
+                noRequestsLabel.setVisible(true);
+                productRequestListView.setVisible(false);
+            } else {
+                noRequestsLabel.setVisible(false);
+                productRequestListView.setVisible(true);
+                productRequestListView.getItems().addAll(pendingProducts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de rafraîchir la liste des demandes de produits: " + e.getMessage());
+        }
     }
 
     private void loadUserProducts() {
@@ -155,7 +373,7 @@ public class Profil implements Initializable {
         }
     }
 
-    // Modification de la méthode loadUserOrders dans la classe Profil.java
+    // Modification pour la méthode loadUserOrders() qui affiche les commandes
     private void loadUserOrders() {
         OrderService orderService = new OrderService();
         try {
@@ -181,12 +399,14 @@ public class Profil implements Initializable {
                             private Label statusLabel = new Label();
                             private Label totalLabel = new Label();
                             private Button detailsButton = new Button("Détails");
-                            // Ajout du bouton de suppression
                             private Button deleteButton = new Button("Supprimer");
-                            private HBox buttonBox = new HBox(10, detailsButton, deleteButton);
+                            // Ajout du bouton de paiement en ligne
+                            private Button paymentButton = new Button("Payer en ligne");
+
+                            private VBox buttonsVBox = new VBox(5, detailsButton, deleteButton, paymentButton);
                             private VBox orderInfoBox = new VBox(5, orderIdLabel, dateLabel, addressLabel,
                                     phoneLabel, statusLabel, totalLabel);
-                            private HBox mainBox = new HBox(10, orderInfoBox, buttonBox);
+                            private HBox mainBox = new HBox(10, orderInfoBox, buttonsVBox);
 
                             {
                                 // Stylisation des éléments
@@ -200,22 +420,18 @@ public class Profil implements Initializable {
                                 detailsButton.getStyleClass().add("details-button");
                                 detailsButton.setOnAction(e -> showOrderDetails(getItem()));
 
-                                // Style et action pour le bouton de suppression
                                 deleteButton.getStyleClass().add("delete-button");
                                 deleteButton.setOnAction(e -> deleteOrder(getItem()));
 
-                                buttonBox.setAlignment(Pos.CENTER_RIGHT);
+                                // Style et action pour le bouton de paiement
+                                paymentButton.getStyleClass().add("payment-button");
+                                paymentButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
+                                paymentButton.setOnAction(e -> navigateToPayment(getItem()));
+
+                                buttonsVBox.setAlignment(Pos.CENTER);
                                 mainBox.setAlignment(Pos.CENTER_LEFT);
                                 mainBox.setPadding(new javafx.geometry.Insets(10));
                                 mainBox.getStyleClass().add("order-cell");
-
-                                // Ajouter une disposition verticale pour les boutons
-                                VBox buttonsVBox = new VBox(5, detailsButton, deleteButton);
-                                buttonsVBox.setAlignment(Pos.CENTER);
-
-                                // Remplacer le buttonBox par le buttonsVBox dans le mainBox
-                                mainBox.getChildren().clear();
-                                mainBox.getChildren().addAll(orderInfoBox, buttonsVBox);
                             }
 
                             @Override
@@ -230,7 +446,15 @@ public class Profil implements Initializable {
                                     addressLabel.setText("🏠 Adresse: " + order.getDeliveryAddress());
                                     phoneLabel.setText("📞 Téléphone: " + order.getPhoneNumber());
                                     statusLabel.setText("💳 Statut: " + (order.getPaid() ? "Payée" : "En attente de paiement"));
-                               //     totalLabel.setText("💰 Total: " + order.calculateTotal() + " €");
+                                    //totalLabel.setText("💰 Total: " + order.calculateTotal() + " €");
+
+                                    // Désactiver le bouton de paiement si la commande est déjà payée
+                                    paymentButton.setDisable(order.getPaid());
+                                    if (order.getPaid()) {
+                                        paymentButton.setText("Déjà payée");
+                                    } else {
+                                        paymentButton.setText("Payer en ligne");
+                                    }
 
                                     setGraphic(mainBox);
                                 }
@@ -243,6 +467,42 @@ public class Profil implements Initializable {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Impossible de charger les commandes: " + e.getMessage());
+        }
+    }
+
+    // Nouvelle méthode pour naviguer vers la page de paiement
+    private void navigateToPayment(Order order) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paiement.fxml"));
+            Parent root = loader.load();
+
+            // Vérifier si le contrôleur de la page paiement possède une méthode pour initialiser les données
+            Object controller = loader.getController();
+
+            // Si le contrôleur a une méthode setOrderData, on l'utilise
+            if (controller instanceof Paiement) {
+                Paiement paiementController = (Paiement) controller;
+                try {
+                    // Essayer d'appeler la méthode setOrderData si elle existe
+                //    paiementController.setOrderData(order);
+                } catch (Exception e) {
+                    System.err.println("La méthode setOrderData n'existe pas dans PaiementController: " + e.getMessage());
+                    // Continuer même sans pouvoir passer les données
+                }
+            }
+
+            Stage stage = (Stage) orderHistoryListView.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+            // Afficher un message de confirmation
+            System.out.println("Redirection vers la page de paiement pour la commande #" + order.getId());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de charger la page de paiement: " + e.getMessage());
         }
     }
     // Méthode pour supprimer une commande
@@ -570,6 +830,22 @@ public class Profil implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Impossible de charger la page: " + fxmlPath);
+        }
+    }
+
+    public void addNewProductRequest(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterProduct.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de charger le formulaire d'ajout de produit: " + e.getMessage());
         }
     }
 }

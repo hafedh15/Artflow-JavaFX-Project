@@ -3,12 +3,12 @@ package tn.esprit.Contollers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import tn.esprit.entities.Cart;
 import tn.esprit.entities.User;
 import tn.esprit.services.OrderService;
@@ -16,6 +16,7 @@ import tn.esprit.entities.Order;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 
 public class OrderDetails {
 
@@ -122,8 +123,41 @@ public class OrderDetails {
             alert.setContentText("🎉 Votre commande a été passée avec succès !");
             alert.showAndWait();
 
-            showAlert(Alert.AlertType.INFORMATION, "Commande confirmée",
-                    "Votre commande a été prise en compte avec succès.\nID Commande: " + order.getId());
+
+// ...
+
+// ✅ Créer les boutons personnalisés
+            ButtonType payerMaintenant = new ButtonType("Payer maintenant");
+            ButtonType pasMaintenant = new ButtonType("Pas maintenant");
+
+            Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Souhaitez-vous effectuer le paiement en ligne maintenant ?",
+                    payerMaintenant, pasMaintenant);
+
+            alert1.setTitle("Paiement");
+            alert1.setHeaderText("Confirmation du paiement");
+
+            Optional<ButtonType> result = alert1.showAndWait();
+
+            if (result.isPresent()) {
+                if (result.get() == payerMaintenant) {
+                    // Rediriger vers payment.fxml
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/payment.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                } else if (result.get() == pasMaintenant) {
+                    // Rediriger vers ListProductFront.fxml
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListProductFront.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                }
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Échec lors de la sauvegarde de la commande : " + e.getMessage());
@@ -171,6 +205,7 @@ public class OrderDetails {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     public void profil(ActionEvent actionEvent) {

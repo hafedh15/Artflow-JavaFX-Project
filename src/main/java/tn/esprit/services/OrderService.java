@@ -23,6 +23,17 @@ public class OrderService implements IService<Order> {
         return List.of();
     }
 
+    public void mettreAJourStatutPaiement(Integer id, boolean paid) throws SQLException {
+        String sql = "UPDATE `order` SET paid = ? WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setBoolean(1, paid); // ✅ Utiliser setBoolean ici
+            ps.setInt(2, id);
+
+            int rowsUpdated = ps.executeUpdate();
+            System.out.println("Statut de paiement mis à jour pour la commande ID: " + id + ", lignes affectées: " + rowsUpdated);
+        }
+    }
+
     @Override
     public void ajouter(Order order) throws SQLException {
         String sql = "INSERT INTO `order`(cart_id, user_id, delivery_adress, phone_number, date_order, order_history, paid, payment_inten_id) " +
@@ -45,6 +56,25 @@ public class OrderService implements IService<Order> {
                 }
             }
             System.out.println("Commande ajoutée avec succès. ID: " + order.getId());
+        }
+    }
+    public void updatePaymentStatus(int userId) throws SQLException {
+        String sql = "UPDATE `order` SET paid = ? WHERE user_id = ? AND paid = false";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setBoolean(1, true);  // Set the "paid" column to true
+            ps.setInt(2, 1);  // Use the provided user ID
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Le statut de paiement a été mis à jour avec succès pour l'utilisateur avec ID: " + userId);
+            } else {
+                System.out.println("Aucune commande trouvée ou le paiement était déjà effectué pour cet utilisateur.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour du statut de paiement: " + e.getMessage());
+            throw e;  // Rethrow the exception after logging it
         }
     }
 
@@ -81,24 +111,9 @@ public class OrderService implements IService<Order> {
 
     }
 
-    // Méthode pour mettre à jour le statut de paiement d'une commande
-    public void mettreAJourStatutPaiement(int orderId, boolean paid) throws SQLException {
-        // Vérifier si la commande existe
-        if (!orderExists(orderId)) {
-            System.out.println("Aucune commande trouvée avec l'ID " + orderId + ".");
-            return;
-        }
 
-        String sql = "UPDATE `order` SET paid = ? WHERE id = ?";
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setBoolean(1, paid);
-            ps.setInt(2, orderId);
-            ps.executeUpdate();
 
-            System.out.println("Statut de paiement mis à jour pour la commande ID: " + orderId +
-                    (paid ? " (Payée)" : " (Non payée)"));
-        }
-    }
+
 
     // Méthode pour mettre à jour l'adresse de livraison d'une commande
     public void mettreAJourAdresseLivraison(int orderId, String newAddress) throws SQLException {
@@ -155,6 +170,144 @@ public class OrderService implements IService<Order> {
                 return false;
             }
         }
+    }
+
+    public double extractTotalFromText(String orderSummary) {
+        double total = 0.0;
+
+        if (orderSummary != null && !orderSummary.isEmpty()) {
+            String[] lines = orderSummary.split("\n");
+            for (String line : lines) {
+                if (line.trim().startsWith("Total :")) {
+                    try {
+                        String totalStr = line.split(":")[1].trim();
+                        totalStr = totalStr.replace("dt", "").trim();
+                        total = Double.parseDouble(totalStr);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Erreur lors de l'extraction du total: " + e.getMessage());
+                    }
+                }
+            }
+        }
+
+        return total;
+    }
+    public double extractTotalForUser(int userId) throws SQLException {
+        double total = 0.0;
+
+        // Récupérer toutes les commandes de l'utilisateur
+        List<Order> userOrders = getOrdersByUser(userId);
+
+        if (userOrders.isEmpty()) {
+            System.out.println("Aucune commande trouvée pour l'utilisateur avec ID: " + userId);
+            return total;
+        }
+
+        // Pour chaque commande, essayer d'extraire le total
+        for (Order order : userOrders) {
+            String orderHistory = order.getOrderHistory();
+            if (orderHistory != null && !orderHistory.isEmpty()) {
+                // Chercher la ligne qui contient "Total :"
+                String[] lines = orderHistory.split("\n");
+                for (String line : lines) {
+                    if (line.trim().startsWith("Total :")) {
+                        try {
+                            // Extraire la valeur numérique
+                            String totalStr = line.split(":")[1].trim();
+                            totalStr = totalStr.replace("dt", "").trim();
+                            total += Double.parseDouble(totalStr);
+                        } catch (Exception e) {
+                            System.out.println("Erreur lors de l'extraction du total: " + e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+
+        return total;
+    }
+    public void marquerCommandeCommePayeePourUtilisateur(int userId) throws SQLException {
+        String sql = "UPDATE `order` SET paid = true WHERE user_id = ? AND paid = false";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("La commande non payée de l'utilisateur avec ID " + userId + " a été marquée comme payée.");
+            } else {
+                System.out.println("Aucune commande non payée trouvée pour l'utilisateur avec ID " + userId + ".");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour du statut de paiement: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    private String extraireHistoriqueCommande(String historiqueTexte) {
+        StringBuilder builder = new StringBuilder();
+        double total = 0.0;
+
+        String[] lignes = historiqueTexte.split("\n");
+        for (String ligne : lignes) {
+            if (ligne.contains(":") && ligne.contains("dt") && !ligne.toLowerCase().contains("total")) {
+                builder.append(ligne.trim()).append("\n");
+                String prixTexte = ligne.substring(ligne.lastIndexOf(":") + 1).replace("dt", "").trim();
+                try {
+                    total += Double.parseDouble(prixTexte);
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+
+        builder.append("\nTotal : ").append(String.format("%.2f", total)).append(" dt");
+        return builder.toString();
+    }
+
+    public double extractTotalFromOrderHistory(int orderId) throws SQLException {
+        double total = 0.0;
+
+        // Vérifier si la commande existe
+        if (!orderExists(orderId)) {
+            System.out.println("Aucune commande trouvée avec l'ID " + orderId + ".");
+            return total;
+        }
+
+        // Récupérer la commande
+        Order order = getOrderById(orderId);
+        if (order == null) {
+            System.out.println("Impossible de récupérer la commande avec l'ID " + orderId + ".");
+            return total;
+        }
+
+        String orderHistory = order.getOrderHistory();
+
+        // Si l'historique est vide, calculer le total via la méthode existante
+        if (orderHistory == null || orderHistory.isEmpty()) {
+            return order.calculateTotal();
+        }
+
+        // Essayer d'extraire le total à partir de l'historique
+        try {
+            // Chercher un pattern comme "Total: XX.XX" dans l'historique
+            String[] parts = orderHistory.split("Total:");
+            if (parts.length > 1) {
+                String totalPart = parts[1].trim();
+                // Extraire les chiffres du total (ignorer les devises ou autres caractères)
+                String totalValue = totalPart.replaceAll("[^0-9.,]", "").replace(",", ".");
+                total = Double.parseDouble(totalValue);
+            } else {
+                // Si le pattern n'est pas trouvé, utiliser la méthode calculateTotal
+                total = order.calculateTotal();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Erreur lors de l'extraction du total depuis l'historique: " + e.getMessage());
+            // En cas d'erreur, utiliser la méthode calculateTotal comme fallback
+            total = order.calculateTotal();
+        }
+
+        return total;
     }
     // Méthode pour supprimer une commande par ID
     public void supprimerParId(int orderId) throws SQLException {
@@ -365,4 +518,8 @@ public class OrderService implements IService<Order> {
         System.out.println("Total estimé: " + order.calculateTotal());
         System.out.println("------------------------------------");
     }
+
+
+
+
 }
