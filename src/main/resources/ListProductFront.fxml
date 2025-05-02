@@ -48,15 +48,12 @@
                   </ImageView>
                </graphic>
             </Button>
-
-
          </HBox>
 
          <!-- Sous-menu de catégories -->
          <HBox fx:id="categoryBoxx" alignment="CENTER" spacing="10" styleClass="category-bar">
             <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
          </HBox>
-
       </VBox>
    </top>
 
@@ -72,15 +69,10 @@
                           promptText="Rechercher un produit..."
                           prefWidth="200"
                           styleClass="search-text-field"/>
-
-               <!-- Bouton avec icône de recherche -->
-
             </HBox>
-
 
             <Label text="Catégories" styleClass="filter-title"/>
             <VBox fx:id="categoryBox" spacing="8" styleClass="categories-list"/>
-
 
             <!-- Filtre par prix - Avec deux curseurs -->
             <Label text="Filter by Price" styleClass="filter-title"/>
@@ -98,21 +90,18 @@
                <Label text="TND" styleClass="price-label"/>
             </HBox>
 
-
-
             <Button text="Appliquer le filtre" styleClass="apply-filter-button" onAction="#applyPriceFilter" />
-
          </VBox>
 
          <!-- Zone d'affichage des produits en grille -->
          <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS">
             <content>
                <TilePane fx:id="productContainer"
-                         hgap="40.0" vgap="30.0"
+                         hgap="20.0" vgap="20.0"
                          prefColumns="3"
-                         prefTileWidth="250.0"
-                         prefTileHeight="400.0"
-                         style="-fx-background-color: white;"
+                         prefTileWidth="320.0"
+                         prefTileHeight="430.0"
+                         style="-fx-background-color: white; -fx-padding: 20px;"
                          alignment="TOP_LEFT">
                   <padding>
                      <Insets top="20" right="20" bottom="20" left="20"/>

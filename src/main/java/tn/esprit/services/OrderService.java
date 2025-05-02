@@ -608,7 +608,7 @@ public class OrderService implements IService<Order> {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int daysPassed = rs.getInt("days_passed");
-                return daysPassed >= days;
+                return daysPassed  > days;
             }
             return false;
         }

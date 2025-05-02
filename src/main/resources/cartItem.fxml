@@ -6,6 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.geometry.Insets?>
 
+<?import org.controlsfx.control.Rating?>
 <VBox fx:id="cartItemCard" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.esprit.Contollers.CartItemController"

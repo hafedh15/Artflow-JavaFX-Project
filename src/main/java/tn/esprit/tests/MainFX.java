@@ -21,7 +21,7 @@ public class MainFX extends Application {
     public void start(Stage primaryStage) {
         FXMLLoader loader = new FXMLLoader(
                 getClass()
-                        .getResource("/Dashboard.fxml")
+                        .getResource("/ListProductFront.fxml")
         );
         try {
             Parent root = loader.load();

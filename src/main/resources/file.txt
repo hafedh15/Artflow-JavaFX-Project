@@ -1,0 +1,14 @@
+Produit: Elephant, Note: 1, Stock: 1
+Produit: Elephant, Note: 2, Stock: 1
+Produit: Elephant, Note: 3, Stock: 1
+Produit: Elephant, Note: 1, Stock: 1
+Produit: Elephant, Note: 3, Stock: 1
+Produit: Mug Faience, Note: 1, Stock: 1
+Produit: Lustre cuivre, Note: 1, Stock: 1
+Produit: Mug Faience, Note: 1, Stock: 1
+Produit: Coupelles, Note: 1, Stock: 1
+Produit: Coupelles, Note: 2, Stock: 1
+Produit: Elephant, Note: 1, Stock: 1
+Produit: Tapis losange, Note: 2, Stock: 1
+Produit: Coupelles, Note: 1, Stock: 1
+Produit: Coupelles, Note: 2, Stock: 1

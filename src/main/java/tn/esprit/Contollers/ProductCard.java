@@ -1,25 +1,21 @@
 package tn.esprit.Contollers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.Rating;
 import tn.esprit.entities.Cart;
 import tn.esprit.entities.Product;
 import tn.esprit.entities.User;
 import tn.esprit.services.CartService;
 import tn.esprit.services.ProductService;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductCard {
 
@@ -45,6 +41,12 @@ public class ProductCard {
     private Label productStock;
 
     @FXML
+    private Rating productRating;
+
+    @FXML
+    private Label averageRatingLabel;
+
+    @FXML
     private Button editButton;
 
     @FXML
@@ -53,20 +55,24 @@ public class ProductCard {
     private Product product;
     private ProductService productService = new ProductService();
     private ListProductFront parentController;
+    private CartService cartService = new CartService();
 
     public void setProduct(Product product) {
         this.product = product;
         updateCardInfo();
     }
 
-
+    public void setParentController(ListProductFront parentController) {
+        this.parentController = parentController;
+    }
 
     private void updateCardInfo() {
         productCard.setPrefWidth(280);
-        productCard.setPrefHeight(350);
+        productCard.setPrefHeight(380);
         productCard.setMinWidth(280);
         productCard.setMaxWidth(280);
-        productCard.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-spacing: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 2);");
+// Ajoutez une marge autour de la carte et une ombre plus prononcée
+        productCard.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-spacing: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.3, 0, 3); -fx-border-radius: 10; -fx-margin: 10;");
 
         productName.setText(product.getName());
         productCategory.setText(product.getCategory());
@@ -74,21 +80,38 @@ public class ProductCard {
         productDescription.setText(product.getDescription());
         productStock.setText("Stock: " + product.getStock());
 
-        // 🌟 Modification ici : afficher image depuis htdocs si elle existe
-        String imagePath = product.getImage(); // ex: "/images/products/nom_image.jpg"
+        // Initialiser le Rating à 0
+        productRating.setRating(0);
+
+        // Afficher la moyenne des notes
+        updateAverageRating();
+
+        // Écouter les changements de note
+        productRating.ratingProperty().addListener((obs, oldValue, newValue) -> {
+            try {
+                saveRatingAndStockToFile(newValue.intValue());
+                updateAverageRating(); // Mettre à jour la moyenne après une nouvelle note
+                showAlert(Alert.AlertType.INFORMATION, "Note enregistrée", "La note " + newValue.intValue() + " pour " + product.getName() + " a été sauvegardée.");
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'enregistrer la note : " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+        // Gestion de l'image
+        String imagePath = product.getImage();
         try {
             if (imagePath != null && !imagePath.isEmpty()) {
-                String absolutePath = "C:/xampp/htdocs" + imagePath; // Chemin complet
+                String absolutePath = "C:/xampp/htdocs" + imagePath;
                 File file = new File(absolutePath);
                 if (file.exists()) {
                     Image image = new Image(file.toURI().toString());
                     productImage.setImage(image);
-                    productImage.setFitWidth(260);   // largeur désirée
-                    productImage.setFitHeight(160);  // hauteur désirée
-                    productImage.setPreserveRatio(true);  // garder les proportions
-                    productImage.setSmooth(true);         // rendu lisse
-                    productImage.setCache(true);          // améliore les performances
-
+                    productImage.setFitWidth(260);
+                    productImage.setFitHeight(160);
+                    productImage.setPreserveRatio(true);
+                    productImage.setSmooth(true);
+                    productImage.setCache(true);
                 } else {
                     System.out.println("Image introuvable : " + absolutePath);
                     Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-product.png"));
@@ -108,19 +131,78 @@ public class ProductCard {
             }
         }
     }
-    private CartService cartService = new CartService();
+
+    private void updateAverageRating() {
+        try {
+            double average = calculateAverageRating();
+            if (average >= 0) {
+                averageRatingLabel.setText(String.format("Moyenne : %.1f/5", average));
+            } else {
+                averageRatingLabel.setText("Moyenne : -/5");
+            }
+        } catch (IOException e) {
+            averageRatingLabel.setText("Moyenne : Erreur");
+            e.printStackTrace();
+        }
+    }
+
+    private double calculateAverageRating() throws IOException {
+        List<Integer> ratings = new ArrayList<>();
+        String filePath = new File("src/main/resources/file.txt").getAbsolutePath();
+        File file = new File(filePath);
+
+        if (!file.exists()) {
+            return -1; // Aucun fichier, pas de moyenne
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Produit: " + product.getName())) {
+                    String[] parts = line.split(", ");
+                    if (parts.length >= 2) {
+                        String ratingPart = parts[1].replace("Note: ", "");
+                        try {
+                            int rating = Integer.parseInt(ratingPart);
+                            ratings.add(rating);
+                        } catch (NumberFormatException e) {
+                            // Ignorer les lignes mal formées
+                        }
+                    }
+                }
+            }
+        }
+
+        if (ratings.isEmpty()) {
+            return -1; // Aucune note pour ce produit
+        }
+
+        double sum = 0;
+        for (int rating : ratings) {
+            sum += rating;
+        }
+        return sum / ratings.size();
+    }
+
+    private void saveRatingAndStockToFile(int rating) throws IOException {
+        String filePath = new File("src/main/resources/file.txt").getAbsolutePath();
+        try (FileWriter writer = new FileWriter(filePath, true)) { // Mode append
+            String line = String.format("Produit: %s, Note: %d, Stock: %d\n",
+                    product.getName(), rating, product.getStock());
+            writer.write(line);
+            writer.flush();
+        }
+    }
+
     @FXML
     private void onEditButtonClick() {
         try {
-            // Utiliser directement l'ID utilisateur 1
             int userId = 1;
             int cartId;
 
-            // Vérifier si l'utilisateur a déjà un panier
             Cart existingCart = cartService.getPanierParUserId(userId);
 
             if (existingCart == null) {
-                // Créer un nouveau panier pour l'utilisateur 1
                 Cart newCart = new Cart();
                 User user = new User();
                 user.setId(userId);
@@ -132,26 +214,26 @@ public class ProductCard {
                 cartId = existingCart.getId();
             }
 
-            // Ajouter le produit au panier
             cartService.ajouterProduitAuPanier(cartId, product.getId());
 
-            showAlert(AlertType.INFORMATION, "Ajout au panier",
+            showAlert(Alert.AlertType.INFORMATION, "Ajout au panier",
                     "Le produit " + product.getName() + " a été ajouté au panier avec succès.");
 
         } catch (SQLException e) {
-            showAlert(AlertType.WARNING, "Ajout au panier",
+            showAlert(Alert.AlertType.WARNING, "Ajout au panier",
                     "Le produit ne peut pas être ajouté au panier: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Erreur",
+            showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Une erreur s'est produite lors de l'ajout au panier: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     @FXML
     private void onDeleteButtonClick() {
         try {
-            Alert alert = new Alert(AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation de suppression");
             alert.setHeaderText(null);
             alert.setContentText("Êtes-vous sûr de vouloir supprimer le produit " + product.getName() + "?");
@@ -165,10 +247,10 @@ public class ProductCard {
                             parentController.refreshProducts();
                         }
 
-                        showAlert(AlertType.INFORMATION, "Suppression réussie",
+                        showAlert(Alert.AlertType.INFORMATION, "Suppression réussie",
                                 "Le produit a été supprimé avec succès.");
                     } catch (SQLException e) {
-                        showAlert(AlertType.ERROR, "Erreur de suppression",
+                        showAlert(Alert.AlertType.ERROR, "Erreur de suppression",
                                 "Impossible de supprimer le produit: " + e.getMessage());
                         e.printStackTrace();
                     }
@@ -176,20 +258,17 @@ public class ProductCard {
             });
 
         } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Erreur",
+            showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Une erreur s'est produite: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private void showAlert(AlertType type, String title, String message) {
+    private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    public void setParentController(ListProductFront listProductFront) {
     }
 }
