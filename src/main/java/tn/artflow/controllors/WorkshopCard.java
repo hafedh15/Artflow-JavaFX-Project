@@ -135,7 +135,7 @@ public class WorkshopCard {
                 if (lat != 0.0f || lon != 0.0f) {
                     Coordinate coord = new Coordinate((double) lat, (double) lon);
 
-                    mapView.setZoom(14);
+                    mapView.setZoom(20);
                     mapView.setCenter(coord);
 
                     Marker marker = Marker.createProvided(Marker.Provided.RED)

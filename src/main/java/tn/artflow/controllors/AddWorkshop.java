@@ -125,8 +125,8 @@ public class AddWorkshop {
         }
 
         // ✅ Check description max 5 chars (if needed, or remove this)
-        if (description.length() > 5) {
-            titleErrorLabel.setText("Description must not exceed 5 letters.");
+        if (description.length() > 200) {
+            titleErrorLabel.setText("Description must not exceed 200 letters.");
             valid = false;
         }
 

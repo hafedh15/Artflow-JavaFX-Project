@@ -79,6 +79,7 @@ public class WorkshopService implements IService<Workshop> {
             String date = rs.getString("date");
             String type = rs.getString("type");
             String location = rs.getString("location");
+
             Workshop w = new Workshop(id,title, description, image, date, type, location);
             workshops.add(w);
         }

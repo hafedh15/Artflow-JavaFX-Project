@@ -1,13 +1,16 @@
 package tn.artflow.controllors;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
+import javafx.stage.Stage;
 import tn.artflow.entities.Reservation;
 import tn.artflow.entities.User;
 import tn.artflow.entities.Workshop;
@@ -25,6 +28,7 @@ public class FrontWorkshop {
     @FXML
     private TilePane cardsContainer;
 
+    @FXML private Button profileButton;
 
     private WorkshopService workshopService;
 
@@ -69,7 +73,22 @@ public class FrontWorkshop {
         }
     }
 
+    @FXML
+    private void goToProfile() {
+
+    }
 
 
-
+    public void goToProfil(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profil.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Profil");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

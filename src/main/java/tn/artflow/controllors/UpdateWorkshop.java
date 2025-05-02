@@ -123,8 +123,8 @@ public class UpdateWorkshop {
         }
 
         String description = txtdescription.getText().trim();
-        if (description.length() > 5) {
-            errDescription.setText("Max 5 characters.");
+        if (description.length() > 200) {
+            errDescription.setText("Max 200 characters.");
             isValid = false;
         }
 

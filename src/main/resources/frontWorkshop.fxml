@@ -34,9 +34,11 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <!-- Espace User -->
-                <ImageView fitHeight="30" fitWidth="30">
-                    <Image url="@/images/user.jpg" />
-                </ImageView>
+                <!-- Add this button after the other navigation buttons -->
+                <Button fx:id="profileButton"
+                        text="Profil" onAction="#goToProfil"
+                        style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px;" />
+
             </HBox>
 
             <!-- Barre de recherche -->

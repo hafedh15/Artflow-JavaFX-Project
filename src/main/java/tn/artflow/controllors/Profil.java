@@ -1,59 +1,39 @@
 package tn.artflow.controllors;
 
-import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.AnchorPane;
-import javafx.util.Duration;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import tn.artflow.entities.Reservation;
 import tn.artflow.entities.User;
 import tn.artflow.entities.Workshop;
 import tn.artflow.services.ReservationService;
 
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-
 public class Profil implements Initializable {
 
-    @FXML
-    private TilePane cardsContainer;
+    @FXML private TilePane cardsContainer;
     @FXML private AnchorPane editPane;
     @FXML private TextField seatsField;
     @FXML private TextArea notesField;
+    @FXML private GridPane calendarGrid;
 
-    private Reservation reservationBeingEdited; // Pour garder l’état actuel
-    @FXML
-    private VBox calendarContainer;
-
+    private Reservation reservationBeingEdited;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Profil initialization started...");
-
-        // Add visual indicator to make sure TilePane is visible
-        cardsContainer.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 15;");
-
         loadReservations();
     }
 
     private void loadReservations() {
-        System.out.println("Starting to load reservations...");
-
         ReservationService reservationService = new ReservationService();
         User user = new User();
         user.setId(1); // exemple user
@@ -61,7 +41,6 @@ public class Profil implements Initializable {
         try {
             List<Reservation> reservations = reservationService.getReservationsByUser(user);
             cardsContainer.getChildren().clear();
-
 
             for (Reservation r : reservations) {
                 VBox card = new VBox(8);
@@ -72,7 +51,7 @@ public class Profil implements Initializable {
                 Label title = new Label("🧵 Atelier: " + (r.getWorkshop() != null ? r.getWorkshop().getTitle() : "Inconnu"));
                 title.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-                Label date = new Label("📅 Date: " + r.getDateReservation());
+                Label date = new Label("📅 Date: " + r.getWorkshop().getDate());
                 Label seats = new Label("🎫 Places: " + r.getSeatsReserved());
                 Label notes = new Label("📝 Notes: " + (r.getNotes() != null ? r.getNotes() : "-"));
                 Label code = new Label("🔐 Code: " + r.getUniqueCode());
@@ -81,12 +60,12 @@ public class Profil implements Initializable {
                 deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
                 deleteButton.setOnAction(e -> {
                     reservationService.supprimer(r.getId());
-                    loadReservations(); // recharge après suppression
+                    loadReservations();
                 });
+
                 Button editButton = new Button("✏️ Modifier");
                 editButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
                 editButton.setOnAction(e -> showEditPane(r));
-
 
                 card.getChildren().addAll(title, date, seats, notes, code, editButton, deleteButton);
                 card.setPrefWidth(260);
@@ -95,8 +74,9 @@ public class Profil implements Initializable {
                 cardsContainer.getChildren().add(card);
             }
 
+            generateCalendar(LocalDate.of(2025, 5, 1), reservations); // Choisis le mois ici
+
         } catch (SQLException e) {
-            System.err.println("Erreur DB: " + e.getMessage());
             cardsContainer.getChildren().clear();
             Label errorLabel = new Label("Erreur lors du chargement des réservations : " + e.getMessage());
             errorLabel.setStyle("-fx-background-color: #ffcccc; -fx-padding: 20;");
@@ -104,25 +84,102 @@ public class Profil implements Initializable {
         }
     }
 
+    private void generateCalendar(LocalDate startOfMonth, List<Reservation> reservations) {
+        calendarGrid.getChildren().clear();
 
+        String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        for (int i = 0; i < days.length; i++) {
+            Label dayLabel = new Label(days[i]);
+            dayLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #3e2723; -fx-font-size: 14;");
+            dayLabel.setPrefSize(50, 30);
+            dayLabel.setAlignment(Pos.CENTER);
+            calendarGrid.add(dayLabel, i, 0);
+        }
 
+        LocalDate firstDay = startOfMonth.withDayOfMonth(1);
+        int startCol = firstDay.getDayOfWeek().getValue() % 7;
+        int row = 1;
+        int col = startCol;
+        int lengthOfMonth = firstDay.lengthOfMonth();
+
+        for (int day = 1; day <= lengthOfMonth; day++) {
+            LocalDate current = startOfMonth.withDayOfMonth(day);
+
+            VBox cell = new VBox();
+            cell.setAlignment(Pos.CENTER);
+            cell.setSpacing(5);
+            cell.setPrefSize(50, 50);
+            cell.setPadding(new Insets(6));
+            cell.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-background-radius: 10;");
+
+            Label dayNum = new Label(String.valueOf(day));
+            dayNum.setStyle("-fx-font-size: 14; -fx-text-fill: #3e2723;");
+            cell.getChildren().add(dayNum);
+
+            // Highlight reserved days
+            boolean reserved = reservations.stream().anyMatch(r -> {
+                try {
+                    Workshop w = r.getWorkshop();
+                    if (w == null || w.getDate() == null) return false;
+                    String dateStr = w.getDate().trim();
+                    LocalDate workshopDate = LocalDate.parse(dateStr.split(" ")[0]);
+                    return workshopDate.equals(current);
+                } catch (Exception e) {
+                    return false;
+                }
+            });
+
+            if (reserved) {
+                cell.setStyle("-fx-background-color: #d7ccc8; -fx-background-radius: 10; -fx-border-color: transparent;");
+                Label badge = new Label("Workshop");
+                badge.setStyle("-fx-text-fill: #5d4037; -fx-font-size: 10;");
+                cell.getChildren().add(badge);
+            }
+
+            // Highlight today
+            if (current.equals(LocalDate.now())) {
+                cell.setStyle(cell.getStyle() + "-fx-border-color: #8d6e63; -fx-border-width: 2;");
+            }
+
+            // Optional: Hover effect
+            cell.setOnMouseEntered(e -> cell.setStyle(cell.getStyle() + "-fx-background-color: #f0eae5;"));
+            cell.setOnMouseExited(e -> {
+                if (reserved) {
+                    cell.setStyle("-fx-background-color: #d7ccc8; -fx-background-radius: 10; -fx-border-color: transparent;");
+                } else if (current.equals(LocalDate.now())) {
+                    cell.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10; -fx-border-color: #8d6e63; -fx-border-width: 2;");
+                } else {
+                    cell.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10; -fx-border-color: #ddd;");
+                }
+            });
+
+            calendarGrid.add(cell, col, row);
+
+            col++;
+            if (col > 6) {
+                col = 0;
+                row++;
+            }
+        }
+    }
 
     private void showEditPane(Reservation reservation) {
-        reservationBeingEdited = reservation; // On garde la référence
+        reservationBeingEdited = reservation;
         seatsField.setText(String.valueOf(reservation.getSeatsReserved()));
         notesField.setText(reservation.getNotes());
-        editPane.setVisible(true); // Affiche le panneau
+        editPane.setVisible(true);
     }
+
     @FXML
     private void closeEditPane() {
         editPane.setVisible(false);
         reservationBeingEdited = null;
     }
-    @FXML
 
+    @FXML
     private void saveEditedReservation() throws SQLException {
         if (reservationBeingEdited == null) return;
-        // Validate number of seats
+
         int newSeats;
         try {
             newSeats = Integer.parseInt(seatsField.getText());
@@ -134,7 +191,7 @@ public class Profil implements Initializable {
             showError("Please enter a valid number for seats.");
             return;
         }
-        // Validate number of words in notes
+
         String newNotes = notesField.getText().trim();
         int wordCount = newNotes.isEmpty() ? 0 : newNotes.split("\\s+").length;
         if (wordCount > 5) {
@@ -142,7 +199,6 @@ public class Profil implements Initializable {
             return;
         }
 
-        // If all is good, update the reservation
         reservationBeingEdited.setSeatsReserved(newSeats);
         reservationBeingEdited.setNotes(newNotes);
 
@@ -154,68 +210,10 @@ public class Profil implements Initializable {
     }
 
     private void showError(String message) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
-
-
-    public void handleShowCalendar(javafx.event.ActionEvent actionEvent) throws SQLException {
-        calendarContainer.getChildren().clear();
-
-        // 🔵 Créer l'utilisateur ID = 1
-        User user = new User();
-        user.setId(1);
-
-        ReservationService reservationService = new ReservationService();
-        List<Reservation> reservations = reservationService.getReservationsByUser(user);
-
-        if (reservations.isEmpty()) {
-            Label noReservations = new Label("Aucune réservation trouvée.");
-            noReservations.setStyle("-fx-font-size: 16px; -fx-text-fill: gray;");
-            calendarContainer.getChildren().add(noReservations);
-            return;
-        }
-
-        // 🔵 Grouper les réservations par mois
-        Map<String, List<Reservation>> reservationsByMonth = new LinkedHashMap<>();
-
-        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.FRENCH); // Ex: Avril 2025
-
-        for (Reservation res : reservations) {
-            LocalDate date = LocalDate.parse(res.getDateReservation());
-            String month = date.format(monthFormatter);
-
-            reservationsByMonth.computeIfAbsent(month, k -> new ArrayList<>()).add(res);
-        }
-
-        // 🔵 Créer l'affichage
-        for (Map.Entry<String, List<Reservation>> entry : reservationsByMonth.entrySet()) {
-            // Mois titre
-            Label monthLabel = new Label(entry.getKey());
-            monthLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2e86de; -fx-padding: 10 0 5 0;");
-
-            calendarContainer.getChildren().add(monthLabel);
-
-            // Réservations
-            for (Reservation res : entry.getValue()) {
-                Label resLabel = new Label("🗓️ " + res.getDateReservation() + " : " + res.getWorkshop().getTitle());
-                resLabel.setStyle("-fx-background-color: #f7f9fc; -fx-border-color: #d1d8e0; -fx-padding: 10; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 14px;");
-                resLabel.setMaxWidth(Double.MAX_VALUE);
-                VBox.setMargin(resLabel, new Insets(5, 0, 5, 0));
-                calendarContainer.getChildren().add(resLabel);
-            }
-        }
-
-        // 🔵 Ajouter une animation douce
-        FadeTransition fade = new FadeTransition(Duration.millis(700), calendarContainer);
-        fade.setFromValue(0);
-        fade.setToValue(1);
-        fade.play();
-}
-
 }

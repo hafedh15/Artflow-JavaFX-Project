@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <BorderPane prefHeight="700.0" prefWidth="1100.0"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -78,6 +79,25 @@
           <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
           <Button text="➕ Add Workshop" onAction="#addworkshop"
                   style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 10 20;"/>
+
+
+          <TextField fx:id="searchField" onKeyReleased="#searchWorkshops" promptText="Search by title"
+                     style="-fx-background-color: #F5F0EB;
+                  -fx-border-color: #C8B6A6;
+                  -fx-border-radius: 15;
+                  -fx-background-radius: 15;
+                  -fx-padding: 5 15;
+                  -fx-font-size: 14px;
+                  -fx-text-fill: #5C4F3D;" />
+
+          <Button text="Sort by date" onAction="#sortByDate"
+                  style="-fx-background-color: #D3C1B0;
+               -fx-text-fill: #5C4F3D;
+               -fx-font-weight: bold;
+               -fx-background-radius: 20;
+               -fx-padding: 8 16;
+               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 1);" />
+
         </HBox>
 
         <!-- Scrollable Workshop Grid -->
