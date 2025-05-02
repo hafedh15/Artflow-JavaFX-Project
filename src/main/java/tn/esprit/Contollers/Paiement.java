@@ -14,8 +14,7 @@ import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import tn.esprit.services.OrderService;
 import tn.esprit.services.StripeService;
-
-import java.awt.event.ActionEvent;
+import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -30,35 +29,46 @@ public class Paiement implements Initializable {
     private StripeService stripeService = new StripeService();
     private OrderService orderService = new OrderService();
     private double totalAmount;
-    private int userId = 1;
-//    OrderService orderService = new OrderService();
-    int orderId = 21; // ID réel de la commande à marquer comme payée
+    private int userId = 1; // Consider passing this dynamically if needed
+    private int orderId; // ID de la commande à payer
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("Initializing Paiement controller");
+        paymentWebView.getEngine().setJavaScriptEnabled(true); // Ensure JavaScript is enabled
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+        System.out.println("Order ID set for payment: " + orderId);
         initializePayment();
     }
 
     private void initializePayment() {
+        System.out.println("Starting initializePayment for order ID: " + orderId);
         try {
-            // Récupérer le montant total à partir de l'historique des commandes
-            totalAmount = orderService.extractTotalForUser(userId);
+            // Récupérer le montant total pour la commande spécifique
+            totalAmount = orderService.extractTotalFororder(orderId); // Fixed method name
+            System.out.println("Total amount retrieved for order ID " + orderId + ": " + totalAmount);
 
-            if (totalAmount <= 0) {
-                showError("Aucun montant à payer trouvé pour l'utilisateur ID: " + userId);
+            if (totalAmount <= 0 || Double.isNaN(totalAmount) || Double.isInfinite(totalAmount)) {
+                showError("Montant invalide pour la commande ID: " + orderId + " (total: " + totalAmount + ")");
                 return;
             }
 
-            System.out.println("Montant total récupéré: " + totalAmount);
+            this.clientSecret = stripeService.createPaymentIntent(totalAmount, "usd", "Payment for order ID: " + orderId);
+            System.out.println("Client secret created: " + (clientSecret != null ? clientSecret : "Failed"));
 
-            this.clientSecret = stripeService.createPaymentIntent(totalAmount, "usd", "Payment for user ID: " + userId);
-
-            if (clientSecret == null) {
-                showError("Impossible de créer le PaymentIntent.");
+            if (clientSecret == null || clientSecret.isEmpty()) {
+                showError("Impossible de créer le PaymentIntent. Vérifiez la clé secrète Stripe et la connectivité réseau.");
                 return;
             }
 
             loadPaymentForm();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showError("Erreur SQL lors de l'initialisation du paiement: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             showError("Erreur lors de l'initialisation du paiement: " + e.getMessage());
@@ -66,31 +76,46 @@ public class Paiement implements Initializable {
     }
 
     private void loadPaymentForm() {
+        System.out.println("Loading payment form for order ID: " + orderId);
         if (clientSecret == null || clientSecret.isEmpty()) {
             System.err.println("ClientSecret est nul ou vide");
+            showError("ClientSecret est nul ou vide");
             return;
         }
 
         String paymentFormHtml = getStripePaymentForm(clientSecret, totalAmount);
+        if (paymentFormHtml == null) {
+            showError("Échec de la génération du formulaire de paiement");
+            return;
+        }
+        System.out.println("Loading HTML content into WebView");
         paymentWebView.getEngine().loadContent(paymentFormHtml);
 
-        paymentWebView.getEngine().setJavaScriptEnabled(true);
-
         paymentWebView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("WebView load state changed: " + newValue);
             if (newValue == Worker.State.SUCCEEDED) {
-                JSObject window = (JSObject) paymentWebView.getEngine().executeScript("window");
-                window.setMember("javaFXBridge", new JavaFXBridge());
-
-                // Enable console logging from JavaScript to Java
-                paymentWebView.getEngine().executeScript(
-                        "console.log = function(message) { window.javaFXBridge.log(message); };" +
-                                "console.error = function(message) { window.javaFXBridge.logError(message); };"
-                );
+                System.out.println("WebView content loaded successfully");
+                try {
+                    JSObject window = (JSObject) paymentWebView.getEngine().executeScript("window");
+                    window.setMember("javaFXBridge", new JavaFXBridge());
+                    paymentWebView.getEngine().executeScript(
+                            "console.log = function(message) { window.javaFXBridge.log(message); };" +
+                                    "console.error = function(message) { window.javaFXBridge.logError(message); };"
+                    );
+                    System.out.println("JavaFXBridge initialized");
+                } catch (Exception e) {
+                    System.err.println("Error setting up JavaFXBridge: " + e.getMessage());
+                    showError("Erreur lors de l'initialisation du pont JavaScript: " + e.getMessage());
+                }
+            } else if (newValue == Worker.State.FAILED) {
+                System.err.println("WebView content failed to load");
+                showError("Échec du chargement du formulaire de paiement dans WebView");
             }
         });
 
         paymentWebView.getEngine().setOnError(event -> {
-            System.err.println("Erreur lors du chargement de la WebView : " + event.getMessage());
+            System.err.println("WebView error: " + event.getMessage());
+            showError("Erreur WebView: " + event.getMessage());
         });
     }
 
@@ -309,24 +334,27 @@ public class Paiement implements Initializable {
 
     @FXML
     private void cancelPayment(ActionEvent event) {
-        // Retourner à la page profil sans effectuer de paiement
+        System.out.println("Cancel payment button clicked in JavaFX");
         navigateToProfile(event);
     }
 
     private void navigateToProfile(ActionEvent event) {
+        System.out.println("Navigating to profile");
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/profil.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+            System.out.println("Navigation to profile successful");
         } catch (IOException e) {
             e.printStackTrace();
-
+            showError("Erreur lors de la navigation vers le profil: " + e.getMessage());
         }
     }
 
     private void showError(String message) {
+        System.out.println("Showing error: " + message);
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -337,6 +365,7 @@ public class Paiement implements Initializable {
     }
 
     private void showSuccessDialog(String paymentIntentId) {
+        System.out.println("Showing success dialog for payment ID: " + paymentIntentId);
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Paiement réussi");
@@ -344,32 +373,33 @@ public class Paiement implements Initializable {
             alert.setContentText("Votre paiement de $" + String.format("%.2f", totalAmount) + " a été traité avec succès !\nID de paiement: " + paymentIntentId);
             alert.showAndWait();
 
-            // Mettre à jour le statut de paiement des commandes de l'utilisateur
-
-
-            Stage stage = (Stage) paymentWebView.getScene().getWindow();
-            stage.close();
-
-        });
-    }
-
-    private void updateUserOrdersPaymentStatus(String paymentIntentId) throws SQLException {
-        // Récupérer les commandes de l'utilisateur
-        var orders = orderService.getOrdersByUser(1);
-
-        for (var order : orders) {
-            if (!order.getPaid()) {
-                // Mettre à jour le statut de paiement
-                orderService.mettreAJourStatutPaiement(order.getId(), true);
-                // On pourrait aussi mettre à jour l'ID d'intention de paiement si nécessaire
+            try {
+                System.out.println("Updating order status to paid for order ID: " + orderId);
+                orderService.updatePaidStatus(orderId, "true");
+                System.out.println("Order status updated successfully for order ID: " + orderId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showError("Erreur lors de la mise à jour du statut de la commande: " + e.getMessage());
             }
-        }
+
+            // Navigate back to profile
+            Stage stage = (Stage) paymentWebView.getScene().getWindow();
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/profil.fxml"));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+                System.out.println("Navigated back to profile after successful payment");
+            } catch (IOException e) {
+                e.printStackTrace();
+                showError("Erreur lors de la navigation vers le profil: " + e.getMessage());
+            }
+        });
     }
 
     public class JavaFXBridge {
         public void cancelPayment() {
-            System.out.println("cancelPayment() appelé depuis JS");
-
+            System.out.println("cancelPayment() called from JavaScript");
             Platform.runLater(() -> {
                 try {
                     Parent root = FXMLLoader.load(getClass().getResource("/profil.fxml"));
@@ -377,24 +407,23 @@ public class Paiement implements Initializable {
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
                     stage.show();
+                    System.out.println("Navigation to profile from JavaScript cancel successful");
                 } catch (IOException e) {
                     e.printStackTrace();
+                    showError("Erreur lors de la navigation vers le profil: " + e.getMessage());
                 }
             });
         }
 
         public void paymentSuccess(String paymentIntentId) {
-            System.out.println("Payment successful! Processing order... Payment ID: " + paymentIntentId);
-
+            System.out.println("paymentSuccess called with Payment ID: " + paymentIntentId);
             try {
                 // Verify the payment was successful
                 if (stripeService.isPaymentIntentConfirmed(paymentIntentId)) {
-
-                    // Here you can update your database or process the order
+                    System.out.println("Payment intent confirmed for ID: " + paymentIntentId);
                     showSuccessDialog(paymentIntentId);
-                    orderService.mettreAJourStatutPaiement(orderId, true);
-
                 } else {
+                    System.out.println("Payment intent not confirmed for ID: " + paymentIntentId);
                     showError("Le paiement n'a pas pu être confirmé. Veuillez réessayer.");
                 }
             } catch (Exception e) {

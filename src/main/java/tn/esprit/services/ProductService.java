@@ -1,12 +1,17 @@
 package tn.esprit.services;
-
+import com.opencsv.CSVWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 import tn.esprit.entities.Product;
 import tn.esprit.entities.User;
 import tn.esprit.tools.MyDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductService implements IService<Product> {
 
@@ -43,6 +48,44 @@ public class ProductService implements IService<Product> {
         }
 
         return products;
+    }
+
+
+    public void exportProductsToCSV(String filePath, String selectedOption) throws SQLException, IOException {
+        List<Product> products;
+
+        System.out.println("Exporting products with selected option: " + selectedOption);
+
+        if ("Tous les produits".equals(selectedOption) || "Toutes les catégories".equals(selectedOption)) {
+            products = getAvailableProducts();
+        } else {
+            products = getProductsByCategory(selectedOption);
+        }
+
+        System.out.println("Number of products to export: " + products.size());
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+            String[] header = {"ID", "Nom", "Description", "Prix", "Stock", "Catégorie", "Image", "Statut"};
+            writer.writeNext(header);
+
+            for (Product product : products) {
+                String[] row = {
+                        String.valueOf(product.getId()),
+                        product.getName() != null ? product.getName() : "",
+                        product.getDescription() != null ? product.getDescription() : "",
+                        String.valueOf(product.getPrice()),
+                        String.valueOf(product.getStock()),
+                        product.getCategory() != null ? product.getCategory() : "",
+                        product.getImage() != null ? product.getImage() : "",
+                        product.getStatus() != null ? product.getStatus() : ""
+                };
+                writer.writeNext(row);
+            }
+            System.out.println("Produits exportés avec succès vers " + filePath);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'exportation des produits vers CSV : " + e.getMessage());
+            throw e;
+        }
     }
     // Ajoutez cette méthode à votre classe ProductService
     public List<Product> getProductsByCartId(int cartId) throws SQLException {
@@ -593,6 +636,19 @@ public class ProductService implements IService<Product> {
         }
 
         return artisanName;
+    }
+    public Map<String, Integer> getProductCountsByCategory() throws SQLException {
+        Map<String, Integer> categoryCounts = new HashMap<>();
+        String query = "SELECT category, COUNT(*) AS count FROM product WHERE status = 'dispo' GROUP BY category";
+        try (Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                String category = rs.getString("category");
+                int count = rs.getInt("count");
+                categoryCounts.put(category, count);
+            }
+        }
+        return categoryCounts;
     }
 }
 

@@ -58,25 +58,7 @@ public class OrderService implements IService<Order> {
             System.out.println("Commande ajoutée avec succès. ID: " + order.getId());
         }
     }
-    public void updatePaymentStatus(int userId) throws SQLException {
-        String sql = "UPDATE `order` SET paid = ? WHERE user_id = ? AND paid = false";
 
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setBoolean(1, true);  // Set the "paid" column to true
-            ps.setInt(2, 1);  // Use the provided user ID
-
-            int rowsAffected = ps.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Le statut de paiement a été mis à jour avec succès pour l'utilisateur avec ID: " + userId);
-            } else {
-                System.out.println("Aucune commande trouvée ou le paiement était déjà effectué pour cet utilisateur.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la mise à jour du statut de paiement: " + e.getMessage());
-            throw e;  // Rethrow the exception after logging it
-        }
-    }
 
     public boolean isCartAlreadyOrdered(int cartId) throws SQLException {
         String query = "SELECT COUNT(*) FROM `order` WHERE cart_id = ?";
@@ -91,9 +73,62 @@ public class OrderService implements IService<Order> {
     }
 
 
+    public void marquerCommandesPayeesParUtilisateur(int userId) throws SQLException {
+        // Log avant l'exécution
+        System.out.println("Tentative de marquer les commandes comme payées pour l'utilisateur ID: " + userId);
 
+        // Vérifier d'abord si des commandes existent pour cet utilisateur
+        String checkSql = "SELECT COUNT(*) FROM `order` WHERE user_id = ?";
+        try (PreparedStatement checkPs = cnx.prepareStatement(checkSql)) {
+            checkPs.setInt(1, userId);
+            try (ResultSet rs = checkPs.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    System.out.println("Nombre de commandes trouvées pour l'utilisateur: " + count);
+                }
+            }
+        }
 
+        // Afficher l'état actuel des commandes
+        String statusSql = "SELECT id, paid FROM `order` WHERE user_id = ?";
+        try (PreparedStatement statusPs = cnx.prepareStatement(statusSql)) {
+            statusPs.setInt(1, userId);
+            try (ResultSet rs = statusPs.executeQuery()) {
+                System.out.println("État actuel des commandes:");
+                while (rs.next()) {
+                    System.out.println("Commande ID: " + rs.getInt("id") + ", Paid: " + rs.getObject("paid"));
+                }
+            }
+        }
 
+        // La requête de mise à jour
+        String sql = "UPDATE `order` SET paid = ? WHERE user_id = ? AND (paid IS NULL OR paid = false)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setBoolean(1, true);  // Utiliser setBoolean et non setString
+            ps.setInt(2, userId);
+
+            int lignesModifiees = ps.executeUpdate();
+
+            System.out.println("Requête exécutée: " + sql);
+            System.out.println("Paramètres: {1: true, 2: " + userId + "}");
+            System.out.println("Nombre de lignes modifiées: " + lignesModifiees);
+
+            // Vérifier à nouveau l'état après mise à jour
+            try (PreparedStatement afterPs = cnx.prepareStatement(statusSql)) {
+                afterPs.setInt(1, userId);
+                try (ResultSet rs = afterPs.executeQuery()) {
+                    System.out.println("État des commandes après mise à jour:");
+                    while (rs.next()) {
+                        System.out.println("Commande ID: " + rs.getInt("id") + ", Paid: " + rs.getObject("paid"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur SQL complète: " + e.getMessage());
+            throw e;
+        }
+    }
 
 
     @Override
@@ -227,6 +262,38 @@ public class OrderService implements IService<Order> {
 
         return total;
     }
+    public double extractTotalFororder(int orderId) throws SQLException {
+        double total = 0.0;
+
+        // Récupérer la commande spécifique
+        Order order = getOrderById(orderId); // Assume this method exists to get a single order by ID
+
+        if (order == null) {
+            System.out.println("Aucune commande trouvée pour l'ID: " + orderId);
+            return total;
+        }
+
+        String orderHistory = order.getOrderHistory();
+        if (orderHistory != null && !orderHistory.isEmpty()) {
+            // Chercher la ligne qui contient "Total :"
+            String[] lines = orderHistory.split("\n");
+            for (String line : lines) {
+                if (line.trim().startsWith("Total :")) {
+                    try {
+                        // Extraire la valeur numérique
+                        String totalStr = line.split(":")[1].trim();
+                        totalStr = totalStr.replace("dt", "").trim();
+                        total = Double.parseDouble(totalStr);
+                    } catch (Exception e) {
+                        System.out.println("Erreur lors de l'extraction du total: " + e.getMessage());
+                    }
+                }
+            }
+        }
+
+        return total;
+    }
+
     public void marquerCommandeCommePayeePourUtilisateur(int userId) throws SQLException {
         String sql = "UPDATE `order` SET paid = true WHERE user_id = ? AND paid = false";
 
@@ -471,13 +538,44 @@ public class OrderService implements IService<Order> {
         order.setPhoneNumber(rs.getString("phone_number"));
         order.setDateOrder(rs.getDate("date_order"));
         order.setOrderHistory(rs.getString("order_history"));
-        order.setPaid(rs.getBoolean("paid"));
-        order.setPaymentIntentId(rs.getInt("payment_inten_id"));
+        order.setPaid(rs.getString("paid"));
+        order.setPaymentIntentId(rs.getString("payment_inten_id"));
 
         return order;
     }
 
 
+    public boolean updatePaymentIntentId(int orderId, String paymentIntentId) throws SQLException {
+        String sql = "UPDATE `order` SET payment_inten_id = ? WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, paymentIntentId);
+            ps.setInt(2, orderId);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("PaymentIntentId mis à jour pour la commande ID: " + orderId);
+                return true;
+            } else {
+                System.out.println("Aucune commande mise à jour (ID: " + orderId + ")");
+                return false;
+            }
+        }
+    }
+    public Order getOrderByPaymentIntentId(String paymentIntentId) throws SQLException {
+        String sql = "SELECT o.*, u.name AS user_name, u.lastname AS user_lastname " +
+                "FROM `order` o JOIN user u ON o.user_id = u.id " +
+                "WHERE o.payment_inten_id = ?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, paymentIntentId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return extractOrderFromResultSet(rs);
+                }
+            }
+        }
+        return null;
+    }
 
     public List<Product> getProductsByOrderId(int orderId) throws SQLException {
         List<Product> products = new ArrayList<>();
@@ -503,6 +601,18 @@ public class OrderService implements IService<Order> {
 
         return products;
     }
+    public boolean isOrderOlderThanDays(int orderId, int days) throws SQLException {
+        String query = "SELECT DATEDIFF(NOW(), date_order) AS days_passed FROM `order` WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int daysPassed = rs.getInt("days_passed");
+                return daysPassed >= days;
+            }
+            return false;
+        }
+    }
 
     // Méthode utilitaire pour afficher les détails d'une commande
     private void displayOrderDetails(Order order) {
@@ -513,13 +623,28 @@ public class OrderService implements IService<Order> {
         System.out.println("Numéro de téléphone: " + order.getPhoneNumber());
         System.out.println("Date de commande: " + order.getDateOrder());
         System.out.println("Historique: " + order.getOrderHistory());
-        System.out.println("Statut de paiement: " + (order.getPaid() ? "Payée" : "Non payée"));
+        System.out.println("Statut de paiement: " + ("true".equalsIgnoreCase(order.getPaid()) ? "Payée" : "Non payée"));
         System.out.println("ID d'intention de paiement: " + order.getPaymentIntentId());
         System.out.println("Total estimé: " + order.calculateTotal());
         System.out.println("------------------------------------");
     }
 
-
+    public void updatePaidStatus(int orderId, String paid) throws SQLException {
+        String query = "UPDATE `order` SET paid = ? WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setString(1, paid);
+            ps.setInt(2, orderId);
+            int rowsUpdated = ps.executeUpdate();
+            System.out.println("Statut de paiement mis à jour pour la commande ID: " + orderId +
+                    ", valeur paid: " + paid + ", lignes affectées: " + rowsUpdated);
+            if (rowsUpdated == 0) {
+                System.out.println("Aucune commande trouvée avec l'ID: " + orderId);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour du statut de paiement: " + e.getMessage());
+            throw e;
+        }
+    }
 
 
 }

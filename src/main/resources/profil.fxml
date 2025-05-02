@@ -116,6 +116,7 @@
                         <Region HBox.hgrow="ALWAYS" />
                         <Button fx:id="printOrderHistoryButton" onAction="#printOrderHistory" styleClass="secondary-button" text="Imprimer" />
                         <Button fx:id="editDeliveryButton" onAction="#editDeliveryInfo" styleClass="secondary-button" text="Modifier les données de livraison" />
+                        <Button fx:id="PayerButton" onAction="#Payer" styleClass="secondary-button" text="Payer " />
                     </HBox>
 
                     <!-- Liste des commandes -->

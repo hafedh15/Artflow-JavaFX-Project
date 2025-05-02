@@ -69,8 +69,8 @@ public class Main {
         order.setPhoneNumber("12345678");
         order.setDateOrder(new java.util.Date());
         order.setOrderHistory("Commande créée");
-        order.setPaid(false);
-        order.setPaymentIntentId(12345);
+        order.setPaid("false");
+        order.setPaymentIntentId("");
 
         try {
             // Exemples CRUD

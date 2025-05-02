@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -13,8 +16,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.shape.Circle?>
+
 <BorderPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: #F9F5F1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Contollers.AdminDashboardController">
 
     <!-- Panneau de navigation latéral - style artisanal avec tons marron doux -->
@@ -56,6 +59,7 @@
                     </ImageView>
                 </graphic>
             </Button>
+
             <Button maxWidth="Infinity" style="-fx-background-color: #C8B6A6; -fx-text-fill: #5C4F3D; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15; -fx-background-radius: 5;" text="Produits">
                 <graphic>
                     <ImageView fitHeight="16" fitWidth="16">
@@ -136,45 +140,60 @@
                 </Button>
             </HBox>
 
-            <!-- Statistiques en cartes - Uniquement Total Produits -->
+            <!-- Statistiques en cartes - Disposition modifiée -->
             <HBox spacing="20">
-                <StackPane prefHeight="120" prefWidth="250" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
-                    <VBox alignment="CENTER_LEFT" style="-fx-padding: 20;">
-                        <HBox alignment="CENTER_LEFT" spacing="15">
-                            <StackPane prefHeight="50" prefWidth="50" style="-fx-background-color: #F2EDE7; -fx-background-radius: 10;">
-                                <ImageView fitHeight="24" fitWidth="24">
-                                    <Image url="@/images/product.jpg" />
-                                </ImageView>
-                            </StackPane>
-                            <VBox>
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #8D7B6A;" text="Total Produits" />
-                                <Label fx:id="totalProductsLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="45" />
-                            </VBox>
-                        </HBox>
-                    </VBox>
-                </StackPane>
-                <StackPane prefHeight="120" prefWidth="250" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
-                    <VBox alignment="CENTER_LEFT" style="-fx-padding: 20;">
-                        <HBox alignment="CENTER_LEFT" spacing="15">
-                            <StackPane prefHeight="50" prefWidth="50" style="-fx-background-color: #F2EDE7; -fx-background-radius: 10;">
-                                <ImageView fitHeight="24" fitWidth="24">
-                                    <Image url="@/images/attente.png" />
-                                </ImageView>
-                            </StackPane>
-                            <VBox>
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #8D7B6A;" text="Produits en Attente" />
-                                <Label fx:id="pendingProductsLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="45" />
-                            </VBox>
-                        </HBox>
-                    </VBox>
-                </StackPane>
+                <!-- Conteneur gauche avec les statistiques l'un sous l'autre -->
+                <VBox spacing="15" prefWidth="250">
+                    <!-- Carte Total Produits -->
+                    <StackPane prefHeight="100" prefWidth="250" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
+                        <VBox alignment="CENTER_LEFT" style="-fx-padding: 15;">
+                            <HBox alignment="CENTER_LEFT" spacing="15">
+                                <StackPane prefHeight="50" prefWidth="50" style="-fx-background-color: #F2EDE7; -fx-background-radius: 10;">
+                                    <ImageView fitHeight="24" fitWidth="24">
+                                        <Image url="@/images/product.jpg" />
+                                    </ImageView>
+                                </StackPane>
+                                <VBox>
+                                    <Label style="-fx-font-size: 14px; -fx-text-fill: #8D7B6A;" text="Total Produits" />
+                                    <Label fx:id="totalProductsLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="45" />
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </StackPane>
 
+                    <!-- Carte Produits en Attente -->
+                    <StackPane prefHeight="100" prefWidth="250" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
+                        <VBox alignment="CENTER_LEFT" style="-fx-padding: 15;">
+                            <HBox alignment="CENTER_LEFT" spacing="15">
+                                <StackPane prefHeight="50" prefWidth="50" style="-fx-background-color: #F2EDE7; -fx-background-radius: 10;">
+                                    <ImageView fitHeight="24" fitWidth="24">
+                                        <Image url="@/images/attente.png" />
+                                    </ImageView>
+                                </StackPane>
+                                <VBox>
+                                    <Label style="-fx-font-size: 14px; -fx-text-fill: #8D7B6A;" text="Produits en Attente" />
+                                    <Label fx:id="pendingProductsLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="45" />
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </StackPane>
+                </VBox>
+
+                <!-- Graphique des catégories (inchangé mais avec espace ajusté) -->
+                <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-border-color: #E8DECD; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1); -fx-padding: 15;">
+                    <BarChart fx:id="categoryChart" title="Nombre de Produits par Catégorie">
+                        <xAxis>
+                            <CategoryAxis fx:id="xAxis" label="Catégorie"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis fx:id="yAxis" label="Nombre de Produits"/>
+                        </yAxis>
+                    </BarChart>
+                </VBox>
             </HBox>
 
-            <!-- Actions avec les boutons -->
-            <HBox spacing="15" style="-fx-padding: 20 0;">
-
-
+            <!-- Actions avec les boutons - REDESIGNED SECTION -->
+            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10 0;">
                 <Button fx:id="addProductButton" onAction="#handleAddProduct"
                         style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 10 15;"
                         text="Ajouter Produit">
@@ -185,11 +204,28 @@
                     </graphic>
                 </Button>
 
+                <Region HBox.hgrow="ALWAYS" />
 
+                <!-- Groupe export sur la droite -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <ComboBox fx:id="exportComboBox" prefWidth="200" promptText="Sélectionner une catégorie"
+                              style="-fx-background-color: white; -fx-border-color: #C8B6A6; -fx-border-radius: 5; -fx-padding: 8; -fx-font-size: 13px;">
+                        <!-- Les éléments seront ajoutés dynamiquement dans le contrôleur -->
+                    </ComboBox>
 
+                    <Button fx:id="exportButton" onAction="#handleExportButtonClick"
+                            style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 10 20;"
+                            text="Exporter">
+                        <graphic>
+                            <ImageView fitHeight="16" fitWidth="16">
+                                <Image url="@/images/export.jpeg" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
             </HBox>
 
-            <!-- Zone de contenu scrollable corrigée -->
+            <!-- Zone de contenu scrollable -->
             <ScrollPane fitToWidth="true" prefHeight="368.0" prefWidth="866.0"
                         style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
                 <content>

@@ -132,15 +132,15 @@ public class OrderDashboardController implements Initializable {
         footer.setSpacing(10);
         footer.setPadding(new Insets(10, 0, 0, 0));
 
-        Label statusLabel = new Label(order.getPaid() ? "Payée" : "Non payée");
-        statusLabel.setStyle(order.getPaid()
+        Label statusLabel = new Label("true".equalsIgnoreCase(order.getPaid()) ? "Payée" : "Non payée");
+        statusLabel.setStyle("true".equalsIgnoreCase(order.getPaid())
                 ? "-fx-background-color: #D4EDDA; -fx-text-fill: #155724; -fx-padding: 5 10; -fx-background-radius: 5;"
                 : "-fx-background-color: #F8D7DA; -fx-text-fill: #721C24; -fx-padding: 5 10; -fx-background-radius: 5;");
 
         Region footerSpacer = new Region();
         HBox.setHgrow(footerSpacer, Priority.ALWAYS);
 
-       // Label totalLabel = new Label("Total: " + order.calculateTotal() + " €");
+        // Label totalLabel = new Label("Total: " + order.calculateTotal() + " €");
      //   totalLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #5C4F3D;");
 
      //   footer.getChildren().addAll(statusLabel, footerSpacer, totalLabel);

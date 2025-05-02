@@ -12,8 +12,18 @@ public class Order {
     private String phoneNumber;
     private Date dateOrder;
     private String orderHistory;
-    private Boolean paid;
-    private Integer paymentIntentId;
+
+    public String getPaid() {
+        return paid;
+    }
+
+    public void setPaid(String paid) {
+        this.paid = paid;
+    }
+
+    private String paid;
+
+    private String paymentIntentId; // Changé de Integer à String pour correspondre au format des IDs Stripe
     private List<Product> products;
 
     // Constructeurs
@@ -22,7 +32,7 @@ public class Order {
     }
 
     public Order(Integer id, Cart cart, User user, String deliveryAddress, String phoneNumber,
-                 Date dateOrder, String orderHistory, Boolean paid, Integer paymentIntentId) {
+                 Date dateOrder, String orderHistory, String paid, String paymentIntentId) {
         this.id = id;
         this.cart = cart;
         this.user = user;
@@ -96,19 +106,13 @@ public class Order {
         this.orderHistory = orderHistory;
     }
 
-    public Boolean getPaid() {
-        return paid;
-    }
 
-    public void setPaid(Boolean paid) {
-        this.paid = paid;
-    }
 
-    public Integer getPaymentIntentId() {
+    public String getPaymentIntentId() {
         return paymentIntentId;
     }
 
-    public void setPaymentIntentId(Integer paymentIntentId) {
+    public void setPaymentIntentId(String paymentIntentId) {
         this.paymentIntentId = paymentIntentId;
     }
 
@@ -151,8 +155,12 @@ public class Order {
                 ", dateOrder=" + dateOrder +
                 ", orderHistory='" + orderHistory + '\'' +
                 ", paid=" + paid +
-                ", paymentIntentId=" + paymentIntentId +
+                ", paymentIntentId='" + paymentIntentId + '\'' +
                 ", total=" + calculateTotal() +
                 '}';
+    }
+
+    public boolean isPaid() {
+        return "true".equalsIgnoreCase(paid) || "1".equals(paid);
     }
 }

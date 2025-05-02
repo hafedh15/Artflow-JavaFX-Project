@@ -107,8 +107,9 @@ public class OrderDetails {
         order.setPhoneNumber(phone);
         order.setDateOrder(new Date());
         order.setOrderHistory(orderSummary); // Utilise le résumé déjà préparé
-        order.setPaid(false);
-        order.setPaymentIntentId(0);
+        order.setPaid("false");
+
+        order.setPaymentIntentId("");
 
         try {
             OrderService orderService = new OrderService();

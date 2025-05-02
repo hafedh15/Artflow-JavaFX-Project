@@ -1,6 +1,9 @@
 package tn.esprit.Contollers;
 
+import com.opencsv.CSVWriter;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +13,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -18,12 +25,15 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.esprit.entities.Product;
 import tn.esprit.services.EmailService;
 import tn.esprit.services.ProductService;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -32,6 +42,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.scene.layout.Priority;
@@ -40,7 +51,14 @@ import tn.esprit.tools.MyDataBase;
 public class AdminDashboardController implements Initializable {
     @FXML
     private Button addProductButton;
+    @FXML
+    private BarChart<String, Number> categoryChart;
 
+    @FXML
+    private CategoryAxis xAxis;
+
+    @FXML
+    private NumberAxis yAxis;
     // Ajoutez ces attributs FXML
     @FXML
     private Button productsButton;
@@ -70,7 +88,54 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     private Label pendingProductsLabel;
+    @FXML
+    private Button exportButton; // Add this to your FXML fields
+    
 
+    @FXML
+    private ComboBox<String> exportComboBox;
+    private void initializeExportComboBox() {
+        try {
+            List<String> categories = productService.getAllCategories();
+            ObservableList<String> options = FXCollections.observableArrayList();
+            options.add("Tous les produits");
+            options.add("Toutes les catégories");
+            options.addAll(categories);
+            exportComboBox.setItems(options);
+            exportComboBox.setValue("Tous les produits");
+        } catch (SQLException e) {
+            showAlert(AlertType.ERROR, "Erreur", "Impossible de charger les catégories : " + e.getMessage());
+            e.printStackTrace();
+        }
+        refreshProducts();
+    }
+    // Add the button click handler
+    @FXML
+    private void handleExportButtonClick(ActionEvent event) {
+        try {
+            String selectedOption = exportComboBox.getValue();
+            if (selectedOption == null || selectedOption.isEmpty()) {
+                showAlert(AlertType.WARNING, "Avertissement", "Veuillez sélectionner une option d'exportation.");
+                return;
+            }
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Exporter les produits vers CSV");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv"));
+            fileChooser.setInitialFileName("products_export_" + selectedOption.toLowerCase().replace(" ", "_") + ".csv");
+
+            Stage stage = (Stage) exportButton.getScene().getWindow();
+            File file = fileChooser.showSaveDialog(stage);
+
+            if (file != null) {
+                productService.exportProductsToCSV(file.getAbsolutePath(), selectedOption);
+                showAlert(AlertType.INFORMATION, "Succès", "Produits exportés avec succès vers " + file.getAbsolutePath());
+            }
+        } catch (SQLException | IOException e) {
+            showAlert(AlertType.ERROR, "Erreur", "Impossible d'exporter les produits : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     // Ajoutez cette classe interne pour stocker les informations des produits en attente
     private static class PendingProduct {
         private int id;
@@ -90,7 +155,55 @@ public class AdminDashboardController implements Initializable {
 
     // Ajoutez cette variable pour stocker la liste des produits en attente
     private List<PendingProduct> pendingProducts = new ArrayList<>();
+    private void loadCategoryChart() {
+        try {
+            Map<String, Integer> categoryCounts = productService.getProductCountsByCategory();
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Produits Disponibles");
 
+            int index = 0;
+            for (Map.Entry<String, Integer> entry : categoryCounts.entrySet()) {
+                XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey(), entry.getValue());
+                int finalIndex = index;
+                data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                    if (newNode != null) {
+                        newNode.setStyle("-fx-bar-fill: " + getColorForIndex(finalIndex) + ";");
+                    }
+                });
+                series.getData().add(data);
+                index++;
+            }
+
+            categoryChart.getData().clear();
+            categoryChart.getData().add(series);
+
+            // Adjust bar width
+            categoryChart.setBarGap(2);
+            categoryChart.setCategoryGap(10);
+
+            categoryChart.setTitle("Nombre de Produits par Catégorie");
+            xAxis.setLabel("Catégorie");
+            yAxis.setLabel("Nombre de Produits");
+            yAxis.setAutoRanging(true);
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors du chargement du graphique: " + e.getMessage());
+            showAlert(AlertType.ERROR, "Erreur", "Impossible de charger les statistiques par catégorie: " + e.getMessage());
+        }
+    }
+    private String getColorForIndex(int index) {
+        String[] colors = {
+                "#8D7B6A", // Muted Brown
+                "#E76F51", // Soft Orange
+                "#B0BEC5", // Light Gray
+                "#A18E78", // Lighter Brown
+                "#F4A261", // Lighter Orange
+                "#D5D8DC", // Softer Gray
+                "#5C4F3D", // Darker Brown
+                "#FF8A65"  // Brighter Orange
+        };
+        return colors[index % colors.length];
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -114,7 +227,10 @@ public class AdminDashboardController implements Initializable {
             loadProducts();
             updateNotificationBadge();
             // Mettre à jour les statistiques
+            refreshProducts();
             updateStatistics();
+            loadCategoryChart();
+            initializeExportComboBox();
         });
     }
     // Méthode pour mettre à jour le badge de notification
@@ -228,12 +344,12 @@ public class AdminDashboardController implements Initializable {
         // Réutilisez votre code existant pour afficher les détails d'un produit
         // Ou adaptez-le pour montrer une fenêtre plus simple
         Stage dialog = new Stage();
-        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle("Détails du produit");
 
         VBox detailsContainer = new VBox(15);
-        detailsContainer.setPadding(new javafx.geometry.Insets(20));
-        detailsContainer.setAlignment(javafx.geometry.Pos.CENTER);
+        detailsContainer.setPadding(new Insets(20));
+        detailsContainer.setAlignment(Pos.CENTER);
 
         // Image du produit
         ImageView productImage = new ImageView();
@@ -285,7 +401,7 @@ public class AdminDashboardController implements Initializable {
 
         // Boutons d'action
         HBox buttonsContainer = new HBox(15);
-        buttonsContainer.setAlignment(javafx.geometry.Pos.CENTER);
+        buttonsContainer.setAlignment(Pos.CENTER);
 
         Button approveButton = new Button("Accepter");
         approveButton.setStyle("-fx-background-color: #A5D6A7; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 10 20;");
@@ -332,6 +448,8 @@ public class AdminDashboardController implements Initializable {
             // Refresh products list, notification badge, AND statistics
             updateNotificationBadge();
             updateStatistics(); // Add this line to refresh statistics
+            loadCategoryChart(); // Add this line
+            initializeExportComboBox();
         } catch (SQLException e) {
             showAlert(AlertType.ERROR, "Erreur",
                     "Impossible de charger les produits en attente: " + e.getMessage());
@@ -355,7 +473,7 @@ public class AdminDashboardController implements Initializable {
     private void showProductApprovalDialog(Product product, List<Product> allPendingProducts, int currentIndex) {
         // Create the custom dialog
         Stage dialog = new Stage();
-        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle("Approbation de produit");
 
         // Create the layout
@@ -364,8 +482,8 @@ public class AdminDashboardController implements Initializable {
         dialogVbox.setStyle("-fx-background-color: #F9F5F0; -fx-background-radius: 10; -fx-border-color: #EAE0D5; " +
                 "-fx-border-radius: 10; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 0);");
 
-        dialogVbox.setAlignment(javafx.geometry.Pos.CENTER);
-        dialogVbox.setPadding(new javafx.geometry.Insets(20));
+        dialogVbox.setAlignment(Pos.CENTER);
+        dialogVbox.setPadding(new Insets(20));
 
         // Product image container with styled background
         StackPane imageContainer = new StackPane();
@@ -441,7 +559,7 @@ public class AdminDashboardController implements Initializable {
 
         // Progress indicator with nice styling
         HBox progressContainer = new HBox();
-        progressContainer.setAlignment(javafx.geometry.Pos.CENTER);
+        progressContainer.setAlignment(Pos.CENTER);
         progressContainer.setStyle("-fx-padding: 10 0;");
 
         Label progressLabel = new Label((currentIndex + 1) + " / " + allPendingProducts.size());
@@ -452,8 +570,8 @@ public class AdminDashboardController implements Initializable {
 
         // Buttons
         HBox buttonsBox = new HBox(15);
-        buttonsBox.setAlignment(javafx.geometry.Pos.CENTER);
-        buttonsBox.setPadding(new javafx.geometry.Insets(10, 0, 0, 0));
+        buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.setPadding(new Insets(10, 0, 0, 0));
 
         Button approveButton = new Button("Accepter");
         approveButton.setStyle("-fx-background-color: #A5D6A7; -fx-text-fill: white; -fx-background-radius: 5; " +
@@ -589,13 +707,13 @@ public class AdminDashboardController implements Initializable {
         try {
             // Créer une nouvelle fenêtre
             Stage dialog = new Stage();
-            dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setTitle("Produits en attente d'approbation");
 
             // Créer un conteneur principal
             VBox mainContainer = new VBox(15);
-            mainContainer.setPadding(new javafx.geometry.Insets(20));
-            mainContainer.setAlignment(javafx.geometry.Pos.CENTER);
+            mainContainer.setPadding(new Insets(20));
+            mainContainer.setAlignment(Pos.CENTER);
             mainContainer.setStyle("-fx-background-color: #F9F5F0;");
 
             // Titre avec style
@@ -613,7 +731,7 @@ public class AdminDashboardController implements Initializable {
 
             // Conteneur pour les produits
             VBox productsContainer = new VBox(10);
-            productsContainer.setPadding(new javafx.geometry.Insets(10));
+            productsContainer.setPadding(new Insets(10));
             productsContainer.setStyle("-fx-background-color: transparent;");
 
             // Ajouter chaque produit à la liste avec un style modernisé
@@ -663,7 +781,7 @@ public class AdminDashboardController implements Initializable {
     private HBox createStyledProductListItem(Product product) {
         // Créer un conteneur pour l'élément
         HBox productItem = new HBox(15);
-        productItem.setPadding(new javafx.geometry.Insets(12));
+        productItem.setPadding(new Insets(12));
         productItem.setStyle("-fx-background-color: white; -fx-border-color: #EAE0D5; -fx-border-radius: 8; " +
                 "-fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);");
 
@@ -707,8 +825,8 @@ public class AdminDashboardController implements Initializable {
 
         // Informations du produit
         VBox infoContainer = new VBox(5);
-        infoContainer.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        javafx.scene.layout.HBox.setHgrow(infoContainer, javafx.scene.layout.Priority.ALWAYS);
+        infoContainer.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(infoContainer, Priority.ALWAYS);
 
         Label nameLabel = new Label(product.getName());
         nameLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;");
@@ -723,7 +841,7 @@ public class AdminDashboardController implements Initializable {
 
         // Boutons d'action
         HBox buttonsContainer = new HBox(8);
-        buttonsContainer.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        buttonsContainer.setAlignment(Pos.CENTER_RIGHT);
 
         Button viewButton = new Button("Voir");
         viewButton.setStyle("-fx-background-color: #F5EEE6; -fx-text-fill: #7D6E5B; -fx-background-radius: 5; " +
@@ -885,7 +1003,7 @@ public class AdminDashboardController implements Initializable {
 
             // Boutons d'action
             HBox actionContainer = new HBox(10);
-            actionContainer.setAlignment(javafx.geometry.Pos.CENTER);
+            actionContainer.setAlignment(Pos.CENTER);
             actionContainer.setStyle("-fx-padding: 0 15 15 15;");
 
             Button editButton = new Button("Modifier");
@@ -920,7 +1038,7 @@ public class AdminDashboardController implements Initializable {
         emptyMessage.setPrefHeight(300);
 
         VBox messageBox = new VBox(10);
-        messageBox.setAlignment(javafx.geometry.Pos.CENTER);
+        messageBox.setAlignment(Pos.CENTER);
 
         try {
             ImageView iconView = new ImageView(new Image(getClass().getResourceAsStream("/images/product.jpg")));
@@ -949,6 +1067,8 @@ public class AdminDashboardController implements Initializable {
         loadProducts();
         updateStatistics();
         updateNotificationBadge();
+        loadCategoryChart(); // Add this line
+        initializeExportComboBox();
     }
 
     private void updateStatistics() {
@@ -1023,7 +1143,7 @@ public class AdminDashboardController implements Initializable {
                     + product.getName() + " ?");
 
             confirmation.showAndWait().ifPresent(response -> {
-                if (response == javafx.scene.control.ButtonType.OK) {
+                if (response == ButtonType.OK) {
                     try {
                         // Supprimer le produit
                         productService.supprimer(product);

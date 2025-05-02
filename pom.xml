@@ -59,7 +59,16 @@
         <artifactId>javafx-web</artifactId>
         <version>17.0.2</version> <!-- Version JavaFX Web -->
     </dependency>
-
+    <dependency>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>5.9</version>
+    </dependency>
+    <dependency>
+        <groupId>org.controlsfx</groupId>
+        <artifactId>controlsfx</artifactId>
+        <version>11.2.1</version>
+    </dependency>
 </dependencies>
     <build>
         <plugins>
