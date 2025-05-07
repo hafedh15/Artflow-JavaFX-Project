@@ -47,7 +47,15 @@ public class ReponseService implements IService<Reponse> {
         ps.executeUpdate();
         System.out.println("Reponse modifiée.");
     }
-
+    // New method just for Reponse updates
+    public void modifier(Reponse r) throws SQLException {
+        String req = "UPDATE reponse SET message = ?, created_at = ? WHERE id = ?";
+        PreparedStatement ps = cnx.prepareStatement(req);
+        ps.setString(1, r.getMessage());
+        ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+        ps.setInt(3, r.getId());
+        ps.executeUpdate();
+    }
 
     @Override
     public void supprimer(Reponse reponse) {

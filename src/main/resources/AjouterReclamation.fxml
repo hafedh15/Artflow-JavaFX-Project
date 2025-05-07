@@ -1,26 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1"
+<AnchorPane prefHeight="600.0" prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.controllers.AjouterReclamation">
-   <children>
-      <Label layoutX="60.0" layoutY="40.0" text="Objet">
-         <font><Font size="18.0" /></font>
-      </Label>
-      <TextField fx:id="tfObjet" layoutX="160.0" layoutY="40.0" prefWidth="360.0" />
+            fx:controller="tn.esprit.controllers.AjouterReclamation"
+            style="-fx-background-color: #F9F5F1;">
 
-      <Label layoutX="60.0" layoutY="100.0" text="Message">
-         <font><Font size="18.0" /></font>
-      </Label>
-      <TextArea fx:id="taMessage" layoutX="160.0" layoutY="100.0" prefHeight="150.0" prefWidth="360.0" wrapText="true" />
+   <VBox spacing="20" alignment="CENTER" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.bottomAnchor="30.0">
 
-      <Button layoutX="410.0" layoutY="280.0" text="Envoyer"
-              onAction="#ajouter" fx:id="btnAjouter" prefWidth="110.0"/>
+      <!-- Titre de la page -->
+      <Label text="Ajouter une Réclamation"
+             style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
 
-      <Label fx:id="lblStatus" layoutX="60.0" layoutY="350.0" textFill="RED"/>
-   </children>
+      <!-- Formulaire contenu -->
+      <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
+
+         <!-- Objet -->
+         <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Objet"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+            <Region HBox.hgrow="ALWAYS"/>
+         </HBox>
+
+         <TextField fx:id="tfObjet"
+                    promptText="Entrez l'objet..."
+                    style="-fx-background-color: #F7F7F7; -fx-border-color: #E8DECD; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 8;"/>
+
+         <Label fx:id="labelObjetError"
+                text=""
+                visible="false"
+                style="-fx-font-size: 12px; -fx-text-fill: red;"/>
+
+         <!-- Message -->
+         <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Message"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+            <Region HBox.hgrow="ALWAYS"/>
+         </HBox>
+
+         <TextArea fx:id="taMessage"
+                   promptText="Entrez votre message..."
+                   prefHeight="150.0"
+                   style="-fx-background-color: #F7F7F7; -fx-border-color: #E8DECD; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 8;"
+                   wrapText="true"/>
+
+         <Label fx:id="labelMessageError"
+                text=""
+                visible="false"
+                style="-fx-font-size: 12px; -fx-text-fill: red;"/>
+
+         <!-- Bouton Envoyer -->
+         <HBox alignment="CENTER_RIGHT">
+            <Button fx:id="btnAjouter"
+                    text="Envoyer"
+                    onAction="#ajouter"
+                    style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20;"/>
+         </HBox>
+
+         <!-- Label Message Count -->
+         <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label fx:id="lblMessageCount"
+                   text="0/3 Messages envoyés"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+         </HBox>
+
+         <!-- Label statut -->
+         <Label fx:id="lblStatus"
+                text=""
+                style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-font-style: italic; -fx-text-fill: red;"/>
+      </VBox>
+
+   </VBox>
 </AnchorPane>

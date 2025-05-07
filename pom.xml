@@ -34,6 +34,44 @@
          <version>21.0.2</version>
      </dependency>
 
+
+     <dependency>
+         <groupId>org.openjfx</groupId>
+         <artifactId>javafx-web</artifactId>
+         <version>17</version> <!-- or any other appropriate version you're using -->
+     </dependency>
+
+     <dependency>
+         <groupId>com.google.cloud</groupId>
+         <artifactId>google-cloud-dialogflow</artifactId>
+         <version>4.4.0</version>
+     </dependency>
+     <dependency>
+         <groupId>com.google.auth</groupId>
+         <artifactId>google-auth-library-oauth2-http</artifactId>
+         <version>1.19.0</version>
+     </dependency>
+     <!-- Dialogflow client -->
+     <dependency>
+         <groupId>com.google.cloud</groupId>
+         <artifactId>google-cloud-dialogflow</artifactId>
+         <version>4.4.0</version>
+     </dependency>
+
+     <!-- Auth library -->
+     <dependency>
+         <groupId>com.google.auth</groupId>
+         <artifactId>google-auth-library-oauth2-http</artifactId>
+         <version>1.19.0</version>
+     </dependency>
+     <dependency>
+         <groupId>com.google.auth</groupId>
+         <artifactId>google-auth-library-credentials</artifactId>
+         <version>1.19.0</version>
+     </dependency>
+
+
+
  </dependencies>
 
     <build>

@@ -14,7 +14,7 @@ public class MainFX extends Application {
         launch(args);
     }
 
-    @Override
+ /*  @Override
    public void start(Stage primaryStage) {
         try {
             // Load the FXML file for Reclamation
@@ -35,9 +35,8 @@ public class MainFX extends Application {
         } catch (IOException e) {
             e.printStackTrace(); // Handle errors related to FXML loading
         }
-    }
-
-    /*public void start(Stage primaryStage) {
+    }*/
+   public void start(Stage primaryStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherReclamation.fxml"));
             Parent root = loader.load();
@@ -48,12 +47,25 @@ public class MainFX extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
 
-  /*  public void start(Stage primaryStage) {
+ /*public void start(Stage primaryStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Conversation.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Interface de Conversation");
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+
+ /* public void start(Stage primaryStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ClientConversation.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
