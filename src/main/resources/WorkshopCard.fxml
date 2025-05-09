@@ -27,11 +27,14 @@
 
         <Label fx:id="descriptionLabel" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
 
-
         <HBox spacing="6">
             <Button text="Register now" onAction="#registerReservation"
                     style="-fx-background-color: #be9b7b; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 5;" />
+            <Button fx:id="btnVoirCarte" text="View location" onAction="#handleVoirCarte"/>
         </HBox>
 
+
     </VBox>
+
+
 </AnchorPane>

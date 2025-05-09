@@ -6,7 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
@@ -14,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import tn.artflow.entities.*;
 import tn.artflow.services.*;
 
@@ -25,14 +28,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class OrderDashboardController implements Initializable {
-
-    @FXML
-    private FlowPane ordersContainer;
-
-    @FXML
-    private Label totalOrdersLabel;
-
-    private OrderService orderService;
 
     @FXML
     private Button GoToArticle;
@@ -55,7 +50,13 @@ public class OrderDashboardController implements Initializable {
 
     @FXML
     private Button orderButton;
+    @FXML
+    private FlowPane ordersContainer;
 
+    @FXML
+    private Label totalOrdersLabel;
+
+    private OrderService orderService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -159,18 +160,18 @@ public class OrderDashboardController implements Initializable {
         footer.setSpacing(10);
         footer.setPadding(new Insets(10, 0, 0, 0));
 
-        Label statusLabel = new Label(order.getPaid() ? "Payée" : "Non payée");
-        statusLabel.setStyle(order.getPaid()
+        Label statusLabel = new Label("true".equalsIgnoreCase(order.getPaid()) ? "Payée" : "Non payée");
+        statusLabel.setStyle("true".equalsIgnoreCase(order.getPaid())
                 ? "-fx-background-color: #D4EDDA; -fx-text-fill: #155724; -fx-padding: 5 10; -fx-background-radius: 5;"
                 : "-fx-background-color: #F8D7DA; -fx-text-fill: #721C24; -fx-padding: 5 10; -fx-background-radius: 5;");
 
         Region footerSpacer = new Region();
         HBox.setHgrow(footerSpacer, Priority.ALWAYS);
 
-       // Label totalLabel = new Label("Total: " + order.calculateTotal() + " €");
-     //   totalLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #5C4F3D;");
+        // Label totalLabel = new Label("Total: " + order.calculateTotal() + " €");
+        //   totalLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #5C4F3D;");
 
-     //   footer.getChildren().addAll(statusLabel, footerSpacer, totalLabel);
+        //   footer.getChildren().addAll(statusLabel, footerSpacer, totalLabel);
 
         // Add action buttons
         HBox actions = new HBox();
@@ -192,6 +193,19 @@ public class OrderDashboardController implements Initializable {
     }
 
     public void handleOrderButtonAction(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/OrdersDashboard.fxml"));
+            Parent root = loader.load();
+
+            // Obtenir la scène actuelle et la remplacer par la scène d'ajout
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter un produit");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -285,7 +299,4 @@ public class OrderDashboardController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-
 }

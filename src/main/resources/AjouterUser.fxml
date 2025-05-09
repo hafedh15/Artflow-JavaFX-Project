@@ -43,11 +43,13 @@
                  style="-fx-text-fill: #2196F3; -fx-font-size: 12px;" />
 
       <!-- Google Sign Up Button -->
-      <Button fx:id="btnGoogleSignUp" maxWidth="Infinity" onAction="#signUpWithGoogle" onMouseEntered="#hoverGoogle" onMouseExited="#unhoverGoogle" style="-fx-background-color: #ccc2c0;                -fx-text-fill: white;                -fx-font-weight: bold;                -fx-background-radius: 8;                -fx-padding: 12 0;                -fx-graphic-text-gap: 10;                -fx-cursor: hand;">
+      <Button fx:id="btnGoogleSignUp"
+              text="Sign Up with Google"
+              onAction="#signUpWithGoogle"
+              style="-fx-background-color: #ccc2c0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 0; -fx-pref-width: 100%;">
          <graphic>
-            <ImageView fx:id="googleIcon" fitHeight="18" fitWidth="18" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="googleIcon" fitWidth="20" fitHeight="20" />
          </graphic>
-         <text>Sign Up with Google</text>
       </Button>
 
 

@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
 public class Profilp implements Initializable {
 
     @FXML
-    private ListView<tn.artflow.entities.Product> productListView;
+    private ListView<Product> productListView;
 
     @FXML
     private ListView<Order> orderHistoryListView;
@@ -42,21 +42,242 @@ public class Profilp implements Initializable {
     private Label noOrdersLabel;
 
     @FXML
+    private Label noRequestsLabel;
+    @FXML
     private Button addProductButton;
+    @FXML
+    private ListView<Product> productRequestListView;
+
+    User user = tn.artflow.utils.UserSession.getInstance().getUser();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Chargement des produits
         loadUserProducts();
-
+        // Chargement des demandes de produits en attente
+        loadPendingProductRequests();
         // Chargement des commandes
         loadUserOrders();
+    }
+
+    // Nouvelle méthode pour charger les demandes de produits en attente
+    private void loadPendingProductRequests() {
+        ProductService ps = new ProductService();
+        try {
+            // Utilisation de la méthode getPendingProductsByUser
+            List<Product> pendingProducts = ps.getPendingProductsByUser(user.getId()); // ID utilisateur fixé à 1
+
+            if (pendingProducts.isEmpty()) {
+                noRequestsLabel.setVisible(true);
+                productRequestListView.setVisible(false);
+            } else {
+                noRequestsLabel.setVisible(false);
+                productRequestListView.setVisible(true);
+                productRequestListView.getItems().addAll(pendingProducts);
+
+                // Configuration de l'affichage des demandes de produits en attente
+                productRequestListView.setCellFactory(new Callback<ListView<Product>, ListCell<Product>>() {
+                    @Override
+                    public ListCell<Product> call(ListView<Product> listView) {
+                        return new ListCell<Product>() {
+                            private ImageView imageView = new ImageView();
+                            private Label nameLabel = new Label();
+                            private Label priceLabel = new Label();
+                            private Label stockLabel = new Label();
+                            private Label categoryLabel = new Label();
+                            private Label descriptionLabel = new Label();
+                            private Label statusLabel = new Label();
+                            private Button detailsButton = new Button("Détails");
+                            private Button cancelButton = new Button("Annuler");
+                            private HBox buttonBox = new HBox(10, detailsButton, cancelButton);
+                            private VBox infoBox = new VBox(5, nameLabel, priceLabel, stockLabel, categoryLabel, descriptionLabel, statusLabel, buttonBox);
+                            private HBox hBox = new HBox(imageView, infoBox);
+
+                            {
+                                imageView.setFitWidth(100);
+                                imageView.setFitHeight(100);
+                                imageView.setPreserveRatio(true);
+                                imageView.setSmooth(true);
+                                hBox.setSpacing(10);
+
+                                // Style des boutons
+                                detailsButton.getStyleClass().add("details-button");
+                                cancelButton.getStyleClass().add("delete-button");
+                                buttonBox.setAlignment(Pos.CENTER_LEFT);
+                                buttonBox.setPadding(new javafx.geometry.Insets(5, 0, 0, 0));
+
+                                // Action des boutons
+                                detailsButton.setOnAction(e -> showProductRequestDetails(getItem()));
+                                cancelButton.setOnAction(e -> cancelProductRequest(getItem()));
+
+                                // Appliquer des styles
+                                nameLabel.getStyleClass().add("product-name");
+                                priceLabel.getStyleClass().add("product-price");
+                                stockLabel.getStyleClass().add("product-detail");
+                                categoryLabel.getStyleClass().add("product-detail");
+                                descriptionLabel.getStyleClass().add("product-detail");
+                                statusLabel.getStyleClass().add("product-status");
+
+                                hBox.getStyleClass().add("product-request-cell");
+                                HBox.setHgrow(infoBox, Priority.ALWAYS);
+                            }
+
+                            @Override
+                            protected void updateItem(Product p, boolean empty) {
+                                super.updateItem(p, empty);
+                                if (empty || p == null) {
+                                    setText(null);
+                                    setGraphic(null);
+                                } else {
+                                    // Correction pour charger l'image depuis le système de fichier
+                                    File imageFile = new File("C:/xampp/htdocs" + p.getImage());
+                                    try {
+                                        String fileUri = imageFile.toURI().toString();
+                                        Image image = new Image(fileUri, true);
+                                        imageView.setImage(image);
+                                    } catch (Exception e) {
+                                        // Fallback à une image par défaut
+                                        try {
+                                            Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-product.jpg"));
+                                            imageView.setImage(defaultImage);
+                                        } catch (Exception ex) {
+                                            System.err.println("Impossible de charger l'image par défaut");
+                                        }
+                                        System.err.println("Impossible de charger l'image: " + imageFile.getAbsolutePath());
+                                    }
+
+                                    nameLabel.setText("🛒 Produit: " + p.getName());
+                                    priceLabel.setText("💶 Prix: " + p.getPrice() + " €");
+                                    stockLabel.setText("📦 Stock: " + p.getStock());
+                                    categoryLabel.setText("📁 Catégorie: " + p.getCategory());
+                                    descriptionLabel.setText("📝 Description: " + p.getDescription());
+
+                                    // Mettre en évidence le statut "en attente"
+                                    statusLabel.setText("⏳ Statut: " + p.getStatus());
+                                    statusLabel.getStyleClass().add("pending-status");
+
+                                    setGraphic(hBox);
+                                }
+                            }
+                        };
+                    }
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de charger les demandes de produits: " + e.getMessage());
+        }
+    }
+
+    // Nouvelle méthode pour afficher les détails d'une demande de produit
+    private void showProductRequestDetails(Product product) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Détails de la demande de produit");
+        dialog.setHeaderText("Informations complètes de la demande");
+
+        // Contenu du dialogue
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(20));
+
+        // Information du produit
+        Label productName = new Label("Nom du produit: " + product.getName());
+        Label productDescription = new Label("Description: " + product.getDescription());
+        Label productPrice = new Label("Prix: " + product.getPrice() + " €");
+        Label productStock = new Label("Stock: " + product.getStock());
+        Label productCategory = new Label("Catégorie: " + product.getCategory());
+        Label productStatus = new Label("Statut: " + product.getStatus());
+        Label submissionDate = new Label("Date de soumission: À définir"); // À remplacer par la date réelle
+
+        // Ajouter une image du produit
+        ImageView productImage = new ImageView();
+        productImage.setFitWidth(200);
+        productImage.setFitHeight(200);
+        productImage.setPreserveRatio(true);
+
+        // Charger l'image du produit
+        File imageFile = new File("C:/xampp/htdocs" + product.getImage());
+        try {
+            String fileUri = imageFile.toURI().toString();
+            Image image = new Image(fileUri, true);
+            productImage.setImage(image);
+        } catch (Exception e) {
+            // Fallback à une image par défaut
+            try {
+                Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-product.jpg"));
+                productImage.setImage(defaultImage);
+            } catch (Exception ex) {
+                System.err.println("Impossible de charger l'image par défaut");
+            }
+        }
+
+        // Assembler tous les éléments
+        content.getChildren().addAll(
+                productImage,
+                new Separator(),
+                productName,
+                productDescription,
+                productPrice,
+                productStock,
+                productCategory,
+                productStatus,
+                submissionDate
+        );
+
+        dialog.getDialogPane().setContent(content);
+
+        // Bouton de fermeture
+        ButtonType closeButton = new ButtonType("Fermer", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(closeButton);
+
+        dialog.showAndWait();
+    }
+
+    // Nouvelle méthode pour annuler une demande de produit
+    private void cancelProductRequest(Product product) {
+        if (showConfirmationDialog("Confirmation d'annulation",
+                "Êtes-vous sûr de vouloir annuler la demande pour le produit " + product.getName() + "?")) {
+            try {
+                ProductService ps = new ProductService();
+                ps.supprimerParId(product.getId());
+                refreshProductRequestList();
+                showAlert(Alert.AlertType.INFORMATION, "Annulation réussie",
+                        "La demande de produit a été annulée avec succès.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur d'annulation",
+                        "Impossible d'annuler la demande de produit: " + e.getMessage());
+            }
+        }
+    }
+
+    // Méthode pour rafraîchir la liste des demandes de produits
+    private void refreshProductRequestList() {
+        try {
+            ProductService ps = new ProductService();
+
+            productRequestListView.getItems().clear();
+            List<Product> pendingProducts = ps.getPendingProductsByUser(user.getId()); // ID utilisateur fixé à 1
+
+            if (pendingProducts.isEmpty()) {
+                noRequestsLabel.setVisible(true);
+                productRequestListView.setVisible(false);
+            } else {
+                noRequestsLabel.setVisible(false);
+                productRequestListView.setVisible(true);
+                productRequestListView.getItems().addAll(pendingProducts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de rafraîchir la liste des demandes de produits: " + e.getMessage());
+        }
     }
 
     private void loadUserProducts() {
         ProductService ps = new ProductService();
         User user = tn.artflow.utils.UserSession.getInstance().getUser();
-        //user.setId(1); // ID fixe pour test
+
 
         try {
             List<Product> products = ps.getProductsByUser(user);
@@ -152,7 +373,7 @@ public class Profilp implements Initializable {
         }
     }
 
-    // Modification de la méthode loadUserOrders dans la classe Profil.java
+    // Modification pour la méthode loadUserOrders() qui affiche les commandes
     private void loadUserOrders() {
         OrderService orderService = new OrderService();
         try {
@@ -178,12 +399,14 @@ public class Profilp implements Initializable {
                             private Label statusLabel = new Label();
                             private Label totalLabel = new Label();
                             private Button detailsButton = new Button("Détails");
-                            // Ajout du bouton de suppression
                             private Button deleteButton = new Button("Supprimer");
-                            private HBox buttonBox = new HBox(10, detailsButton, deleteButton);
+                            // Ajout du bouton de paiement en ligne
+
+
+                            private VBox buttonsVBox = new VBox(5, detailsButton, deleteButton);
                             private VBox orderInfoBox = new VBox(5, orderIdLabel, dateLabel, addressLabel,
                                     phoneLabel, statusLabel, totalLabel);
-                            private HBox mainBox = new HBox(10, orderInfoBox, buttonBox);
+                            private HBox mainBox = new HBox(10, orderInfoBox, buttonsVBox);
 
                             {
                                 // Stylisation des éléments
@@ -197,22 +420,15 @@ public class Profilp implements Initializable {
                                 detailsButton.getStyleClass().add("details-button");
                                 detailsButton.setOnAction(e -> showOrderDetails(getItem()));
 
-                                // Style et action pour le bouton de suppression
                                 deleteButton.getStyleClass().add("delete-button");
                                 deleteButton.setOnAction(e -> deleteOrder(getItem()));
 
-                                buttonBox.setAlignment(Pos.CENTER_RIGHT);
+
+
+                                buttonsVBox.setAlignment(Pos.CENTER);
                                 mainBox.setAlignment(Pos.CENTER_LEFT);
                                 mainBox.setPadding(new javafx.geometry.Insets(10));
                                 mainBox.getStyleClass().add("order-cell");
-
-                                // Ajouter une disposition verticale pour les boutons
-                                VBox buttonsVBox = new VBox(5, detailsButton, deleteButton);
-                                buttonsVBox.setAlignment(Pos.CENTER);
-
-                                // Remplacer le buttonBox par le buttonsVBox dans le mainBox
-                                mainBox.getChildren().clear();
-                                mainBox.getChildren().addAll(orderInfoBox, buttonsVBox);
                             }
 
                             @Override
@@ -226,8 +442,11 @@ public class Profilp implements Initializable {
                                     dateLabel.setText("📅 Date: " + order.getDateOrder());
                                     addressLabel.setText("🏠 Adresse: " + order.getDeliveryAddress());
                                     phoneLabel.setText("📞 Téléphone: " + order.getPhoneNumber());
-                                    statusLabel.setText("💳 Statut: " + (order.getPaid() ? "Payée" : "En attente de paiement"));
-                               //     totalLabel.setText("💰 Total: " + order.calculateTotal() + " €");
+                                    statusLabel.setText("💳 Statut: " + (order.getPaid() ));
+                                    //totalLabel.setText("💰 Total: " + order.calculateTotal() + " €");
+
+
+
 
                                     setGraphic(mainBox);
                                 }
@@ -242,21 +461,63 @@ public class Profilp implements Initializable {
                     "Impossible de charger les commandes: " + e.getMessage());
         }
     }
-    // Méthode pour supprimer une commande
+
+    // Nouvelle méthode pour naviguer vers la page de paiement
+    private void navigateToPayment(Order order) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paiement.fxml"));
+            Parent root = loader.load();
+
+            // Vérifier si le contrôleur de la page paiement possède une méthode pour initialiser les données
+            Object controller = loader.getController();
+
+            // Si le contrôleur a une méthode setOrderData, on l'utilise
+            if (controller instanceof Paiement) {
+                Paiement paiementController = (Paiement) controller;
+                try {
+                    // Essayer d'appeler la méthode setOrderData si elle existe
+                    //    paiementController.setOrderData(order);
+                } catch (Exception e) {
+                    System.err.println("La méthode setOrderData n'existe pas dans PaiementController: " + e.getMessage());
+                    // Continuer même sans pouvoir passer les données
+                }
+            }
+
+            Stage stage = (Stage) orderHistoryListView.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+            // Afficher un message de confirmation
+            System.out.println("Redirection vers la page de paiement pour la commande #" + order.getId());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de charger la page de paiement: " + e.getMessage());
+        }
+    }
     private void deleteOrder(Order order) {
-        if (showConfirmationDialog("Confirmation de suppression",
-                "Êtes-vous sûr de vouloir supprimer la commande #" + order.getId() + "?")) {
-            try {
-                OrderService orderService = new OrderService();
+        try {
+            OrderService orderService = new OrderService();
+            // Vérifie si la commande a au moins 7 jours (par exemple)
+            if (!orderService.isOrderOlderThanDays(order.getId(), 3)) {
+                showAlert(Alert.AlertType.WARNING, "Suppression refusée",
+                        "Vous ne pouvez supprimer que les commandes de plus de 3 jours.");
+                return;
+            }
+
+            if (showConfirmationDialog("Confirmation de suppression",
+                    "Êtes-vous sûr de vouloir supprimer la commande #" + order.getId() + "?")) {
                 orderService.supprimerParId(order.getId());
                 refreshOrderList();
                 showAlert(Alert.AlertType.INFORMATION, "Suppression réussie",
                         "La commande a été supprimée avec succès.");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Erreur de suppression",
-                        "Impossible de supprimer la commande: " + e.getMessage());
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur de suppression",
+                    "Impossible de supprimer la commande: " + e.getMessage());
         }
     }
 
@@ -298,7 +559,7 @@ public class Profilp implements Initializable {
             Label customerInfo = new Label("Client: " + order.getUser().getName() + " " + order.getUser().getLastname());
             Label orderDate = new Label("Date: " + order.getDateOrder());
             Label deliveryInfo = new Label("Livraison: " + order.getDeliveryAddress() + " - " + order.getPhoneNumber());
-            Label paymentStatus = new Label("Paiement: " + (order.getPaid() ? "Payé" : "En attente"));
+            Label paymentStatus = new Label("Paiement: " + ("true".equalsIgnoreCase(order.getPaid()) ? "Payé" : "En attente"));
 
             // Section des produits
             Label productsTitle = new Label("Produits commandés:");
@@ -422,9 +683,8 @@ public class Profilp implements Initializable {
     private void refreshProductList() {
         try {
             ProductService ps = new ProductService();
-
-            User user = tn.artflow.utils.UserSession.getInstance().getUser();
-
+            User user = new User();
+            user.setId(1); // ID fixe pour test
 
             productListView.getItems().clear();
             List<Product> products = ps.getProductsByUser(user);
@@ -434,7 +694,6 @@ public class Profilp implements Initializable {
         }
     }
 
-    // Implémentation de la méthode printOrderHistory
     @FXML
     public void printOrderHistory(ActionEvent actionEvent) {
         try {
@@ -457,12 +716,12 @@ public class Profilp implements Initializable {
                 report.append("Date: ").append(order.getDateOrder()).append("\n");
                 report.append("Adresse: ").append(order.getDeliveryAddress()).append("\n");
                 report.append("Téléphone: ").append(order.getPhoneNumber()).append("\n");
-                report.append("Statut: ").append(order.getPaid() ? "Payée" : "En attente").append("\n");
+                report.append("Statut: ").append("true".equalsIgnoreCase(order.getPaid()) ? "Payée" : "En attente").append("\n");
                 report.append("Total: ").append(order.calculateTotal()).append(" €\n");
                 report.append("---------------------------\n\n");
             }
 
-            // Afficher le rapport dans une nouvelle fenêtre (simulation d'impression)
+            // Afficher le rapport dans une nouvelle fenêtre
             Dialog<Void> printDialog = new Dialog<>();
             printDialog.setTitle("Impression - Historique des commandes");
 
@@ -471,11 +730,63 @@ public class Profilp implements Initializable {
             reportArea.setPrefHeight(400);
             reportArea.setPrefWidth(500);
 
-            printDialog.getDialogPane().setContent(reportArea);
+            // Ajouter un ComboBox pour sélectionner une commande
+            ComboBox<Order> orderSelector = new ComboBox<>();
+            orderSelector.getItems().addAll(userOrders);
+            orderSelector.setPromptText("Sélectionner une commande");
 
+            // Personnaliser l'affichage du ComboBox
+            orderSelector.setCellFactory(listView -> new ListCell<Order>() {
+                @Override
+                protected void updateItem(Order order, boolean empty) {
+                    super.updateItem(order, empty);
+                    if (empty || order == null) {
+                        setText(null);
+                    } else {
+                        setText("Commande #" + order.getId());
+                    }
+                }
+            });
+            orderSelector.setButtonCell(new ListCell<Order>() {
+                @Override
+                protected void updateItem(Order order, boolean empty) {
+                    super.updateItem(order, empty);
+                    if (empty || order == null) {
+                        setText("Sélectionner une commande");
+                    } else {
+                        setText("Commande #" + order.getId());
+                    }
+                }
+            });
+
+            // Créer les boutons
+            ButtonType payButton = new ButtonType("Payer", ButtonBar.ButtonData.OTHER);
             ButtonType printButton = new ButtonType("Imprimer", ButtonBar.ButtonData.OK_DONE);
             ButtonType cancelButton = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-            printDialog.getDialogPane().getButtonTypes().addAll(printButton, cancelButton);
+            printDialog.getDialogPane().getButtonTypes().addAll(payButton, printButton, cancelButton);
+
+            // Activer/désactiver le bouton "Payer" en fonction de la sélection et du statut
+            Node payButtonNode = printDialog.getDialogPane().lookupButton(payButton);
+            payButtonNode.setDisable(true);
+            orderSelector.getSelectionModel().selectedItemProperty().addListener((obs, old, newValue) -> {
+                payButtonNode.setDisable(newValue == null || "true".equalsIgnoreCase(newValue.getPaid()));
+            });
+
+            // Action pour le bouton "Payer"
+            printDialog.setResultConverter(buttonType -> {
+                if (buttonType == payButton) {
+                    Order selectedOrder = orderSelector.getSelectionModel().getSelectedItem();
+                    if (selectedOrder != null) {
+                        payOrder(selectedOrder);
+                    }
+                }
+                return null;
+            });
+
+            // Assembler le contenu
+            VBox content = new VBox(10, orderSelector, reportArea);
+            content.setPadding(new Insets(10));
+            printDialog.getDialogPane().setContent(content);
 
             printDialog.showAndWait();
 
@@ -485,8 +796,20 @@ public class Profilp implements Initializable {
                     "Impossible d'imprimer l'historique des commandes: " + e.getMessage());
         }
     }
-
-
+    private void payOrder(Order order) {
+        try {
+            OrderService orderService = new OrderService();
+            // Mettre à jour l'attribut paid à "true"
+            orderService.updatePaidStatus(order.getId(), "Paye");
+            showAlert(Alert.AlertType.INFORMATION, "Paiement réussi",
+                    "La commande #" + order.getId() + " a été marquée comme payée.");
+            refreshOrderList(); // Rafraîchir la liste des commandes
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur de paiement",
+                    "Impossible de marquer la commande comme payée: " + e.getMessage());
+        }
+    }
 
     public void editDeliveryInfo(ActionEvent event) {
         try {
@@ -568,6 +891,80 @@ public class Profilp implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Impossible de charger la page: " + fxmlPath);
+        }
+    }
+
+    public void addNewProductRequest(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterProduct.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de charger le formulaire d'ajout de produit: " + e.getMessage());
+        }
+    }
+    public void Payer(ActionEvent actionEvent) {
+        try {
+            // Récupérer la commande sélectionnée
+            Order selectedOrder = orderHistoryListView.getSelectionModel().getSelectedItem();
+
+            if (selectedOrder == null) {
+                showAlert(Alert.AlertType.WARNING, "Sélection requise",
+                        "Veuillez sélectionner une commande à payer.");
+                return;
+            }
+
+            // Vérifier si la commande est déjà payée
+            if (selectedOrder.isPaid()) {
+                showAlert(Alert.AlertType.WARNING, "Commande déjà payée",
+                        "La commande #" + selectedOrder.getId() + " est déjà payée.");
+                return;
+            }
+            OrderService orderService = new OrderService();
+            orderService.updatePaidStatus(selectedOrder.getId(), "true");
+            // Calculer le montant de la commande
+
+            double totalAmount = orderService.extractTotalFororder(selectedOrder.getId());
+            System.out.println("Montant calculé pour la commande #" + selectedOrder.getId() + ": " + totalAmount);
+
+            // Vérifier si le montant est valide
+            if (totalAmount <= 0) {
+                showAlert(Alert.AlertType.ERROR, "Montant invalide",
+                        "Le montant de la commande #" + selectedOrder.getId() + " est invalide: " + totalAmount);
+                return;
+            }
+
+            // Log pour déboguer
+            System.out.println("Navigation vers paiement.fxml pour la commande ID: " + selectedOrder.getId());
+
+            // Charger paiement.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paiement.fxml"));
+            Parent root = loader.load();
+
+            // Passer l'ID et le montant de la commande au contrôleur
+            Paiement controller = loader.getController();
+            controller.setOrderId(selectedOrder.getId());
+
+            // Naviguer vers la page de paiement
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible d'ouvrir la page de paiement: " + e.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible de calculer le montant de la commande: " + e.getMessage());
         }
     }
 }

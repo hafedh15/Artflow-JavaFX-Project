@@ -4,116 +4,150 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: #F9F5F1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.artflow.controllers.OrderDashboardController">
+<?import javafx.scene.shape.Circle?>
+<?import javafx.geometry.Insets?>
+<BorderPane prefHeight="700.0" prefWidth="1100.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.artflow.controllers.OrderDashboardController"
+            style="-fx-background-color: #F9F5F1;">
 
     <!-- Panneau de navigation latéral - style artisanal avec tons marron doux -->
     <left>
-        <VBox spacing="10" style="-fx-background-color: #E5DDD1; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 3);">
-            <!-- Logo -->
-            <HBox alignment="CENTER" style="-fx-padding: 0 0 30 0;">
-                <ImageView fitHeight="60" fitWidth="120" preserveRatio="true">
-                    <Image url="@/images/logo.jpg" />
-                </ImageView>
-            </HBox>
+        <VBox spacing="10" style="-fx-background-color: #8D7D6D;
+                               -fx-padding: 20;
+                               -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 10, 0.5, 4, 0);">     <!-- Logo -->
 
-            <!-- Utilisateur connecté -->
-            <HBox alignment="CENTER" style="-fx-padding: 0 0 20 0;">
-                <VBox alignment="CENTER">
-                    <ImageView fitHeight="50" fitWidth="50" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
-                        <Image url="@/images/user.jpg" />
-                    </ImageView>
-                    <Label style="-fx-font-size: 14px; -fx-text-fill: #7D6E5B; -fx-padding: 5 0 0 0; -fx-font-weight: bold;" text="Artisan Admin" />
+
+            <!-- Original profile image container -->
+            <StackPane fx:id="profileImageContainer" alignment="CENTER" style="-fx-padding: 20 0 5 0; -fx-cursor: hand;">
+                <VBox alignment="CENTER" spacing="10">
+                    <StackPane>
+                        <Circle radius="40" fill="white" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);"/>
+                        <ImageView fx:id="userProfileImage" fitWidth="80" fitHeight="80" preserveRatio="false">
+                            <Image url="@/images/user.jpg" />
+                            <clip>
+                                <Circle radius="40" centerX="40" centerY="40" />
+                            </clip>
+                        </ImageView>
+
+                        <!-- Camera overlay (appears on hover) -->
+                        <StackPane fx:id="imageOverlay" opacity="0.0" style="-fx-background-color: rgba(0,0,0,0.5); -fx-background-radius: 40;">
+                            <Circle radius="40" fill="transparent" />
+                            <Label text="📷" style="-fx-font-size: 20px; -fx-text-fill: white;" />
+                        </StackPane>
+                    </StackPane>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #E8DECD; -fx-font-weight: bold;" text="Artisan Admin" />
                 </VBox>
-            </HBox>
+            </StackPane>
 
-            <!-- Séparateur -->
-            <Separator style="-fx-background-color: #D4C8B9; -fx-padding: 0 0 10 0;" />
+            <!-- Add the Generate Avatar button below the profile image -->
+            <Button fx:id="generateAvatarButton" text="Generate Avatar"
+                    style="-fx-background-color: #7D6E58; -fx-text-fill: #E8DECD; -fx-font-size: 12px; -fx-padding: 5 10; -fx-background-radius: 20; -fx-cursor: hand;">
+                <graphic>
+                    <Label text="✨" style="-fx-font-size: 12px; -fx-text-fill: #E8DECD;" />
+                </graphic>
+                <VBox.margin>
+                    <Insets bottom="15" />
+                </VBox.margin>
+            </Button>
+            <Separator style="-fx-background-color: #6B5D4A; -fx-padding: 0 15 0 15;" />
 
-            <!-- Navigation buttons -->
-            <Button fx:id="GoToUser" maxWidth="Infinity" style="-fx-background-color: #C8B6A6; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="List Utilisateurs" onAction="#goToUser">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
+            <!-- Navigation Menu -->
+            <VBox spacing="5" style="-fx-padding: 10 5;">
+                <Button fx:id="GoToUser" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #E8DECD; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Utilisateurs" onAction="#goToUser">
+                    <graphic>
+                        <Label text="👥" style="-fx-font-size: 16px; -fx-text-fill: #E8DECD;" />
+                    </graphic>
+                </Button>
 
-            <Button fx:id="orderButton" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Orders" onAction="#handleOrderButtonAction">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/user.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="GoToProduit" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15; -fx-background-radius: 5;" text="Produits" onAction="#goToProduit">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
+                <Button fx:id="orderButton" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Commandes" onAction="#handleOrderButtonAction">
+                    <graphic>
+                        <Label text="🛒" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
 
-            <Button fx:id="GoToAtelier" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Ateliers" onAction="#goToAtelier">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="GoToReservation" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Reservation" onAction="#goToReservation">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
+                <Button fx:id="GoToProduit" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Produits" onAction="#goToProduit">
+                    <graphic>
+                        <Label text="📦" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
 
-            <Button fx:id="GoToArticle" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Articles" onAction="#goToArticle">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="GoToComment" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Comment" onAction="#goToComment">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
+                <Button fx:id="GoToAtelier" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Ateliers" onAction="#goToAtelier">
+                    <graphic>
+                        <Label text="🔨" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
 
-            <Button fx:id="GoToReclamation" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Réclamations" onAction="#goToReclamation">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="GoToReponse" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Reponse" onAction="#goToReponse">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
+                <Button fx:id="GoToReservation" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Réservations" onAction="#goToReservation">
+                    <graphic>
+                        <Label text="📅" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="GoToArticle" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Articles" onAction="#goToArticle">
+                    <graphic>
+                        <Label text="📝" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="GoToComment" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Commentaires" onAction="#goToComment">
+                    <graphic>
+                        <Label text="💬" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="GoToReclamation" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Réclamations" onAction="#goToReclamation">
+                    <graphic>
+                        <Label text="⚠️" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="GoToReponse" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Réponses" onAction="#goToReponse">
+                    <graphic>
+                        <Label text="↩️" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+            </VBox>
+
             <Region VBox.vgrow="ALWAYS" />
 
-            <Button maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Rapports">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
+            <!-- Bottom Menu -->
+            <VBox spacing="5" style="-fx-padding: 10 5 20 5;">
+                <Button maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Rapports">
+                    <graphic>
+                        <Label text="📊" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
 
-            <Button maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 15;" text="Paramètres">
-                <graphic>
-                    <ImageView fitHeight="16" fitWidth="16">
-                        <Image url="@/images/product.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
+                <Button maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Déconnexion">
+                    <graphic>
+                        <Label text="🚪" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+            </VBox>
         </VBox>
     </left>
     <center>

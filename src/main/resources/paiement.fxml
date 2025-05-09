@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.WebView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.artflow.controllers.Paiement">
+    <VBox spacing="20" alignment="CENTER" style="-fx-padding: 20; -fx-background-color: #f0f0f0;">
+        <Label text="Paiements" style="-fx-font-size: 36px; -fx-text-fill: #2c3e50; -fx-font-family: 'Arial'; -fx-font-weight: bold;" />
+        <WebView fx:id="paymentWebView" style="-fx-background-color: #ffffff; -fx-border-color: #2c3e50; -fx-border-width: 2;" prefHeight="600" prefWidth="800" />
+    </VBox>
+</StackPane>

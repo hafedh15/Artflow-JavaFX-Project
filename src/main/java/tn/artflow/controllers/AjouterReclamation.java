@@ -20,24 +20,37 @@ public class AjouterReclamation {
     private TextField tfObjet;
     @FXML
     private TextArea taMessage;
-
+    @FXML
+    private Button btnAjouter;
     @FXML
     private Label labelObjetError;
     @FXML
     private Label labelMessageError;
+    @FXML
+    private Label lblMessageCount; // New label to display message count
 
     ReclamationService rs = new ReclamationService();
-    @FXML
-    private AnchorPane productContainer;
 
-   /* @FXML
+    User user = tn.artflow.utils.UserSession.getInstance().getUser();
+    private final int userId = user.getId(); // TODO: Replace with actual connected user ID
+
+    @FXML
+    public void initialize() {
+        try {
+            checkReclamationLimit();
+            updateMessageCount(); // Update message count on initialization
+        } catch (SQLException e) {
+            showError("Erreur lors de la vérification du quota", e.getMessage());
+        }
+    }
+
+    @FXML
     void ajouter(ActionEvent event) {
         // Reset error messages
         labelObjetError.setVisible(false);
         labelMessageError.setVisible(false);
 
         boolean isValid = true;
-
         String objet = tfObjet.getText().trim();
         String message = taMessage.getText().trim();
 
@@ -54,120 +67,78 @@ public class AjouterReclamation {
             isValid = false;
         }
 
-        if (!isValid) {
-            return;
-        }
+        if (!isValid) return;
 
         try {
+            // Count check
+            int countToday = rs.countReclamationsToday(userId);
+            if (countToday >= 3) {
+                showWarning("Limite atteinte", "Vous avez déjà envoyé 3 réclamations aujourd'hui.");
+                btnAjouter.setDisable(true);
+                return;
+            }
 
-            User user = tn.artflow.utils.UserSession.getInstance().getUser();
-            rs.ajouter(new Reclamation(
-                    0, // id
-                    user.getId(), // user_id — à changer quand user est prêt
-                    objet,
-                    message,
-                    "Open", // default status
-                    false, // is_marked
-                    LocalDateTime.now()
-            ));
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Succès");
-            alert.setHeaderText(null);
-            alert.setContentText("Réclamation ajoutée !");
-            alert.showAndWait();
-
-            tfObjet.clear();
-            taMessage.clear();
-            labelObjetError.setVisible(false);
-            labelMessageError.setVisible(false);
-
-        } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText("Erreur lors de l'ajout");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-        }
-    }*/
-
-    @FXML
-    void ajouter(ActionEvent event) {
-        labelObjetError.setVisible(false);
-        labelMessageError.setVisible(false);
-
-        boolean isValid = true;
-        String objet = tfObjet.getText().trim();
-        String message = taMessage.getText().trim();
-
-        if (objet.isEmpty()) {
-            labelObjetError.setText("Objet requis");
-            labelObjetError.setVisible(true);
-            isValid = false;
-        }
-
-        if (message.isEmpty()) {
-            labelMessageError.setText("Message requis");
-            labelMessageError.setVisible(true);
-            isValid = false;
-        }
-
-        if (!isValid) {
-            return;
-        }
-
-        try {
-            User user = tn.artflow.utils.UserSession.getInstance().getUser();
+            // Add reclamation
             rs.ajouter(new Reclamation(
                     0,
-                    user.getId(),
+                    userId,
                     objet,
                     message,
-                    "Open",
+                    "en attente",
                     false,
                     LocalDateTime.now()
             ));
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Succès");
-            alert.setHeaderText(null);
-            alert.setContentText("Réclamation ajoutée !");
-            alert.showAndWait();
-
+            showInfo("Réclamation ajoutée !");
             tfObjet.clear();
             taMessage.clear();
-            labelObjetError.setVisible(false);
-            labelMessageError.setVisible(false);
 
-            // Redirection après ajout
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ClientConversation.fxml"));
-            Parent conversationPage = loader.load();
-            productContainer.getScene().setRoot(conversationPage);
+            // Re-check limit
+            checkReclamationLimit();
+            updateMessageCount(); // Update message count after adding a new one
 
-        } catch (SQLException | IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText("Erreur lors de l'ajout");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        } catch (SQLException e) {
+            showError("Erreur lors de l'ajout", e.getMessage());
+        }
+    }
+
+    private void checkReclamationLimit() throws SQLException {
+        int count = rs.countReclamationsToday(userId);
+        btnAjouter.setDisable(count >= 3);
+    }
+
+    // Method to update the message count label
+    private void updateMessageCount() {
+        try {
+            int count = rs.countReclamationsToday(userId);
+            lblMessageCount.setText(count + "/3 Messages envoyés, you cant send more than 3 messages");
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    private void showInfo(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
 
-    public void annuler(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListProductFront.fxml"));
-            Parent profilPage = loader.load();
+    private void showWarning(String title, String msg) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
 
-            // Remplacer le contenu de la scène actuelle
-            productContainer.getScene().setRoot(profilPage);
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+    private void showError(String title, String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }
-    
 

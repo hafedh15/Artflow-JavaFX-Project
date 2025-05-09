@@ -5,36 +5,40 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+
 import tn.artflow.entities.Article;
 import tn.artflow.services.ArticleService;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 
 public class AjouterArticle {
 
     @FXML private TextField categorieTF;
-    @FXML private TextArea contenuTF;
     @FXML private DatePicker dateTF;
     @FXML private TextField imageTF;
     @FXML private TextField nomauteurTF;
     @FXML private TextField titreTF;
-
     @FXML private Label titreStatus;
     @FXML private Label categorieStatus;
     @FXML private Label contenuStatus;
     @FXML private Label nomauteurStatus;
     @FXML private Label dateStatus;
+
+    @FXML private WebView contenuWebView;
+    @FXML private ToolBar toolbar;
+    @FXML private Button boldButton;
+    @FXML private Button italicButton;
+    @FXML private Button underlineButton;
+    @FXML private ColorPicker colorPicker;
+    @FXML private ComboBox<String> fontComboBox;
 
     private final ArticleService articleService = new ArticleService();
     private Runnable retourCallback;
@@ -48,8 +52,38 @@ public class AjouterArticle {
         titreTF.setOnKeyReleased(e -> validateTitre());
         categorieTF.setOnKeyReleased(e -> validateCategorie());
         nomauteurTF.setOnKeyReleased(e -> validateAuteur());
-        contenuTF.setOnKeyReleased(e -> validateContenu());
         dateTF.setOnAction(e -> validateDate());
+
+        setupEditor();
+    }
+
+    private void setupEditor() {
+        contenuWebView.getEngine().loadContent(
+                "<html><body contenteditable='true' style='font-family: Arial; font-size: 14px;'></body></html>"
+        );
+
+        boldButton.setOnAction(e -> contenuWebView.getEngine().executeScript("document.execCommand('bold', false, null)"));
+        italicButton.setOnAction(e -> contenuWebView.getEngine().executeScript("document.execCommand('italic', false, null)"));
+        underlineButton.setOnAction(e -> contenuWebView.getEngine().executeScript("document.execCommand('underline', false, null)"));
+
+        colorPicker.setOnAction(e -> {
+            String color = toRgbString(colorPicker.getValue());
+            contenuWebView.getEngine().executeScript("document.execCommand('foreColor', false, '" + color + "')");
+        });
+
+        fontComboBox.getItems().addAll("Arial", "Courier New", "Times New Roman", "Verdana", "Georgia", "Comic Sans MS");
+        fontComboBox.setValue("Arial");
+        fontComboBox.setOnAction(e -> {
+            String font = fontComboBox.getValue();
+            contenuWebView.getEngine().executeScript("document.execCommand('fontName', false, '" + font + "')");
+        });
+    }
+
+    private String toRgbString(Color color) {
+        int r = (int) (color.getRed() * 255);
+        int g = (int) (color.getGreen() * 255);
+        int b = (int) (color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
     }
 
     private void validateTitre() {
@@ -71,17 +105,6 @@ public class AjouterArticle {
         } else {
             categorieStatus.setText("✅");
             categorieStatus.setStyle("-fx-text-fill: green;");
-        }
-    }
-
-    private void validateContenu() {
-        String contenu = contenuTF.getText().trim();
-        if (contenu.length() < 10) {
-            contenuStatus.setText("❌ Le contenu doit faire au moins 10 caractères");
-            contenuStatus.setStyle("-fx-text-fill: red;");
-        } else {
-            contenuStatus.setText("✅");
-            contenuStatus.setStyle("-fx-text-fill: green;");
         }
     }
 
@@ -113,13 +136,13 @@ public class AjouterArticle {
     @FXML
     void ajouter(ActionEvent event) {
         try {
-            if (!validateFields()) {
-                return;
-            }
+            if (!validateFields()) return;
+
+            String contenu = (String) contenuWebView.getEngine().executeScript("document.body.innerHTML");
 
             Article article = new Article(
                     titreTF.getText().trim(),
-                    contenuTF.getText().trim(),
+                    contenu,
                     dateTF.getValue().toString(),
                     imageTF.getText().trim(),
                     categorieTF.getText().trim(),
@@ -128,9 +151,7 @@ public class AjouterArticle {
             );
             articleService.ajouter(article);
 
-            if (retourCallback != null) {
-                retourCallback.run();
-            }
+            if (retourCallback != null) retourCallback.run();
 
         } catch (Exception ex) {
             showError("Erreur : " + ex.getMessage());
@@ -141,21 +162,24 @@ public class AjouterArticle {
     private boolean validateFields() {
         validateTitre();
         validateCategorie();
-        validateContenu();
         validateAuteur();
         validateDate();
 
-        boolean allValid = titreStatus.getText().equals("✅")
+        String contenu = (String) contenuWebView.getEngine().executeScript("document.body.innerText");
+        if (contenu.trim().length() < 10) {
+            contenuStatus.setText("❌ Le contenu doit faire au moins 10 caractères");
+            contenuStatus.setStyle("-fx-text-fill: red;");
+            return false;
+        } else {
+            contenuStatus.setText("✅");
+            contenuStatus.setStyle("-fx-text-fill: green;");
+        }
+
+        return titreStatus.getText().equals("✅")
                 && categorieStatus.getText().equals("✅")
                 && contenuStatus.getText().equals("✅")
                 && nomauteurStatus.getText().equals("✅")
                 && dateStatus.getText().equals("✅");
-
-        if (!allValid) {
-            showError("Merci de corriger les erreurs avant d'ajouter l'article.");
-        }
-
-        return allValid;
     }
 
     private void showError(String message) {
@@ -167,67 +191,33 @@ public class AjouterArticle {
     }
 
     @FXML
-//    void image(ActionEvent event) {
-//        FileChooser fileChooser = new FileChooser();
-//        fileChooser.setTitle("Choisir une image");
-//        fileChooser.getExtensionFilters().addAll(
-//                new FileChooser.ExtensionFilter("Images", "*.jpg", "*.jpeg", "*.png", "*.gif")
-//        );
-//
-//        Stage stage = (Stage) imageTF.getScene().getWindow();
-//        File selectedFile = fileChooser.showOpenDialog(stage);
-//
-//        if (selectedFile != null) {
-//            imageTF.setText(selectedFile.getName());
-//        }
-//    }
-
     void image(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select an Image File");
-
-        // Corriger les filtres d'extension - noter l'astérisque avant le point
+        fileChooser.setTitle("Choisir une image");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+                new FileChooser.ExtensionFilter("Images", "*.jpg", "*.jpeg", "*.png", "*.gif")
         );
 
-
-        // Définir un répertoire initial pour faciliter la navigation
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-
-        File selectedFile = fileChooser.showOpenDialog(null);
+        Stage stage = (Stage) imageTF.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            System.out.println("Fichier sélectionné : " + selectedFile.getAbsolutePath());
             try {
-                // Destination path in XAMPP htdocs folder
-                String destinationPath = "C:/xampp/htdocs/images/Article/";
-                File destDir = new File(destinationPath);
-                if (!destDir.exists()) {
-                    destDir.mkdirs();
-                    System.out.println("Répertoire créé : " + destinationPath);
-                }
+                File targetDir = new File("C:/xampp/htdocs/images/");
+                if (!targetDir.exists()) targetDir.mkdirs();
 
-                String newFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
-                File destinationFile = new File(destDir, newFileName);
+                File destFile = new File(targetDir, selectedFile.getName());
+                java.nio.file.Files.copy(selectedFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-                Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("Fichier copié vers : " + destinationFile.getAbsolutePath());
-
-                // URL relative que vous allez stocker dans la base de données
-                String webURL = "/images/Article/" + newFileName;
-                imageTF.setText(webURL);
-                System.out.println("URL définie : " + webURL);
+                imageTF.setText(selectedFile.getName());
+                System.out.println("✅ Image copiée avec succès : " + destFile.getAbsolutePath());
 
             } catch (IOException e) {
-                System.out.println("Erreur de copie: " + e.getMessage());
+                System.out.println("❌ Erreur lors de la copie de l'image : " + e.getMessage());
                 e.printStackTrace();
             }
-        } else {
-            System.out.println("Aucun fichier sélectionné");
         }
     }
-
 
     @FXML
     private void annuler() {

@@ -1,5 +1,6 @@
 package tn.artflow.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import tn.artflow.entities.User;
 import tn.artflow.services.UserService;
 import tn.artflow.tools.EmailSender;
 import tn.artflow.tools.EmailVerificationUtil;
+import tn.artflow.services.GoogleAuthService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -113,7 +115,7 @@ public class LoginController {
 
     private void openDashboard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Home.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();
@@ -206,6 +208,50 @@ public class LoginController {
 
     @FXML
     private void handleGoogleLogin(ActionEvent event) {
-        // Your existing Google login code
+        try {
+            // Show loading indicator or disable login button
+            errorLabel.setText("Connecting to Google...");
+
+            // Create and use the GoogleAuthService
+            GoogleAuthService googleAuthService = new GoogleAuthService();
+
+            // Start the Google authentication process
+            googleAuthService.startGoogleAuth()
+                    .thenAccept(user -> {
+                        // This runs when authentication is successful
+                        Platform.runLater(() -> {
+                            try {
+                                // Set user session
+                                tn.artflow.utils.UserSession.getInstance(user);
+
+                                // Send login notification
+                                try {
+                                    EmailSender.sendLoginNotification(user.getEmail(), user.getLastname());
+                                } catch (Exception e) {
+                                    // Non-critical error, just log it
+                                    System.err.println("Failed to send login notification: " + e.getMessage());
+                                }
+
+                                // Open dashboard
+                                openDashboard();
+                            } catch (Exception e) {
+                                errorLabel.setText("Error after Google login: " + e.getMessage());
+                                e.printStackTrace();
+                            }
+                        });
+                    })
+                    .exceptionally(ex -> {
+                        // This runs when authentication fails
+                        Platform.runLater(() -> {
+                            errorLabel.setText("Google login failed: " + ex.getMessage());
+                            ex.printStackTrace();
+                        });
+                        return null;
+                    });
+
+        } catch (Exception e) {
+            errorLabel.setText("Error starting Google login: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

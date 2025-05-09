@@ -174,7 +174,7 @@ public class AddUserControllerDash {
         }
 
         try {
-            User user = new User(name, lastname, role, password, email, photo, new Date(), false, false);
+            User user = new User(name, lastname, role, password, email, photo, new Date(), false, true);
             userService.ajouter(user);
             showAlert("Success", "User added successfully.");
 

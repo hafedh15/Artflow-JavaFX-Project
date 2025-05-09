@@ -5,10 +5,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +30,8 @@ import tn.artflow.entities.User;
 import tn.artflow.services.UserService;
 import tn.artflow.utils.UserSession;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,10 +40,16 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
+
+import tn.artflow.tools.AvatarGenerator;
+import javafx.geometry.Pos;
+import javafx.scene.control.ComboBox;
+import javafx.scene.image.WritableImage;
+import javafx.embed.swing.SwingFXUtils;
+import javax.imageio.ImageIO;
 
 
 public class AfficherUser {
@@ -59,6 +73,8 @@ public class AfficherUser {
     private Button prevPageButton;
     @FXML
     private Button nextPageButton;
+    @FXML
+    private Button generateAvatarButton;
 
     // Navigation Buttons
     @FXML
@@ -79,6 +95,8 @@ public class AfficherUser {
     private Button orderButton;
     @FXML
     private Button GoToProduit;
+
+
 
     // Services
     private final UserService userService = new UserService();
@@ -123,6 +141,7 @@ public class AfficherUser {
         }
     }
 
+
     /**
      * Initialize method called when FXML is loaded
      */
@@ -131,7 +150,9 @@ public class AfficherUser {
         try {
             // Get logged in user from session
             loggedInUser = UserSession.getInstance().getUser();
-
+            if (generateAvatarButton != null) {
+                generateAvatarButton.setOnAction(this::handleGenerateAvatar);
+            }
             // Set up profile image click handler and fix the display issue
             if (profileImageContainer != null) {
                 setupProfileImageHandlers();
@@ -232,15 +253,18 @@ public class AfficherUser {
         }
     }
 
-    /**
-     * Load the current page of users
-     */
     private void loadCurrentPage() {
         int startIndex = (currentPage - 1) * USERS_PER_PAGE;
         int endIndex = Math.min(startIndex + USERS_PER_PAGE, filteredUsers.size());
 
         // Get the subset of users for the current page
-        List<User> currentPageUsers = filteredUsers.subList(startIndex, endIndex);
+        List<User> currentPageUsers;
+
+        if (filteredUsers.isEmpty()) {
+            currentPageUsers = new ArrayList<>();  // Empty list
+        } else {
+            currentPageUsers = filteredUsers.subList(startIndex, endIndex);
+        }
 
         // Display these users
         populateGrid(currentPageUsers);
@@ -477,9 +501,9 @@ public class AfficherUser {
 
             updateBtn.setOnAction(e -> handleUpdateDash(user));
             deleteBtn.setOnAction(e -> handleDelete(user));
-            viewBtn.setOnAction(e -> handleViewProfile(user));
+          //  viewBtn.setOnAction(e -> handleViewProfile(user));
 
-            actionPane.getChildren().addAll(viewBtn, updateBtn, deleteBtn);
+            actionPane.getChildren().addAll(updateBtn, deleteBtn);
 
             // Add all cells to the grid
             userGrid.add(nameLabel, 0, row);
@@ -628,6 +652,7 @@ public class AfficherUser {
 
             // Recalculate total pages
             totalPages = (int) Math.ceil((double) filteredUsers.size() / USERS_PER_PAGE);
+            if (totalPages == 0) totalPages = 1; // Add this line to handle empty results
 
             // Update pagination controls
             updatePaginationControls();
@@ -744,26 +769,26 @@ public class AfficherUser {
     /**
      * Handle view profile for a specific user in the table
      */
-    private void handleViewProfile(User user) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProfilUser.fxml"));
-            Parent root = loader.load();
-
-            // Get the controller and pass the user data
-            ProfilUserController controller = loader.getController();
-            controller.setUser(user);
-
-            Stage stage = new Stage();
-            stage.setTitle("Profil Utilisateur");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Navigation Error",
-                    "Could not open user profile", e.getMessage());
-            e.printStackTrace();
-        }
-    }
+//    private void handleViewProfile(User user) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProfilUser.fxml"));
+//            Parent root = loader.load();
+//
+//            // Get the controller and pass the user data
+//            ProfilUserController controller = loader.getController();
+//            controller.setUser(user);
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("Profil Utilisateur");
+//            stage.setScene(new Scene(root));
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+//                    "Could not open user profile", e.getMessage());
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Mark the active sidebar button and reset the others
@@ -954,7 +979,7 @@ public class AfficherUser {
             Parent root = loader.load();
 
             // Mark the users button as active before switching
-            markActiveButton(GoToUser);
+          //  markActiveButton(GoToUser);
 
             GoToArticle.getScene().setRoot(root);
         } catch (IOException e) {
@@ -964,8 +989,213 @@ public class AfficherUser {
         }
     }
 
+    /**
+     * Handle avatar generation
+     */
+    private void handleGenerateAvatar(ActionEvent event) {
+        if (loggedInUser == null) {
+            showAlert(Alert.AlertType.ERROR, "Error",
+                    "Cannot generate avatar", "No user is currently logged in.");
+            return;
+        }
 
+        // Create dialog for avatar options
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Generate Avatar");
+        dialog.setHeaderText("Choose Avatar Style");
 
+        // Set the button types
+        ButtonType generateButtonType = new ButtonType("Generate", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(generateButtonType, ButtonType.CANCEL);
+
+        // Create content
+        VBox content = new VBox(10);
+        content.setAlignment(Pos.CENTER);
+        content.setPadding(new Insets(20));
+
+        // Create dropdown for avatar styles
+        ComboBox<String> styleComboBox = new ComboBox<>();
+        styleComboBox.getItems().addAll(
+                "Initials (Colorful)",
+                "Abstract (Geometric)",
+                "Pixel Art",
+                "Character (Face & Shoulders)",
+                "Full Body (Cartoon)",
+                "Gravatar (Based on email)"
+        );
+        styleComboBox.setValue("Character (Face & Shoulders)");
+
+        // Preview image
+        ImageView previewImageView = new ImageView();
+        previewImageView.setFitWidth(100);
+        previewImageView.setFitHeight(100);
+
+        // Initial preview
+        updateAvatarPreview(previewImageView, styleComboBox.getValue(), loggedInUser);
+
+        // Update preview when style changes
+        styleComboBox.setOnAction(e ->
+                updateAvatarPreview(previewImageView, styleComboBox.getValue(), loggedInUser));
+
+        // Add components to content
+        content.getChildren().addAll(
+                new Label("Select Avatar Style:"),
+                styleComboBox,
+                new Label("Preview:"),
+                previewImageView
+        );
+
+        // Set content
+        dialog.getDialogPane().setContent(content);
+
+        // Convert result
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == generateButtonType) {
+                return styleComboBox.getValue();
+            }
+            return null;
+        });
+
+        // Show dialog and wait for result
+        dialog.showAndWait().ifPresent(style -> {
+            try {
+                // Generate avatar based on selected style
+                Image avatarImage = generateAvatar(style, loggedInUser);
+
+                if (avatarImage != null) {
+                    // Save avatar image to file
+                    String savedImagePath = saveAvatarToFile(avatarImage);
+
+                    // Update user profile with new avatar
+                    loggedInUser.setPhoto(savedImagePath);
+                    userService.updatePhoto(loggedInUser.getId(), savedImagePath);
+
+                    // Update displayed image
+                    userProfileImage.setImage(avatarImage);
+
+                    showAlert(Alert.AlertType.INFORMATION, "Success",
+                            "Avatar Generated", "Your new avatar has been set as your profile picture.");
+                }
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Error",
+                        "Failed to generate avatar", e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * Update the preview image based on selected style
+     */
+    private void updateAvatarPreview(ImageView previewImageView, String style, User user) {
+        Image previewImage = generateAvatar(style, user);
+        if (previewImage != null) {
+            previewImageView.setImage(previewImage);
+        }
+    }
+
+    /**
+     * Generate avatar based on selected style
+     */
+    private Image generateAvatar(String style, User user) {
+        final int size = 200; // Size in pixels
+
+        switch (style) {
+            case "Initials (Colorful)":
+                return AvatarGenerator.generateInitialsAvatar(
+                        user.getName() + " " + user.getLastname(), size);
+
+            case "Abstract (Geometric)":
+                return AvatarGenerator.generateAbstractAvatar(
+                        user.getEmail(), size);
+
+            case "Pixel Art":
+                return AvatarGenerator.generatePixelArtAvatar(
+                        user.getName() + user.getId(), size);
+
+            case "Character (Face & Shoulders)":
+                return AvatarGenerator.generateCharacterAvatar(
+                        user.getName() + user.getId(), size);
+
+            case "Full Body (Cartoon)":
+                return AvatarGenerator.generateFullBodyAvatar(
+                        user.getName() + user.getId(), size);
+
+            case "Gravatar (Based on email)":
+                return AvatarGenerator.generateGravatarAvatar(
+                        user.getEmail(), size);
+
+            default:
+                return AvatarGenerator.generateCharacterAvatar(
+                        user.getName() + user.getId(), size);
+        }
+    }
+
+    /**
+     * Save avatar image to file with proper format handling
+     * This addresses issues with image format compatibility
+     */
+    private String saveAvatarToFile(Image avatar) throws IOException {
+        // Create directory if it doesn't exist
+        File uploadDir = new File(UPLOAD_DIRECTORY);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        // Generate unique filename
+        String fileName = "avatar_" + UUID.randomUUID().toString() + ".png";
+        File outputFile = new File(UPLOAD_DIRECTORY + fileName);
+
+        try {
+            // Create a writeable image to snapshot from
+            int width = (int) avatar.getWidth();
+            int height = (int) avatar.getHeight();
+
+            // Handle potential zero dimensions
+            if (width <= 0 || height <= 0) {
+                width = 200;
+                height = 200;
+            }
+
+            WritableImage writableImage = new WritableImage(width, height);
+
+            // Create a temporary ImageView to handle the snapshot properly
+            ImageView tempImageView = new ImageView(avatar);
+            tempImageView.setFitWidth(width);
+            tempImageView.setFitHeight(height);
+            tempImageView.setPreserveRatio(true);
+
+            // Take snapshot without applying any clip to ensure full image is saved
+            SnapshotParameters params = new SnapshotParameters();
+            params.setFill(Color.TRANSPARENT); // Transparent background
+            tempImageView.snapshot(params, writableImage);
+
+            // Save to file
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+
+            // Ensure alpha channel is preserved
+            BufferedImage imageWithAlpha = new BufferedImage(
+                    bufferedImage.getWidth(),
+                    bufferedImage.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D g2d = imageWithAlpha.createGraphics();
+            g2d.drawImage(bufferedImage, 0, 0, null);
+            g2d.dispose();
+
+            // Write with PNG format to preserve transparency
+            ImageIO.write(imageWithAlpha, "png", outputFile);
+
+            // Log for debugging
+            System.out.println("Avatar saved successfully to: " + outputFile.getAbsolutePath());
+
+            return outputFile.getAbsolutePath();
+        } catch (Exception e) {
+            System.err.println("Error saving avatar: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
     /**
      * Show an alert dialog
      */
@@ -975,6 +1205,75 @@ public class AfficherUser {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    /**
+     * Navigate to the front page of the application
+     */
+    @FXML
+    private void goToFrontPage(ActionEvent event) {
+        try {
+            // Load the front page FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ListProductFront.fxml"));
+            Parent frontPageRoot = loader.load();
+
+            // Get the current stage
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // Set the new scene
+            Scene scene = new Scene(frontPageRoot);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Show error alert
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Navigation Error");
+            alert.setHeaderText("Unable to navigate to front page");
+            alert.setContentText("An error occurred while trying to load the front page: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Handle user logout
+     */
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        // Show confirmation dialog
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirmation de déconnexion");
+        confirmDialog.setHeaderText("Êtes-vous sûr de vouloir vous déconnecter?");
+        confirmDialog.setContentText("Toutes les données non sauvegardées seront perdues.");
+
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                // Clear any user session data
+              //   UserSession.getInstance().clearSession();
+
+                // Navigate to login screen
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+                Parent loginRoot = loader.load();
+
+                // Get the current stage
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+                // Set the new scene
+                Scene scene = new Scene(loginRoot);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Show error alert
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur de déconnexion");
+                alert.setHeaderText("Impossible de se déconnecter");
+                alert.setContentText("Une erreur s'est produite lors de la déconnexion: " + e.getMessage());
+                alert.showAndWait();
+            }
+        }
     }
 
 

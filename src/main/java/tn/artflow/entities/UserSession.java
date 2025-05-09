@@ -36,4 +36,5 @@ public class UserSession {
         user = null;
         instance = null;
     }
+
 }

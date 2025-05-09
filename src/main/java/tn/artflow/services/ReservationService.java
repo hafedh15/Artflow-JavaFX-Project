@@ -97,7 +97,7 @@ public class ReservationService implements IService<Reservation> {
         }
 
         List<Reservation> reservations = new ArrayList<>();
-        String query = "SELECT r.*, w.title FROM reservation r " +
+        String query = "SELECT r.*, w.title, w.date FROM reservation r " +
                 "JOIN workshop w ON r.workshop_id = w.id WHERE r.user_id = ?";
 
         System.out.println("Executing SQL: " + query + " with user_id = " + user.getId());
@@ -120,6 +120,7 @@ public class ReservationService implements IService<Reservation> {
                     Workshop w = new Workshop();
                     w.setId(rs.getInt("workshop_id"));  // Also get the workshop ID
                     w.setTitle(rs.getString("title"));
+                    w.setDate(rs.getString("date")); // 👈 ASSURE-TOI QUE CETTE LIGNE EXISTE
                     r.setWorkshop(w);
 
                     System.out.println("Found reservation: ID=" + r.getId() +
@@ -138,5 +139,7 @@ public class ReservationService implements IService<Reservation> {
 
         return reservations;
     }
+
+
 
 }

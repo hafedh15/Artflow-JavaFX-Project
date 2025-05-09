@@ -50,29 +50,30 @@ public class ConversationController implements Initializable {
     private Label labelResponseError;
 
 
-
+    // Navigation Buttons
     @FXML
     private Button GoToArticle;
     @FXML
     private Button GoToUser;
     @FXML
     private Button GoToAtelier;
-
     @FXML
     private Button GoToReservation;
-
     @FXML
     private Button GoToComment;
-
     @FXML
     private Button GoToReclamation;
-
     @FXML
     private Button GoToReponse;
-
     @FXML
     private Button orderButton;
+    @FXML
+    private Button GoToProduit;
 
+    private static final String ACTIVE_BUTTON_STYLE = "-fx-background-color: #303f9f; -fx-text-fill: white;";
+    private static final String INACTIVE_BUTTON_STYLE = "-fx-background-color: transparent; -fx-text-fill: #c5cae9;";
+    private static final String ACTIVE_ICON_STYLE = "-fx-text-fill: white;";
+    private static final String INACTIVE_ICON_STYLE = "-fx-text-fill: #c5cae9;";
 
     private final ReclamationService reclamationService = new ReclamationService();
     private final ReponseService reponseService = new ReponseService();
@@ -80,10 +81,24 @@ public class ConversationController implements Initializable {
     User user = tn.artflow.utils.UserSession.getInstance().getUser();
     private final int CURRENT_USER_ID = user.getId();
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    @FXML
+    private ComboBox<String> filterComboBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadReclamations();
+
+        // Add filter options including "All"
+        filterComboBox.getItems().addAll("All", "Open", "In Progress", "Closed");
+        filterComboBox.getSelectionModel().selectFirst();  // Optionally, select the first item by default
+
+        filterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                filterReclamations(newValue);
+            }
+        });
+
+        // Listener for when a reclamation is selected
         reclamationListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 showConversation(newVal);
@@ -91,6 +106,31 @@ public class ConversationController implements Initializable {
             }
         });
     }
+
+
+    // The filterReclamations method
+    private void filterReclamations(String status) {
+        try {
+            // Retrieve all reclamations
+            List<Reclamation> allReclamations = reclamationService.recuperer();
+
+            // If the status is "All", show all reclamations
+            if (status.equalsIgnoreCase("All")) {
+                reclamationListView.getItems().setAll(allReclamations);
+            } else {
+                // Filter the reclamations based on the selected status
+                List<Reclamation> filteredReclamations = allReclamations.stream()
+                        .filter(reclamation -> reclamation.getStatus().equalsIgnoreCase(status))
+                        .collect(Collectors.toList());
+
+                // Update the ListView with the filtered list
+                reclamationListView.getItems().setAll(filteredReclamations);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void loadReclamations() {
         try {
@@ -141,9 +181,9 @@ public class ConversationController implements Initializable {
                     .filter(r -> r.getReclamationId() == reclamation.getId())
                     .collect(Collectors.toList());
 
-            chatListView.getItems().setAll(reponses);
+            chatListView.getItems().setAll(reponses); // clear old messages and display the new
             chatListView.setCellFactory(listView -> new ReponseListCell());
-            chatListView.scrollTo(reponses.size() - 1);
+            chatListView.scrollTo(reponses.size() - 1); // last message
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,8 +191,8 @@ public class ConversationController implements Initializable {
 
     @FXML
     private void sendResponse() {
-        Reclamation selected = reclamationListView.getSelectionModel().getSelectedItem();
-        String responseText = responseField.getText().trim();
+        Reclamation selected = reclamationListView.getSelectionModel().getSelectedItem(); // On envoie une réponse uniquement si une réclamation est sélectionnée.
+        String responseText = responseField.getText().trim(); // Récupère le texte tapé dans le champ de réponse, en supprimant les espaces au début et à la fin
 
         if (selected == null || responseText.isEmpty()) {
             labelResponseError.setText("Le message ne doit pas être vide.");
@@ -173,7 +213,9 @@ public class ConversationController implements Initializable {
         try {
             reponseService.ajouter(reponse);
             responseField.clear();
-            showConversation(selected);
+            showConversation(selected); //Recharge la conversation pour afficher la nouvelle réponse juste ajoutée.
+
+
         } catch (Exception e) {
             e.printStackTrace();
             showError("Erreur", "Une erreur est survenue lors de l'envoi.");
@@ -190,7 +232,7 @@ public class ConversationController implements Initializable {
             if (response == ButtonType.OK) {
                 try {
                     reponseService.supprimer(reponseToDelete);
-                    showConversation(reclamationListView.getSelectionModel().getSelectedItem());
+                    showConversation(reclamationListView.getSelectionModel().getSelectedItem()); // Puis on réaffiche la conversation liée à la réclamation sélectionnée, pour mettre à jour la liste de messages.
                 } catch (Exception e) {
                     e.printStackTrace();
                     showError("Erreur de suppression", "Impossible de supprimer ce message.");
@@ -288,114 +330,234 @@ public class ConversationController implements Initializable {
             }
         }
     }
+//    private void markActiveButton(Button activeButton) {
+//        // List of all navigation buttons
+//        Button[] allButtons = {
+//                GoToUser, GoToProduit, GoToArticle, GoToAtelier,
+//                GoToReservation, GoToComment, GoToReclamation,
+//                GoToReponse, orderButton
+//        };
+//
+//        // Reset all buttons to inactive state
+//        for (Button button : allButtons) {
+//            if (button != null) {
+//                button.setStyle(button.getStyle().replace(ACTIVE_BUTTON_STYLE, INACTIVE_BUTTON_STYLE));
+//
+//                // Find the label (icon) within the button's graphic
+//                if (button.getGraphic() instanceof Label) {
+//                    Label iconLabel = (Label) button.getGraphic();
+//                    iconLabel.setStyle(iconLabel.getStyle().replace(ACTIVE_ICON_STYLE, INACTIVE_ICON_STYLE));
+//                }
+//            }
+//        }
+//
+//        // Set the active button
+//        if (activeButton != null) {
+//            activeButton.setStyle(activeButton.getStyle().replace(INACTIVE_BUTTON_STYLE, ACTIVE_BUTTON_STYLE));
+//
+//            // Find the label (icon) within the button's graphic
+//            if (activeButton.getGraphic() instanceof Label) {
+//                Label iconLabel = (Label) activeButton.getGraphic();
+//                iconLabel.setStyle(iconLabel.getStyle().replace(INACTIVE_ICON_STYLE, ACTIVE_ICON_STYLE));
+//            }
+//        }
+//    }
 
+    // Navigation methods remain the same as before
+    // ...
 
-
+    /**
+     * Navigate to Articles
+     */
     @FXML
     void goToArticle(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherArticle.fxml"));
             Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
 
+            // Mark the articles button as active before switching
+          //  markActiveButton(GoToArticle);
+
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Articles", e.getMessage());
             e.printStackTrace();
         }
     }
 
+    /**
+     * Navigate to Reservations
+     */
     @FXML
     void goToReservation(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashReservation.fxml"));
             Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
 
+            // Mark the reservations button as active before switching
+          //  markActiveButton(GoToReservation);
+
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Reservations", e.getMessage());
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navigate to Workshops
+     */
     @FXML
     void goToAtelier(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashWorkshop.fxml"));
             Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
 
+            // Mark the workshops button as active before switching
+          //  markActiveButton(GoToAtelier);
+
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Workshops", e.getMessage());
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navigate to Comments
+     */
     @FXML
     void goToComment(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficheComment.fxml"));
             Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
 
+            // Mark the comments button as active before switching
+        //    markActiveButton(GoToComment);
+
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Comments", e.getMessage());
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navigate to Complaints
+     */
     @FXML
     void goToReclamation(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherReclamation.fxml"));
             Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
 
-            e.printStackTrace();
-        }
-    }
-    @FXML
-    void goToReponse(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/conversation.fxml"));
-            Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
+            // Mark the complaints button as active before switching
+         //   markActiveButton(GoToReclamation);
 
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Complaints", e.getMessage());
             e.printStackTrace();
         }
     }
 
-    @FXML
-    void goToProduit(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
-            Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void goToUser(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
-            Parent root = loader.load();
-            GoToArticle.getScene().setRoot(root);  // Même principe ici
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Handle orders button click
+     */
     public void handleOrderButtonAction(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/OrdersDashboard.fxml"));
             Parent root = loader.load();
 
-            // Obtenir la scène actuelle et la remplacer par la scène d'ajout
+            // Mark the orders button as active before switching
+         //   markActiveButton(orderButton);
+
+            // Switch to the orders screen
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Ajouter un produit");
+            stage.setTitle("Gestion des Commandes");
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error",
+                    "Navigation Error", "Could not load the orders page.");
         }
+    }
+
+
+    /**
+     * Navigate to Responses
+     */
+    @FXML
+    void goToReponse(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/conversation.fxml"));
+            Parent root = loader.load();
+
+            // Mark the responses button as active before switching
+          //  markActiveButton(GoToReponse);
+
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Responses", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Navigate to Products
+     */
+    @FXML
+    void goToProduit(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            Parent root = loader.load();
+
+            // Mark the products button as active before switching
+          //  markActiveButton(GoToProduit);
+
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Products", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Navigate back to User Management
+     */
+    @FXML
+    void goToUser(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
+            Parent root = loader.load();
+
+            // Mark the users button as active before switching
+           // markActiveButton(GoToUser);
+
+            GoToArticle.getScene().setRoot(root);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not navigate to Users", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Show an alert dialog
+     */
+    private void showAlert(Alert.AlertType alertType, String title, String header, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

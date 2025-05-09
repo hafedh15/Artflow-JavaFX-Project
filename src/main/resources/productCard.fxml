@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import org.controlsfx.control.Rating?>
 <VBox fx:id="productCard" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.artflow.controllers.ProductCard"
@@ -26,6 +27,8 @@
               prefHeight="60"
               maxHeight="60"/>
     <Label fx:id="productStock" styleClass="product-stock"/>
+    <Rating fx:id="productRating" max="5" rating="0" />
+    <Label fx:id="averageRatingLabel" style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Moyenne : -/5" />
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="editButton" text="Ajouter au Panier"
                 styleClass="add-cart-button"

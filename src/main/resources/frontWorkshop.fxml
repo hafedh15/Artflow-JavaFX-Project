@@ -15,43 +15,6 @@
             fx:controller="tn.artflow.controllers.FrontWorkshop"
             style="-fx-background-color: #F9F5F1;">
 
-    <!-- 🔹 Top Menu Bar -->
-    <top>
-        <VBox spacing="10" style="-fx-background-color: #E5DDD1; -fx-padding: 15;">
-            <!-- Logo + Navigation -->
-            <HBox alignment="CENTER_LEFT" spacing="20">
-                <ImageView fitHeight="50" fitWidth="120" preserveRatio="true">
-                    <Image url="@/images/logo.jpg" />
-                </ImageView>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <Button text="Accueil" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px;"/>
-                <Button text="Produits" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px;"/>
-                <Button text="Ateliers" style="-fx-background-color: #C8B6A6; -fx-text-fill: #5C4F3D; -fx-font-size: 14px; -fx-background-radius: 5;"/>
-                <Button text="Réclamations" style="-fx-background-color: transparent; -fx-text-fill: #8D7B6A; -fx-font-size: 14px;"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <!-- Icône utilisateur -->
-                <Button styleClass="user-icon" >
-                    <graphic>
-                        <ImageView fitHeight="30" fitWidth="30">
-                            <Image url="@/images/user.jpg"/>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </HBox>
-
-            <!-- Barre de recherche -->
-            <HBox spacing="10" alignment="CENTER">
-                <TextField prefWidth="400" promptText="Rechercher un atelier..."
-                           style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-padding: 8 15;
-                                  -fx-background-color: #FFFFFF; -fx-border-color: #E8DECD;"/>
-                <Button text="🔎" style="-fx-background-color: #A18E78; -fx-background-radius: 20; -fx-text-fill: white;"/>
-            </HBox>
-        </VBox>
-    </top>
 
     <!-- 🔹 Contenu principal -->
     <center>

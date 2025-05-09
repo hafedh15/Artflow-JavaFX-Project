@@ -16,45 +16,6 @@
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.artflow.controllers.Profilp">
     <!-- Barre de navigation supérieure -->
-    <top>
-        <!-- Logo et barre de menu principale -->
-        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
-            <padding><Insets bottom="10" left="20" right="20" top="10" /></padding>
-
-            <!-- Logo -->
-            <ImageView fitHeight="60" fitWidth="160" preserveRatio="true">
-                <Image url="@/images/logo.jpg" />
-            </ImageView>
-
-            <Region HBox.hgrow="ALWAYS" />
-
-            <!-- Menu principal -->
-            <Button fx:id="homeButton" onAction="#navigateToHome" styleClass="nav-button" text="Accueil" />
-            <Button fx:id="productsButton" onAction="#navigateToProducts" styleClass="nav-button" text="Produits" />
-            <Button fx:id="workshopsButton" onAction="#navigateToWorkshops" styleClass="nav-button" text="Ateliers" />
-            <Button fx:id="complaintsButton" onAction="#navigateToComplaints" styleClass="nav-button" text="Reclamations" />
-            <Button fx:id="aboutButton" onAction="#navigateToAbout" styleClass="nav-button" text="À propos" />
-
-            <Region HBox.hgrow="ALWAYS" />
-
-            <Button fx:id="cartButton" onAction="#navigateToCart" styleClass="cart-button">
-                <graphic>
-                    <ImageView fitHeight="25" fitWidth="25">
-                        <Image url="@/images/panier.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
-
-            <!-- Icône utilisateur avec gestionnaire d'événement -->
-            <Button fx:id="userIconButton" onAction="#profil" styleClass="user-icon user-icon-active">
-                <graphic>
-                    <ImageView fitHeight="30" fitWidth="30">
-                        <Image url="@/images/user.jpg" />
-                    </ImageView>
-                </graphic>
-            </Button>
-        </HBox>
-    </top>
 
     <!-- Contenu principal - TabPane pour organiser les différentes sections -->
     <center>
@@ -70,7 +31,7 @@
                     <HBox alignment="CENTER_LEFT" spacing="20">
                         <Label styleClass="section-title" text="Vos produits :" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button fx:id="addProductButton" onAction="#addNewProduct" styleClass="add-button" text="+ Nouveau produit" />
+
                     </HBox>
 
                     <!-- Liste des produits -->
@@ -81,6 +42,31 @@
                     </ScrollPane>
                 </VBox>
             </Tab>
+
+            <!-- Nouvel onglet pour les demandes de produits -->
+            <Tab text="Vos demandes de postuler un produit">
+                <VBox alignment="TOP_CENTER" spacing="15">
+                    <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+
+                    <!-- Titre de la section demandes -->
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label styleClass="section-title" text="Vos demandes de produits" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="addProductRequestButton" onAction="#addNewProductRequest" styleClass="add-button" text="+ Nouvelle demande" />
+                    </HBox>
+
+                    <!-- Liste des demandes de produits -->
+                    <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                        <content>
+                            <ListView fx:id="productRequestListView" styleClass="product-request-list" />
+                        </content>
+                    </ScrollPane>
+
+                    <!-- Message si aucune demande -->
+                    <Label fx:id="noRequestsLabel" styleClass="info-text" text="Vous n'avez pas encore fait de demande de produit." visible="false" />
+                </VBox>
+            </Tab>
+
             <Tab text="Historique des Commandes">
                 <VBox alignment="TOP_CENTER" spacing="15">
                     <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
@@ -91,6 +77,7 @@
                         <Region HBox.hgrow="ALWAYS" />
                         <Button fx:id="printOrderHistoryButton" onAction="#printOrderHistory" styleClass="secondary-button" text="Imprimer" />
                         <Button fx:id="editDeliveryButton" onAction="#editDeliveryInfo" styleClass="secondary-button" text="Modifier les données de livraison" />
+                        <Button fx:id="PayerButton" onAction="#Payer" styleClass="secondary-button" text="Payer " />
                     </HBox>
 
                     <!-- Liste des commandes -->

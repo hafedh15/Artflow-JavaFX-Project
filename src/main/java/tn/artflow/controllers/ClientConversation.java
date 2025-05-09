@@ -15,7 +15,7 @@ import tn.artflow.entities.Reponse;
 import tn.artflow.entities.User;
 import tn.artflow.services.ReclamationService;
 import tn.artflow.services.ReponseService;
-
+import tn.artflow.services.DialogflowClient;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -116,7 +116,7 @@ public class ClientConversation implements Initializable {
         }
     }
 
-    @FXML
+   /* @FXML
     private void sendResponse() {
         Reclamation selected = reclamationListView.getSelectionModel().getSelectedItem();
         String responseText = responseField.getText().trim();
@@ -141,6 +141,62 @@ public class ClientConversation implements Initializable {
             reponseService.ajouter(reponse);
             responseField.clear();
             showConversation(selected);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Une erreur est survenue lors de l'envoi.");
+        }
+    }
+*/
+
+    @FXML
+    private void sendResponse() {
+        Reclamation selected = reclamationListView.getSelectionModel().getSelectedItem();
+        String responseText = responseField.getText().trim();
+
+        if (selected == null) {
+            labelResponseError.setText("Veuillez sélectionner une réclamation.");
+            labelResponseError.setVisible(true);
+            return;
+        }
+
+        if (responseText.isEmpty()) {
+            labelResponseError.setText("Le message ne doit pas être vide.");
+            labelResponseError.setVisible(true);
+            return;
+        }
+
+        labelResponseError.setVisible(false);
+
+        Reponse userResponse = new Reponse(
+                selected.getId(),
+                CURRENT_USER_ID,
+                responseText,
+                false,
+                LocalDateTime.now()
+        );
+
+        try {
+            // Save user message
+            reponseService.ajouter(userResponse);
+            responseField.clear();
+            responseField.requestFocus();
+            showConversation(selected);
+
+            // === Call Dialogflow bot ===
+            String botReply = DialogflowClient.detectIntent(responseText);
+
+            // Save bot response with userId = 0
+            Reponse botResponse = new Reponse(
+                    selected.getId(),
+                    143, // BOT user ID
+                    "BOT: "+ botReply,
+                    false,
+                    LocalDateTime.now()
+            );
+
+            reponseService.ajouter(botResponse);
+            showConversation(selected);
+
         } catch (Exception e) {
             e.printStackTrace();
             showError("Erreur", "Une erreur est survenue lors de l'envoi.");

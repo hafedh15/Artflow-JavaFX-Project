@@ -138,4 +138,15 @@ public class CommentService implements IService<Comment>
         return comments;
     }
 
+    public void incrementerViews(int articleId) {
+        String sql = "UPDATE article SET views = views + 1 WHERE id = ?";
+        try (PreparedStatement statement = cnx.prepareStatement(sql)) {
+            statement.setInt(1, articleId);
+            statement.executeUpdate();
+            System.out.println("✅ Vue incrémentée pour l'article ID: " + articleId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

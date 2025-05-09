@@ -7,7 +7,9 @@ import tn.artflow.tools.MyDataBase;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReclamationService implements IService<Reclamation> {
     private Connection cnx;
@@ -44,6 +46,7 @@ public class ReclamationService implements IService<Reclamation> {
     public void modifier(Reclamation reclamation) throws SQLException {
 
     }
+
 
     public void modifier(int id, String nom) throws SQLException {
         // "nom" used as "subject" here
@@ -95,4 +98,45 @@ public class ReclamationService implements IService<Reclamation> {
     public List<Reclamation> getReservationsByUser(User user) throws SQLException {
         return List.of();
     }
+
+
+    public Map<String, Integer> getReclamationCountByStatus() {
+        Map<String, Integer> stats = new HashMap<>();
+        String sql = "SELECT status, COUNT(*) AS count FROM reclamation GROUP BY status";
+
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                stats.put(rs.getString("status"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stats;
+    }
+
+
+    public int countReclamationsToday(int userId) throws SQLException {
+        Connection conn = MyDataBase.getInstance().getCnx();
+        if (conn == null || conn.isClosed()) {
+            conn = MyDataBase.getInstance().getCnx(); // Reconnect if closed
+        }
+
+        String query = "SELECT COUNT(*) FROM reclamation WHERE user_id = ? AND DATE(created_at) = CURRENT_DATE";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        }
+    }
+
+
+
+
+
 }

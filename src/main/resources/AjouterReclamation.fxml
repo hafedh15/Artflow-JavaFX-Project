@@ -1,81 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 
-<AnchorPane fx:id="productContainer" prefHeight="600.0" prefWidth="800.0"
-            xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.artflow.controllers.AjouterReclamation"
-            style="-fx-background-color: #F9F5F1;">
+<StackPane style="-fx-background-color: #F9F5F1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.artflow.controllers.AjouterReclamation">
 
-   <VBox spacing="20" alignment="CENTER" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.bottomAnchor="30.0">
+   <!-- Container that limits maximum width -->
+   <VBox alignment="TOP_CENTER" maxWidth="816.0" prefHeight="538.0" prefWidth="816.0" style="-fx-padding: 30 20;">
 
-      <!-- Titre de la page -->
-      <Label text="Ajouter une Réclamation"
-             style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+      <!-- Titre -->
+      <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D; -fx-padding: 0 0 10 0;" text="Ajouter une Réclamation" />
 
-      <!-- Formulaire contenu -->
-      <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);">
+      <!-- Contenu du formulaire -->
+      <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 5;                                 -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);">
 
          <!-- Objet -->
-         <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Objet"
-                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
-            <Region HBox.hgrow="ALWAYS"/>
-         </HBox>
-
-         <TextField fx:id="tfObjet"
-                    promptText="Entrez l'objet..."
-                    style="-fx-background-color: #F7F7F7; -fx-border-color: #E8DECD; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 8;"/>
-
-         <Label fx:id="labelObjetError"
-                text=""
-                visible="false"
-                style="-fx-font-size: 12px; -fx-text-fill: red;"/>
+         <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="Objet" />
+         <TextField fx:id="tfObjet" prefHeight="36.0" prefWidth="592.0" promptText="Entrez l'objet..." style="-fx-background-color: #F7F7F7; -fx-border-color: #E8DECD;                              -fx-border-radius: 3; -fx-background-radius: 3;" />
+         <Label fx:id="labelObjetError" style="-fx-font-size: 11px; -fx-text-fill: red;" text="" visible="false" />
 
          <!-- Message -->
-         <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Message"
-                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
-            <Region HBox.hgrow="ALWAYS"/>
-         </HBox>
+         <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" text="Message" />
+         <TextArea fx:id="taMessage" prefHeight="100.0" promptText="Entrez votre message..." style="-fx-background-color: #F7F7F7; -fx-border-color: #E8DECD;                             -fx-border-radius: 3; -fx-background-radius: 3;" wrapText="true" />
+         <Label fx:id="labelMessageError" style="-fx-font-size: 11px; -fx-text-fill: red;" text="" visible="false" />
 
-         <TextArea fx:id="taMessage"
-                   promptText="Entrez votre message..."
-                   prefHeight="150.0"
-                   style="-fx-background-color: #F7F7F7; -fx-border-color: #E8DECD; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 8;"
-                   wrapText="true"/>
-
-         <Label fx:id="labelMessageError"
-                text=""
-                visible="false"
-                style="-fx-font-size: 12px; -fx-text-fill: red;"/>
-
-         <!-- Bouton Envoyer -->
-         <HBox alignment="CENTER_RIGHT">
-            <Button fx:id="btnAjouter"
-                    text="Envoyer"
-                    onAction="#ajouter"
-                    style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20;"/>
-            <Button
-                    text="annuler"
-                    onAction="#annuler"
-                    style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20;"/>
-         </HBox>
+         <!-- Container for message count and button -->
+         <BorderPane>
+            <left>
+               <Label fx:id="lblMessageCount" style="-fx-font-size: 12px; -fx-text-fill: #7B7369;" text="0/3 Messages envoyés, vous ne pouvez pas envoyer plus de 3 messages" />
+            </left>
+            <right>
+               <Button fx:id="btnAjouter" onAction="#ajouter" style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-size: 13px;                                  -fx-background-radius: 3; -fx-padding: 5 12;" text="Envoyer" />
+            </right>
+         </BorderPane>
 
          <!-- Label statut -->
-         <Label fx:id="lblStatus"
-                text=""
-                style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-font-style: italic; -fx-text-fill: red;"/>
+         <Label fx:id="lblStatus" style="-fx-font-size: 12px; -fx-font-style: italic; -fx-text-fill: red;" text="" />
       </VBox>
-
    </VBox>
-</AnchorPane>
+</StackPane>

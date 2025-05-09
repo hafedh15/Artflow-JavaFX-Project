@@ -22,50 +22,6 @@
 
     <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <!-- Navigation Bar -->
-        <top>
-            <VBox>
-                <!-- Navigation Bar -->
-                <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #f4f4f4; -fx-padding: 10px 20px; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-                    <!-- Logo -->
-                    <ImageView fitHeight="50" fitWidth="50" preserveRatio="true">
-                        <Image url="@/images/logo.jpg" />
-                    </ImageView>
-
-                    <Region HBox.hgrow="ALWAYS" />
-
-                    <!-- Menu Items -->
-                    <Button onAction="#goToHome" styleClass="nav-button" text="Accueil" />
-                    <Button onAction="#goToProductList" style="-fx-background-color: #e5e5e5;" styleClass="nav-button" text="Produits" />
-                    <Button onAction="#navigateToWorkshops" styleClass="nav-button" text="Ateliers" />
-                    <Button onAction="#navigateToComplaints" styleClass="nav-button" text="Reclamations" />
-                    <Button onAction="#navigateToAbout" styleClass="nav-button" text="À propos" />
-
-                    <Region HBox.hgrow="ALWAYS" />
-
-                    <!-- Icons on the right -->
-                    <Button fx:id="cartButton" styleClass="icon-button">
-                        <graphic>
-                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                                <Image url="@/images/panier.jpg" />
-                            </ImageView>
-                        </graphic>
-                    </Button>
-
-                    <Button fx:id="profileButton" onAction="#goToProfil" styleClass="icon-button">
-                        <graphic>
-                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                                <Image url="@/images/user.jpg" />
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                </HBox>
-
-                <!-- Simple cart header -->
-                <HBox style="-fx-background-color: #f9f9f9; -fx-padding: 15px 30px;">
-                    <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Mon Panier" />
-                </HBox>
-            </VBox>
-        </top>
 
         <center>
             <HBox spacing="20" style="-fx-padding: 20px;">

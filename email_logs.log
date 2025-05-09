@@ -26,3 +26,231 @@ mai 01, 2025 5:19:58 PM tn.artflow.tools.EmailSender sendLoginNotification
 INFO: Préparation de l'envoi d'une notification de connexion à skander.selmi@esprit.tn
 mai 01, 2025 5:20:04 PM tn.artflow.tools.EmailSender sendLoginNotification
 INFO: Email de notification de connexion envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 7:21:12 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 01, 2025 7:21:19 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 01, 2025 7:47:32 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à skander.selmi@esprit.tn
+mai 01, 2025 7:47:38 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 7:58:49 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à skander.selmi@esprit.tn
+mai 01, 2025 7:58:55 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 7:59:37 PM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Préparation de l'envoi d'un email de bienvenue à skander.selmi@esprit.tn
+mai 01, 2025 7:59:43 PM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Email de bienvenue envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 8:01:30 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à skander.selmi@esprit.tn
+mai 01, 2025 8:01:36 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à skander.selmi@esprit.tn
+mai 01, 2025 8:10:18 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 01, 2025 8:10:25 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 01, 2025 8:11:45 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 01, 2025 8:11:52 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 01, 2025 10:12:00 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 01, 2025 10:12:12 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 7:18:56 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 7:19:03 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 7:35:39 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 7:35:47 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 7:37:15 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 7:37:21 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 9:32:51 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 9:32:53 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 9:35:37 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 9:35:39 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 9:38:55 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 9:38:57 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 9:47:27 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 9:47:29 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 9:55:36 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à loujainrouached1@gmail.com
+mai 07, 2025 9:55:38 PM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 9:56:37 PM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Préparation de l'envoi d'un email de bienvenue à loujainrouached1@gmail.com
+mai 07, 2025 9:56:38 PM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Email de bienvenue envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 9:56:47 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 9:56:49 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 9:58:32 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 9:58:42 PM tn.artflow.tools.EmailSender sendLoginNotification
+SEVERE: Erreur lors de l'envoi de l'email de notification: Couldn't connect to host, port: smtp.gmail.com, 587; timeout 10000
+mai 07, 2025 10:00:22 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 07, 2025 10:00:56 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 07, 2025 10:58:44 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 10:58:55 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 10:59:18 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 10:59:24 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 11:00:37 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 11:00:44 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 11:13:03 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 11:13:10 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 11:14:19 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 11:14:32 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 11:14:36 PM tn.artflow.tools.EmailSender sendProductApprovalEmail
+INFO: Préparation de l'envoi d'une notification d'approbation de produit à loujainrouached1@gmail.com
+mai 07, 2025 11:14:42 PM tn.artflow.tools.EmailSender sendProductApprovalEmail
+INFO: Email d'approbation de produit envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 11:16:08 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 11:16:15 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 07, 2025 11:18:41 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à loujainrouached1@gmail.com
+mai 07, 2025 11:18:48 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à loujainrouached1@gmail.com
+mai 08, 2025 8:14:06 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 8:14:13 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 8:27:42 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 8:27:49 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 8:47:04 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 8:47:06 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 8:48:00 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 8:48:11 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 9:19:04 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 9:19:06 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 9:19:41 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 9:19:43 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 10:00:27 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 10:00:29 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 10:30:26 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 10:30:29 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 10:33:44 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 10:33:47 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 11:25:14 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 11:25:20 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 11:26:13 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 11:26:15 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 11:29:55 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 11:29:57 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 08, 2025 11:54:40 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 08, 2025 11:54:42 PM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 12:23:34 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 12:23:36 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 12:28:23 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 12:28:28 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 12:30:29 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 12:30:31 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 12:59:42 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 12:59:47 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 1:01:46 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 1:01:48 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 1:04:17 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 1:04:19 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 1:08:34 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 1:08:36 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 1:19:45 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 1:19:51 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 1:48:37 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 1:48:40 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 2:22:29 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à skander.selmi@esprit.tn
+mai 09, 2025 2:22:31 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à skander.selmi@esprit.tn
+mai 09, 2025 2:24:09 AM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Préparation de l'envoi d'un email de vérification à skander.selmi@esprit.tn
+mai 09, 2025 2:24:11 AM tn.artflow.tools.EmailSender sendVerificationEmail
+INFO: Email de vérification envoyé avec succès à skander.selmi@esprit.tn
+mai 09, 2025 2:24:29 AM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Préparation de l'envoi d'un email de bienvenue à skander.selmi@esprit.tn
+mai 09, 2025 2:24:31 AM tn.artflow.tools.EmailSender sendWelcomeEmail
+INFO: Email de bienvenue envoyé avec succès à skander.selmi@esprit.tn
+mai 09, 2025 2:24:44 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à skander.selmi@esprit.tn
+mai 09, 2025 2:24:46 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à skander.selmi@esprit.tn
+mai 09, 2025 2:37:18 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 2:37:21 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 2:40:24 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 2:40:26 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa
+mai 09, 2025 2:55:27 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Préparation de l'envoi d'une notification de connexion à aa@aa.aaa
+mai 09, 2025 2:55:30 AM tn.artflow.tools.EmailSender sendLoginNotification
+INFO: Email de notification de connexion envoyé avec succès à aa@aa.aaa

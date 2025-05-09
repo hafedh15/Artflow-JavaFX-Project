@@ -95,5 +95,26 @@ public class WorkshopService implements IService<Workshop> {
         return List.of();
     }
 
+    public List<Workshop> getAllWorkshops() {
+        List<Workshop> list = new ArrayList<>();
+        String sql = "SELECT * FROM workshop"; // vérifie les noms de colonnes
+
+        try (PreparedStatement stmt = cnx.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Workshop w = new Workshop();
+                // LES CHAMPS IMPORTANTS :
+                w.setLatitude(rs.getFloat("latitude"));
+                w.setLongitude(rs.getFloat("longitude"));
+
+                list.add(w);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 
 }

@@ -1,17 +1,18 @@
 package tn.artflow.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import tn.artflow.entities.Comment;
 import tn.artflow.services.CommentService;
 
 import java.io.File;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class Commentmof {
@@ -44,6 +45,8 @@ public class Commentmof {
     private Consumer<Comment> onCommentModified;
     private Consumer<Comment> onCommentDeleted;
 
+    private int selectedRating = 0;
+
     public void setComment(Comment comment, Consumer<Comment> onCommentModified, Consumer<Comment> onCommentDeleted) {
         this.comment = comment;
         this.onCommentModified = onCommentModified;
@@ -51,9 +54,12 @@ public class Commentmof {
 
         usernameLabel.setText(comment.getUser().getName());
         dateLabel.setText(comment.getDatecom());
-        contenuLabel.setText(comment.getContenu_Comment());
+        selectedRating = comment.getRating();
 
-        updateStars(comment.getRating());
+        String contenuCensure = censurerMauvaisMots(comment.getContenu_Comment(), comment.getUser().getName());
+        contenuLabel.setText(contenuCensure);
+
+        updateStars(selectedRating);
         loadUserImage(comment.getUser().getPhoto());
     }
 
@@ -62,6 +68,11 @@ public class Commentmof {
         for (int i = 1; i <= 5; i++) {
             Label star = new Label(i <= rating ? "★" : "☆");
             star.setStyle("-fx-font-size: 18px; -fx-text-fill: " + (i <= rating ? "#FFB400" : "#cccccc") + ";");
+            int finalI = i;
+            star.setOnMouseClicked(e -> {
+                selectedRating = finalI;
+                updateStars(selectedRating);
+            });
             starsContainer.getChildren().add(star);
         }
     }
@@ -107,15 +118,17 @@ public class Commentmof {
         }
 
         comment.setContenu_Comment(nouveauContenu);
+        comment.setRating(selectedRating);
+
         try {
             new CommentService().modifier(comment);
-            contenuLabel.setText(nouveauContenu);
+            contenuLabel.setText(censurerMauvaisMots(nouveauContenu, comment.getUser().getName()));
+            updateStars(selectedRating);
             if (onCommentModified != null) {
                 onCommentModified.accept(comment);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Erreur lors de la modification du commentaire.");
         }
         annulerModification();
     }
@@ -129,6 +142,7 @@ public class Commentmof {
         contenuLabel.setVisible(true);
         errorLabel.setVisible(false);
         errorLabel.setManaged(false);
+        updateStars(comment.getRating());
     }
 
     @FXML
@@ -140,15 +154,38 @@ public class Commentmof {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Erreur lors de la suppression du commentaire.");
         }
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erreur");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private String censurerMauvaisMots(String texte, String username) {
+        try {
+            String urlStr = "https://www.purgomalum.com/service/json?text=" + texte.replaceAll(" ", "%20");
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            Scanner sc = new Scanner(conn.getInputStream());
+            StringBuilder jsonResponse = new StringBuilder();
+            while (sc.hasNext()) {
+                jsonResponse.append(sc.nextLine());
+            }
+            sc.close();
+
+            String result = jsonResponse.toString();
+            int start = result.indexOf(":\"") + 2;
+            int end = result.lastIndexOf("\"");
+            if (start > 1 && end > start) {
+                String censuredText = result.substring(start, end);
+                if (censuredText.contains("***")) {
+                    NotificationCenter.addNotification("Utilisateur: " + username + ", Contenu censuré: " + censuredText);
+                }
+                return censuredText;
+            } else {
+                return texte;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return texte;
+        }
     }
 }

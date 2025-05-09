@@ -6,11 +6,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
+
 import javafx.event.ActionEvent;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.artflow.entities.Workshop;
@@ -40,9 +49,31 @@ public class DashWorkshop {
     private Button orderButton;
     @FXML
     private GridPane gridWorkshop;
+
+    private boolean isSorted = false;
+
+    @FXML
+    private TextField searchField;
+
+    private List<Workshop> allWorkshops = new ArrayList<>();
+
     private void refreshGrid() {
         gridWorkshop.getChildren().clear(); // Clear all nodes
         initialize(); // Reload workshops
+    }
+
+    public void initialize() {
+        loadWorkshops();
+    }
+
+    private void loadWorkshops() {
+        WorkshopService ws = new WorkshopService();
+        try {
+            allWorkshops = ws.recuperer();  // Stocke tous les workshops
+            displayWorkshops(allWorkshops);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -69,54 +100,54 @@ public class DashWorkshop {
 
 
 
-    public void initialize() {
-        WorkshopService ws = new WorkshopService();
-        try {
-            List<Workshop> workshops = ws.recuperer();
-
-            // Add header row
-            gridWorkshop.addRow(0,
-                    new Label("ID"),
-                    new Label("Title"),
-                    new Label("Description"),
-                    new Label("Date"),
-                    new Label("Type"),
-                    new Label("Location"),
-                    new Label("Actions")  // For buttons
-            );
-
-            int row = 1;
-            for (Workshop w : workshops) {
-                // Delete button
-                Button deleteButton = new Button("Delete");
-                deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
-                deleteButton.setOnAction(e -> {
-                    ws.supprimer(w.getId());
-                    refreshGrid();
-                });
-
-                // Edit button
-                Button editButton = new Button("Edit");
-                editButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
-                editButton.setOnAction(e -> openEditWorkshop(w)); // Open form with values
-
-
-                // Add row to grid with both buttons
-                gridWorkshop.addRow(row++,
-                        new Label(String.valueOf(w.getId())),
-                        new Label(w.getTitle()),
-                        new Label(w.getDescription()),
-                        new Label(w.getDate()),
-                        new Label(w.getType()),
-                        new Label(w.getLocation()),
-                        new javafx.scene.layout.HBox(10, editButton, deleteButton)  // Add both in HBox
-                );
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void initialize() {
+//        WorkshopService ws = new WorkshopService();
+//        try {
+//            List<Workshop> workshops = ws.recuperer();
+//
+//            // Add header row
+//            gridWorkshop.addRow(0,
+//                    new Label("ID"),
+//                    new Label("Title"),
+//                    new Label("Description"),
+//                    new Label("Date"),
+//                    new Label("Type"),
+//                    new Label("Location"),
+//                    new Label("Actions")  // For buttons
+//            );
+//
+//            int row = 1;
+//            for (Workshop w : workshops) {
+//                // Delete button
+//                Button deleteButton = new Button("Delete");
+//                deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+//                deleteButton.setOnAction(e -> {
+//                    ws.supprimer(w.getId());
+//                    refreshGrid();
+//                });
+//
+//                // Edit button
+//                Button editButton = new Button("Edit");
+//                editButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+//                editButton.setOnAction(e -> openEditWorkshop(w)); // Open form with values
+//
+//
+//                // Add row to grid with both buttons
+//                gridWorkshop.addRow(row++,
+//                        new Label(String.valueOf(w.getId())),
+//                        new Label(w.getTitle()),
+//                        new Label(w.getDescription()),
+//                        new Label(w.getDate()),
+//                        new Label(w.getType()),
+//                        new Label(w.getLocation()),
+//                        new javafx.scene.layout.HBox(10, editButton, deleteButton)  // Add both in HBox
+//                );
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @FXML
     void addworkshop(ActionEvent event) {
@@ -245,6 +276,71 @@ public class DashWorkshop {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void searchWorkshops() {
+        String keyword = searchField.getText().toLowerCase();
+
+        List<Workshop> filtered = allWorkshops.stream()
+                .filter(w -> w.getTitle().toLowerCase().contains(keyword))
+                .collect(Collectors.toList());
+
+        displayWorkshops(filtered);
+    }
+
+    @FXML
+    public void sortByDate() {
+        if (!isSorted) {
+            List<Workshop> sorted = new ArrayList<>(allWorkshops);
+
+            sorted.sort(Comparator.comparing(w -> {
+                String datePart = w.getDate().split(" ")[0];
+                return LocalDate.parse(datePart);
+            }));
+
+            displayWorkshops(sorted);
+            isSorted = true;
+        } else {
+            displayWorkshops(allWorkshops);
+            isSorted = false;
+        }
+    }
+
+    private void displayWorkshops(List<Workshop> workshops) {
+        gridWorkshop.getChildren().clear();
+
+        // En-tête
+        gridWorkshop.addRow(0,
+                new Label("ID"), new Label("Title"), new Label("Description"),
+                new Label("Date"), new Label("Type"), new Label("Location"),
+                new Label("Actions")
+        );
+
+        int row = 1;
+        for (Workshop w : workshops) {
+            Button deleteButton = new Button("Delete");
+            deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+            deleteButton.setOnAction(e -> {
+                new WorkshopService().supprimer(w.getId());
+                loadWorkshops();
+            });
+
+            Button editButton = new Button("Edit");
+            editButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+            editButton.setOnAction(e -> openEditWorkshop(w));
+
+            gridWorkshop.addRow(row++,
+                    new Label(String.valueOf(w.getId())),
+                    new Label(w.getTitle()),
+                    new Label(w.getDescription()),
+                    new Label(w.getDate()),
+                    new Label(w.getType()),
+                    new Label(w.getLocation()),
+                    new HBox(10, editButton, deleteButton)
+            );
+        }
+    }
+
 }
 
 

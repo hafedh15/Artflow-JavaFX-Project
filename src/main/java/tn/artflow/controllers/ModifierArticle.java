@@ -1,14 +1,14 @@
 package tn.artflow.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import tn.artflow.entities.Article;
@@ -22,11 +22,18 @@ import java.time.LocalDate;
 public class ModifierArticle {
 
     @FXML private TextField titreTF;
-    @FXML private TextArea contenuTF;
     @FXML private TextField categorieTF;
     @FXML private DatePicker dateTF;
     @FXML private TextField imageTF;
     @FXML private TextField nomauteurTF;
+
+    @FXML private WebView contenuWebView;
+    @FXML private ToolBar toolbar;
+    @FXML private Button boldButton;
+    @FXML private Button italicButton;
+    @FXML private Button underlineButton;
+    @FXML private ColorPicker colorPicker;
+    @FXML private ComboBox<String> fontComboBox;
 
     @FXML private Label titreStatus;
     @FXML private Label categorieStatus;
@@ -41,7 +48,6 @@ public class ModifierArticle {
         this.articleAModifier = article;
 
         titreTF.setText(article.getTitre());
-        contenuTF.setText(article.getContenu());
         categorieTF.setText(article.getCategorie());
         nomauteurTF.setText(article.getNomAuteur());
         imageTF.setText(article.getImage());
@@ -49,6 +55,13 @@ public class ModifierArticle {
         if (article.getDatepub() != null && article.getDatepub().length() >= 10) {
             dateTF.setValue(Date.valueOf(article.getDatepub()).toLocalDate());
         }
+
+        // Charger le contenu HTML existant dans le WebView
+        contenuWebView.getEngine().loadContent(
+                "<html><body contenteditable='true' style='font-family: Arial; font-size: 14px;'>"
+                        + article.getContenu() +
+                        "</body></html>"
+        );
     }
 
     @FXML
@@ -56,8 +69,34 @@ public class ModifierArticle {
         titreTF.setOnKeyReleased(e -> validateTitre());
         categorieTF.setOnKeyReleased(e -> validateCategorie());
         nomauteurTF.setOnKeyReleased(e -> validateAuteur());
-        contenuTF.setOnKeyReleased(e -> validateContenu());
         dateTF.setOnAction(e -> validateDate());
+
+        setupEditor();
+    }
+
+    private void setupEditor() {
+        boldButton.setOnAction(e -> contenuWebView.getEngine().executeScript("document.execCommand('bold', false, null)"));
+        italicButton.setOnAction(e -> contenuWebView.getEngine().executeScript("document.execCommand('italic', false, null)"));
+        underlineButton.setOnAction(e -> contenuWebView.getEngine().executeScript("document.execCommand('underline', false, null)"));
+
+        colorPicker.setOnAction(e -> {
+            String color = toRgbString(colorPicker.getValue());
+            contenuWebView.getEngine().executeScript("document.execCommand('foreColor', false, '" + color + "')");
+        });
+
+        fontComboBox.getItems().addAll("Arial", "Courier New", "Times New Roman", "Verdana", "Georgia", "Comic Sans MS");
+        fontComboBox.setValue("Arial");
+        fontComboBox.setOnAction(e -> {
+            String font = fontComboBox.getValue();
+            contenuWebView.getEngine().executeScript("document.execCommand('fontName', false, '" + font + "')");
+        });
+    }
+
+    private String toRgbString(Color color) {
+        int r = (int) (color.getRed() * 255);
+        int g = (int) (color.getGreen() * 255);
+        int b = (int) (color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
     }
 
     private void validateTitre() {
@@ -74,14 +113,6 @@ public class ModifierArticle {
             categorieStatus.setText("La catégorie est obligatoire.");
         } else {
             categorieStatus.setText("");
-        }
-    }
-
-    private void validateContenu() {
-        if (contenuTF.getText().trim().length() < 10) {
-            contenuStatus.setText("Le contenu doit contenir au moins 10 caractères.");
-        } else {
-            contenuStatus.setText("");
         }
     }
 
@@ -112,8 +143,10 @@ public class ModifierArticle {
                 return;
             }
 
+            String contenu = (String) contenuWebView.getEngine().executeScript("document.body.innerHTML");
+
             articleAModifier.setTitre(titreTF.getText().trim());
-            articleAModifier.setContenu(contenuTF.getText().trim());
+            articleAModifier.setContenu(contenu);
             articleAModifier.setCategorie(categorieTF.getText().trim());
             articleAModifier.setNomAuteur(nomauteurTF.getText().trim());
             articleAModifier.setImage(imageTF.getText().trim());
@@ -139,8 +172,15 @@ public class ModifierArticle {
         validateTitre();
         validateCategorie();
         validateAuteur();
-        validateContenu();
         validateDate();
+
+        String contenu = (String) contenuWebView.getEngine().executeScript("document.body.innerText");
+        if (contenu.trim().length() < 10) {
+            contenuStatus.setText("Le contenu doit contenir au moins 10 caractères.");
+            return false;
+        } else {
+            contenuStatus.setText("");
+        }
 
         return titreStatus.getText().isEmpty()
                 && categorieStatus.getText().isEmpty()

@@ -62,7 +62,7 @@ public class AddWorkshop {
 
         // Corriger les filtres d'extension - noter l'astérisque avant le point
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.jfif")
         );
 
 
@@ -128,12 +128,12 @@ public class AddWorkshop {
         }
 
         // ✅ Check description max 5 chars (if needed, or remove this)
-        if (description.length() > 50) {
-            descriptionErrorLabel.setText("Description must not exceed 50 letters.");
+        if (description.length() > 250) {
+            descriptionErrorLabel.setText("Description must not exceed 250 letters.");
             valid = false;
         }
 
-        if (!(image.endsWith(".jpg") || image.endsWith(".jpeg") || image.endsWith(".png"))) {
+        if (!(image.endsWith(".jpg") || image.endsWith(".jpeg") || image.endsWith(".png")|| image.endsWith(".jfif"))) {
             imageErrorLabel.setText("Image must be .jpg, .jpeg or .png format.");
             valid = false;
         }

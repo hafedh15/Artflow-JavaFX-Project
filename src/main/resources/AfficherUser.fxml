@@ -7,23 +7,21 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.effect.DropShadow?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #f5f7fa;"
+<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #faf7f4;"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.artflow.controllers.AfficherUser">
 
-    <!-- Modern Navy Blue Sidebar -->
+    <!-- Warm Brown Sidebar -->
     <left>
-        <VBox spacing="8" style="-fx-background-color: #1a237e; -fx-padding: 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 5, 0);">
-            <!-- Logo Section -->
-            <HBox alignment="CENTER" style="-fx-padding: 25 15 25 15; -fx-background-color: #0d1442;">
-                <ImageView fitHeight="50" fitWidth="120" preserveRatio="true">
-                    <Image url="@/images/logo.jpg" />
-                </ImageView>
-            </HBox>
+        <VBox spacing="10" style="-fx-background-color: #8D7D6D;
+                               -fx-padding: 20;
+                               -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 10, 0.5, 4, 0);">
+            <!-- Your sidebar content remains the same --><!-- Logo Section -->
 
-            <!-- User Profile Section - Clickable for photo update -->
-            <StackPane fx:id="profileImageContainer" alignment="CENTER" style="-fx-padding: 20 0 20 0; -fx-cursor: hand;">
+
+            <!-- Original profile image container -->
+            <StackPane fx:id="profileImageContainer" alignment="CENTER" style="-fx-padding: 20 0 5 0; -fx-cursor: hand;">
                 <VBox alignment="CENTER" spacing="10">
                     <StackPane>
                         <Circle radius="40" fill="white" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);"/>
@@ -40,115 +38,116 @@
                             <Label text="📷" style="-fx-font-size: 20px; -fx-text-fill: white;" />
                         </StackPane>
                     </StackPane>
-                    <Label style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold;" text="Artisan Admin" />
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #E8DECD; -fx-font-weight: bold;" text="Artisan Admin" />
                 </VBox>
             </StackPane>
 
-            <Separator style="-fx-background-color: #303f9f; -fx-padding: 0 15 0 15;" />
+            <!-- Add the Generate Avatar button below the profile image -->
+            <Button fx:id="generateAvatarButton" text="Generate Avatar"
+                    style="-fx-background-color: #7D6E58; -fx-text-fill: #E8DECD; -fx-font-size: 12px; -fx-padding: 5 10; -fx-background-radius: 20; -fx-cursor: hand;">
+                <graphic>
+                    <Label text="✨" style="-fx-font-size: 12px; -fx-text-fill: #E8DECD;" />
+                </graphic>
+                <VBox.margin>
+                    <Insets bottom="15" />
+                </VBox.margin>
+            </Button>
+            <Separator style="-fx-background-color: #6B5D4A; -fx-padding: 0 15 0 15;" />
 
             <!-- Navigation Menu -->
             <VBox spacing="5" style="-fx-padding: 10 5;">
                 <Button fx:id="GoToUser" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: #303f9f; -fx-text-fill: white; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #E8DECD; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Utilisateurs" onAction="#goToUser">
                     <graphic>
-                        <Label text="👥" style="-fx-font-size: 16px; -fx-text-fill: white;" />
+                        <Label text="👥" style="-fx-font-size: 16px; -fx-text-fill: #E8DECD;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="orderButton" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Commandes" onAction="#handleOrderButtonAction">
                     <graphic>
-                        <Label text="🛒" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="🛒" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="GoToProduit" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Produits" onAction="#goToProduit">
                     <graphic>
-                        <Label text="📦" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="📦" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="GoToAtelier" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Ateliers" onAction="#goToAtelier">
                     <graphic>
-                        <Label text="🔨" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="🔨" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="GoToReservation" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Réservations" onAction="#goToReservation">
                     <graphic>
-                        <Label text="📅" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="📅" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="GoToArticle" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Articles" onAction="#goToArticle">
                     <graphic>
-                        <Label text="📝" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="📝" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="GoToComment" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Commentaires" onAction="#goToComment">
                     <graphic>
-                        <Label text="💬" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="💬" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="GoToReclamation" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Réclamations" onAction="#goToReclamation">
                     <graphic>
-                        <Label text="⚠️" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="⚠️" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
 
                 <Button fx:id="GoToReponse" maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
                         text="Réponses" onAction="#goToReponse">
                     <graphic>
-                        <Label text="↩️" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
+                        <Label text="↩️" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+                <Button fx:id="goToFrontPageButton" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Page d'accueil" onAction="#goToFrontPage">
+                    <graphic>
+                        <Label text="🏠" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
+                    </graphic>
+                </Button>
+
+                <!-- Logout Button (modified) -->
+                <Button fx:id="logoutButton" maxWidth="Infinity" styleClass="sidebar-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: #D1C4AF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
+                        text="Déconnexion" onAction="#handleLogout">
+                    <graphic>
+                        <Label text="🚪" style="-fx-font-size: 16px; -fx-text-fill: #D1C4AF;" />
                     </graphic>
                 </Button>
             </VBox>
-
             <Region VBox.vgrow="ALWAYS" />
 
             <!-- Bottom Menu -->
-            <VBox spacing="5" style="-fx-padding: 10 5 20 5;">
-                <Button maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
-                        text="Rapports">
-                    <graphic>
-                        <Label text="📊" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
-                    </graphic>
-                </Button>
 
-                <Button maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
-                        text="Paramètres">
-                    <graphic>
-                        <Label text="⚙️" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
-                    </graphic>
-                </Button>
-
-                <Button maxWidth="Infinity" styleClass="sidebar-button"
-                        style="-fx-background-color: transparent; -fx-text-fill: #c5cae9; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-background-radius: 0;"
-                        text="Déconnexion">
-                    <graphic>
-                        <Label text="🚪" style="-fx-font-size: 16px; -fx-text-fill: #c5cae9;" />
-                    </graphic>
-                </Button>
-            </VBox>
         </VBox>
     </left>
 
@@ -159,23 +158,23 @@
             <HBox spacing="20" alignment="CENTER_LEFT">
                 <VBox>
                     <Label text="Gestion des Utilisateurs"
-                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #303f9f;"/>
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;"/>
                     <Label text="Gérez les comptes utilisateurs de votre plateforme"
-                           style="-fx-font-size: 14px; -fx-text-fill: #7986cb;"/>
+                           style="-fx-font-size: 14px; -fx-text-fill: #8A7967;"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Ajouter un utilisateur"
                         onAction="#openAddUserWindow"
-                        style="-fx-background-color: #3949ab; -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 10 20;">
+                        style="-fx-background-color: #5C4F3D; -fx-text-fill: #E8DECD; -fx-background-radius: 30; -fx-padding: 10 20;">
                     <graphic>
-                        <Label text="+" style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;" />
+                        <Label text="+" style="-fx-font-size: 16px; -fx-text-fill: #E8DECD; -fx-font-weight: bold;" />
                     </graphic>
                 </Button>
                 <Button text="Mon Profil"
                         onAction="#handleViewProfil"
-                        style="-fx-background-color: #5c6bc0; -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 10 20;">
+                        style="-fx-background-color: #7D6E58; -fx-text-fill: #E8DECD; -fx-background-radius: 30; -fx-padding: 10 20;">
                     <graphic>
-                        <Label text="👤" style="-fx-font-size: 16px; -fx-text-fill: white;" />
+                        <Label text="👤" style="-fx-font-size: 16px; -fx-text-fill: #E8DECD;" />
                     </graphic>
                 </Button>
             </HBox>
@@ -186,10 +185,10 @@
                     <TextField fx:id="searchField"
                                promptText="Rechercher par nom, prénom ou email..."
                                onKeyReleased="#rechercherUtilisateurs"
-                               style="-fx-background-color: white; -fx-background-radius: 30; -fx-padding: 12; -fx-border-color: #e8eaf6; -fx-border-radius: 30; -fx-pref-height: 45;"
+                               style="-fx-background-color: white; -fx-background-radius: 30; -fx-padding: 12; -fx-border-color: #D1C4AF; -fx-border-radius: 30; -fx-pref-height: 45;"
                                HBox.hgrow="ALWAYS"/>
-                    <HBox alignment="CENTER_RIGHT" style="-fx-padding: 0 15 0 0;">
-                        <Label text="🔍" style="-fx-font-size: 16px; -fx-text-fill: #9fa8da;" />
+                    <HBox alignment="CENTER_RIGHT" style="-fx-padding: 0 15 0 0;" mouseTransparent="true">
+                        <Label text="🔍" style="-fx-font-size: 16px; -fx-text-fill: #8A7967;" />
                     </HBox>
                 </StackPane>
             </HBox>
@@ -218,10 +217,10 @@
                 </ScrollPane>
 
                 <!-- Pagination Controls -->
-                <HBox fx:id="paginationControls" alignment="CENTER" spacing="15" style="-fx-padding: 15; -fx-background-color: #f8f9ff; -fx-border-color: transparent #e8eaf6 #e8eaf6 #e8eaf6; -fx-border-width: 1; -fx-border-radius: 0 0 10 10;">
-                    <Button fx:id="prevPageButton" text="«" style="-fx-background-color: #3949ab; -fx-text-fill: white; -fx-background-radius: 20; -fx-min-width: 35px; -fx-font-size: 16px;"/>
-                    <Label fx:id="pageInfoLabel" text="Page 1 / 1" style="-fx-text-fill: #3f51b5; -fx-font-size: 14px;"/>
-                    <Button fx:id="nextPageButton" text="»" style="-fx-background-color: #3949ab; -fx-text-fill: white; -fx-background-radius: 20; -fx-min-width: 35px; -fx-font-size: 16px;"/>
+                <HBox fx:id="paginationControls" alignment="CENTER" spacing="15" style="-fx-padding: 15; -fx-background-color: #F5F2EC; -fx-border-color: transparent #D1C4AF #D1C4AF #D1C4AF; -fx-border-width: 1; -fx-border-radius: 0 0 10 10;">
+                    <Button fx:id="prevPageButton" text="«" style="-fx-background-color: #5C4F3D; -fx-text-fill: #E8DECD; -fx-background-radius: 20; -fx-min-width: 35px; -fx-font-size: 16px;"/>
+                    <Label fx:id="pageInfoLabel" text="Page 1 / 1" style="-fx-text-fill: #5C4F3D; -fx-font-size: 14px;"/>
+                    <Button fx:id="nextPageButton" text="»" style="-fx-background-color: #5C4F3D; -fx-text-fill: #E8DECD; -fx-background-radius: 20; -fx-min-width: 35px; -fx-font-size: 16px;"/>
                 </HBox>
             </VBox>
         </VBox>

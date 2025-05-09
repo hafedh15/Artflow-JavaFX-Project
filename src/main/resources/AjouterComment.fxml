@@ -1,63 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.web.WebView?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            xmlns="http://javafx.com/javafx"
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.artflow.controllers.AjouterComment"
-            prefWidth="900" prefHeight="600"
+            prefWidth="1000" prefHeight="800"
             style="-fx-background-color: #F9F5F1;">
 
-    <ScrollPane fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+                AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
                 style="-fx-background-color: transparent;">
         <content>
-            <HBox spacing="20" style="-fx-padding: 30;">
-                <!-- Partie Article -->
-                <VBox fx:id="articleBox"
-                      spacing="10" prefWidth="420"
-                      style="-fx-background-color: #FFFFFF; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #D4C8B9; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-                    <ImageView fx:id="articleImage" fitWidth="360" fitHeight="180"/>
-                    <Label fx:id="titreLabel" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #5C4F3D;"/>
-                    <Label fx:id="auteurLabel" style="-fx-text-fill: #8D7B6A;"/>
-                    <Label fx:id="categorieTopLabel" style="-fx-text-fill: #8D7B6A;"/>
-                    <Label fx:id="contenuLabel" wrapText="true" style="-fx-text-fill: #5C4F3D;"/>
-                    <Label fx:id="dateLabel" style="-fx-text-fill: #A1887F;"/>
-                    <Label fx:id="viewsLabel" style="-fx-text-fill: #A1887F;"/>
-                </VBox>
 
-                <!-- Partie Commentaire -->
-                <VBox spacing="15" prefWidth="420"
-                      style="-fx-background-color: #FFFFFF; -fx-padding: 30; -fx-border-radius: 15; -fx-background-radius: 15; -fx-border-color: #D4C8B9; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-                    <Label text="➕ Ajouter un commentaire"
-                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+            <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+                <HBox alignment="CENTER" spacing="30">
 
-                    <TextArea fx:id="commentaireTF"
-                              promptText="Votre commentaire..."
-                              prefHeight="100"
-                              style="-fx-background-radius: 8; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-color: #FFFFFF;"/>
+                    <!-- Partie Article -->
+                    <VBox fx:id="articleBox"
+                          spacing="15" prefWidth="500"
+                          style="-fx-background-color: #FFFFFF; -fx-padding: 20; -fx-border-radius: 15; -fx-background-radius: 15; -fx-border-color: #E8DECD; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);">
 
-                    <Label fx:id="commentaireStatus" text=""
-                           style="-fx-font-size: 14px; -fx-text-fill: #D32F2F;" />
+                        <Label fx:id="categorieTopLabel" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #8D7B6A;" />
 
-                    <Button text="Envoyer"
-                            onAction="#envoyerCommentaire"
-                            style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-height: 40; -fx-background-radius: 8;"/>
+                        <ImageView fx:id="articleImage" fitWidth="460" fitHeight="220" preserveRatio="true" />
 
-                    <Separator style="-fx-background-color: #D4C8B9;"/>
+                        <Label fx:id="viewsLabel" style="-fx-text-fill: #A1887F; -fx-font-size: 12px;" />
 
-                    <Label text="Commentaires existants"
-                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                        <Label fx:id="titreLabel" wrapText="true" style="-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #2C2C2C;" />
 
-                    <VBox fx:id="commentList"
-                          spacing="10"
-                          style="-fx-padding: 10;">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <ImageView fx:id="authorImage" fitHeight="40" fitWidth="40" preserveRatio="true" />
+                            <VBox>
+                                <Label fx:id="auteurLabel" style="-fx-font-weight: bold; -fx-text-fill: #7D7D7D;" />
+                                <Label fx:id="dateLabel" style="-fx-text-fill: #A0A0A0; -fx-font-size: 12px;" />
+                            </VBox>
+                        </HBox>
+
+                        <WebView fx:id="contenuWebView" prefHeight="200"
+                                 style="-fx-text-fill: #5C5C5C; -fx-font-size: 14px;" />
+
                     </VBox>
-                </VBox>
 
-            </HBox>
+                    <!-- Partie Commentaire + Ratings -->
+                    <VBox spacing="20" prefWidth="450"
+                          style="-fx-background-color: #FFFFFF; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #E8DECD; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+
+                        <!-- 🌟 Résumé des ratings -->
+                        <HBox spacing="40" alignment="CENTER">
+                            <!-- Note Moyenne -->
+                            <VBox spacing="10" alignment="CENTER" style="-fx-background-color: #FFF8E1; -fx-padding: 20; -fx-background-radius: 10;">
+                                <Label fx:id="averageRatingLabel"
+                                       style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #FFB400;" />
+                                <HBox fx:id="averageStars" spacing="4" alignment="CENTER" />
+                            </VBox>
+
+                            <!-- Répartition des Notes -->
+                            <VBox spacing="12">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="5" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                                    <Label text="★" style="-fx-font-size: 14px; -fx-text-fill: #FFB400;" />
+                                    <ProgressBar fx:id="progress5" styleClass="progress-green" prefWidth="150"/>
+                                    <Label fx:id="count5" text="0" style="-fx-font-size: 14px;" />
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="4" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                                    <Label text="★" style="-fx-font-size: 14px; -fx-text-fill: #FFB400;" />
+                                    <ProgressBar fx:id="progress4" styleClass="progress-purple" prefWidth="150"/>
+                                    <Label fx:id="count4" text="0" style="-fx-font-size: 14px;" />
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="3" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                                    <Label text="★" style="-fx-font-size: 14px; -fx-text-fill: #FFB400;" />
+                                    <ProgressBar fx:id="progress3" styleClass="progress-blue" prefWidth="150"/>
+                                    <Label fx:id="count3" text="0" style="-fx-font-size: 14px;" />
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="2" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                                    <Label text="★" style="-fx-font-size: 14px; -fx-text-fill: #FFB400;" />
+                                    <ProgressBar fx:id="progress2" styleClass="progress-orange" prefWidth="150"/>
+                                    <Label fx:id="count2" text="0" style="-fx-font-size: 14px;" />
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="1" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                                    <Label text="★" style="-fx-font-size: 14px; -fx-text-fill: #FFB400;" />
+                                    <ProgressBar fx:id="progress1" styleClass="progress-red" prefWidth="150"/>
+                                    <Label fx:id="count1" text="0" style="-fx-font-size: 14px;" />
+                                </HBox>
+                            </VBox>
+                        </HBox>
+
+                        <!-- ➕ Ajouter un commentaire -->
+                        <Label text="➕ Ajouter un commentaire" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+
+                        <TextArea fx:id="commentaireTF"
+                                  promptText="Votre commentaire..."
+                                  prefHeight="100"
+                                  style="-fx-background-radius: 8; -fx-border-color: #E8DECD; -fx-border-radius: 8; -fx-background-color: #FFFFFF;"/>
+
+                        <Label text="⭐ Notez cet article :" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+                        <HBox fx:id="ratingStars" spacing="5" alignment="CENTER" />
+
+                        <Label fx:id="commentaireStatus" style="-fx-font-size: 14px; -fx-text-fill: red;" />
+
+                        <Button text="Envoyer"
+                                onAction="#envoyerCommentaire"
+                                style="-fx-background-color: #A18E78; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-height: 40; -fx-background-radius: 8;"/>
+
+                        <Separator style="-fx-background-color: #D4C8B9;"/>
+
+                        <Label text="Commentaires existants" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #5C4F3D;" />
+
+                        <VBox fx:id="commentList" spacing="10" style="-fx-padding: 10;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
         </content>
     </ScrollPane>
 </AnchorPane>

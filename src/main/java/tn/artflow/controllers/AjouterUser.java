@@ -43,6 +43,8 @@ public class AjouterUser {
     public void initialize() {
         // Load the image
         googleIcon.setImage(new Image(getClass().getResourceAsStream("/ImageUser/google.png")));
+
+
     }
 
     @FXML
