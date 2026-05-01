@@ -55,6 +55,6 @@ customer support.
 4. Run the application
 
 ## 👨‍💻 Developer
-**Hafedh Chaibi** — Complaints & AI Support Module (Dialogflow integration)
+**Hafedh Chaibi** — Complaints & AI Support Module
 
 Developed as a university project at Esprit School of Engineering.
